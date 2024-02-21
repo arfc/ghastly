@@ -4,5 +4,12 @@ build-backend =  "hatchling.build"
 
 [project]
 name = "didymus"
+authors = [{name="Zoe Richter", email="zoerichter96@gmail.com"},]
 description = "Pebble packing and movement tool"
-dynamic = ["version"]
+readme = "README.md"
+license.file = "LICENSE"
+requires-python = ">=3.8"
+dynamic = ["version",]
+
+[tool.hatch.version]
+path = "src/didymus/__about__.py"
