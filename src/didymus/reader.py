@@ -13,7 +13,7 @@ class OpenmcReader():
 
     def __init__(self, coord_array):
         '''
-        Initializes the OpenmcReader
+        Initializes the OpenmcReader.
 
         Parameters
         ----------
@@ -32,7 +32,7 @@ class OpenmcReader():
         Parameters
         ----------
         peb_rad : float
-        Radius of a single pebble, with units matching those
+            Radius of a single pebble, with units matching those
             used to create center coordinates.  Assumes all
             pebbles are the same size.
         mat_ids : array of int or str
@@ -44,7 +44,7 @@ class OpenmcReader():
             center.  Each pebble should have a distinct uniq_id.
 
         Returns
-        ----------
+        -------
         peb_array : array of Pebble objects
             Array containing a unique Pebble object for each
             coordinate provided in coord_array.

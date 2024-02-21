@@ -2,7 +2,7 @@
 
 class Pebble:
     '''
-    Class for a single pebble object.  Contains information
+    Class for a single pebble object. Contains information
     necessary to determine the pebble location within the core
     and track its material composition and unique id number.
     '''
