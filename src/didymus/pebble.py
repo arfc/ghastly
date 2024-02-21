@@ -12,9 +12,9 @@ class Pebble:
         Initializes a single instance of a Pebble object.
 
         Parameters
-		----------
+        ----------
 
-		coords : array
+        coords : array
             Array containing the x, y, and z coordinates of the pebble.
         rad : float
             Radius of the pebble, with the same units as core measurements.

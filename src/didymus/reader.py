@@ -16,9 +16,9 @@ class OpenmcReader():
         Initializes the OpenmcReader
 
         Parameters
-		----------
-		coord_array : array
-			Array of center coordinates, in x, y, and z, from
+        ----------
+        coord_array : array
+            Array of center coordinates, in x, y, and z, from
             the pack_spheres() function of OpenMC.
 
         '''
@@ -30,9 +30,9 @@ class OpenmcReader():
         the central coordinates in coord_array.
 
         Parameters
-		----------
-		peb_rad : float
-			Radius of a single pebble, with units matching those
+        ----------
+        peb_rad : float
+        Radius of a single pebble, with units matching those
             used to create center coordinates.  Assumes all
             pebbles are the same size.
         mat_ids : array of int or str
@@ -43,10 +43,10 @@ class OpenmcReader():
             Array containing the uniq_ids associated with each pebble
             center.  Each pebble should have a distinct uniq_id.
 
-		Returns
-		----------
-		peb_array : array of Pebble objects
-			Array containing a unique Pebble object for each
+        Returns
+        ----------
+        peb_array : array of Pebble objects
+            Array containing a unique Pebble object for each
             coordinate provided in coord_array.
 
         '''
