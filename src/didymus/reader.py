@@ -54,7 +54,7 @@ class OpenmcReader():
         peb_array = []
         for i, coord, in enumerate(self.coord_array):
             peb_array.append(
-                peb.Pebble(
+                Pebble(
                     coord,
                     peb_rad,
                     mat_ids[i],
