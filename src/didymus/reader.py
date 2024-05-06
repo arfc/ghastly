@@ -1,6 +1,6 @@
 # import here
 import numpy as np
-from didymus import pebble as peb
+from didymus.pebble import Pebble
 
 
 # defining code-specific readers here:
@@ -17,21 +17,22 @@ class OpenmcReader():
 
         Parameters
         ----------
-        coord_array : array
-            Array of center coordinates, in x, y, and z, from
-            the pack_spheres() function of OpenMC.
+        coord_array : numpy.ndarray
+            A 2-D numpy array with shape (N, 3) of cartesian coordinates 
+            for the centroid of a sphere, obtained from the pack_spheres() 
+            function of OpenMC, where N is the number of spheres.
 
         '''
         self.coord_array = coord_array
 
-    def pebs(self, peb_rad, mat_ids, uniq_ids):
+    def generate_pebbles(self, pebble_radius, mat_ids, pebble_ids):
         '''
         Creates an array of didymus Pebble objects, using
         the central coordinates in coord_array.
 
         Parameters
         ----------
-        peb_rad : float
+        pebble_radius : float
             Radius of a single pebble, with units matching those
             used to create center coordinates.  Assumes all
             pebbles are the same size.
@@ -39,15 +40,15 @@ class OpenmcReader():
             Array containing the mat_ids associated with each pebble
             center.  While multiple pebbles can share the same mat_id,
             the length of the mat_ids array should match coord_array.
-        uniq_ids : array of int
+        pebble_ids : array of int
             Array containing the uniq_ids associated with each pebble
-            center.  Each pebble should have a distinct uniq_id.
+            center.  Each pebble should have a distinct pebble_id.
 
         Returns
         -------
-        peb_array : array of Pebble objects
-            Array containing a unique Pebble object for each
-            coordinate provided in coord_array.
+        pebble_array : List of :class:`didymus.Pebble` objects
+            A list of unique :class:`didymus.Pebble` objects for each
+            set of centroid coordinates provided in coord_array.
 
         '''
         peb_array = []

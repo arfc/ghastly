@@ -7,7 +7,7 @@ class Pebble:
     and track its material composition and unique id number.
     '''
 
-    def __init__(self, coords, rad, mat_id, uniq_id, recirc=False):
+    def __init__(self, coords, radius, mat_id, pebble_id, recirc=False):
         '''
         Initializes a single instance of a Pebble object.
 
@@ -16,12 +16,12 @@ class Pebble:
 
         coords : array
             Array containing the x, y, and z coordinates of the pebble.
-        rad : float
+        radius : float
             Radius of the pebble, with the same units as core measurements.
         mat_id : int or str
             User-defined integer or string for the material in the pebble,
             which multiple pebble objects can share.
-        uniq_id : int
+        pebble_id : int
             User-defined integer for identifying a specific pebble.
             Each uniq_id should be distinct.
         recirc : bool
@@ -30,7 +30,7 @@ class Pebble:
 
         '''
         self.coords = coords
-        self.rad = rad
+        self.radius = radius
         self.mat_id = mat_id
-        self.uniq_id = uniq_id
+        self.pebble_id = pebble_id
         self.recirc = recirc
