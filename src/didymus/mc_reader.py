@@ -6,9 +6,9 @@ from didymus.pebble import Pebble
 # defining code-specific readers here:
 class OpenmcReader():
     """
-    Class for reading Openmc pebble coordinates from the
-    OpenMC pack_spheres() function into and arrary of
-    distinct Pebble objects.
+    Class for reading OpenMC pebble coordinates from the
+    :function:`openmc.pack_spheres()` function into an array of
+    distinct :class:`didymus.Pebble` objects.
     """
 
     def __init__(self, coord_array):
@@ -27,7 +27,7 @@ class OpenmcReader():
 
     def generate_pebbles(self, pebble_radius, mat_ids, pebble_ids):
         '''
-        Creates an array of didymus Pebble objects, using
+        Creates an array of :class:`didymus.Pebble` objects, using
         the central coordinates in coord_array.
 
         Parameters
@@ -46,7 +46,7 @@ class OpenmcReader():
 
         Returns
         -------
-        pebble_array : List of :class:`didymus.Pebble` objects
+        pebble_array : list of :class:`didymus.Pebble` objects
             A list of unique :class:`didymus.Pebble` objects for each
             set of centroid coordinates provided in coord_array.
 
