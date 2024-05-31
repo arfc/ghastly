@@ -18,7 +18,7 @@ class OpenmcReader():
         Parameters
         ----------
         coord_array : numpy.ndarray
-            A 2-D numpy array with shape (N, 3) of cartesian coordinates 
+            A 2-D numpy array with shape (N, 3) of cartesian coordinates
             for the centroid of a sphere, obtained from
             :function:`openmc.pack_spheres()`, where N is the number
             of spheres.
