@@ -13,7 +13,6 @@ class Pebble:
 
         Parameters
         ----------
-
         coords : array
             Array containing the x, y, and z coordinates of the pebble.
         radius : float
@@ -23,7 +22,7 @@ class Pebble:
             which multiple pebble objects can share.
         pebble_id : int
             User-defined integer for identifying a specific pebble.
-            Each uniq_id should be distinct.
+            Each pebble_id should be distinct.
         recirc : bool
             Boolean for determining if a given pebble should recirculate,
             for use in multi-pass cycles.  Defaults to False.
