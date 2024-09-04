@@ -1,11 +1,8 @@
-import numpy as np
-
 class Core:
     '''
-    Class for a single Core object, which will be referenced
-    in moving Pebble objects.
+    Parent class for Core objects.
     '''
-    def __init__(self, pebble_radius, origin=np.zeros(3), down_flow = True):
+    def __init__(self, pebble_radius, down_flow = True):
         '''
         Initializes a single instance of a Core object.  As
         this does not specify the shape of the core, the Core
@@ -15,17 +12,12 @@ class Core:
         ----------
         pebble_radius : float
             Radius of pebbles in core.
-        origin : numpy array
-            A numpy array consisting of 3 elements: the x, y,
-            and z coordinates of the core's origin.  Default
-            is centered at (0.0,0.0,0.0).  Units should be meters.
         down_flow : bool
             Whether axial flow in the core is upward or downward.
             True means flow is downward, False means it is upward.
         
         '''
         self.pebble_radius = pebble_radius
-        self.origin = origin
         self.down_flow = down_flow
     
 class CylCore(Core):
@@ -33,7 +25,7 @@ class CylCore(Core):
     Class for a cylindrically shaped core section, with its axis parallel
     to the z-axis.
     '''
-    def __init__(self, radius, height, 
+    def __init__(self, x_c, y_c, radius, z_max, z_min, 
                  regions *args, **kwargs):
         '''
         Initializes a single instance of a CylCore object.  All dimensions
@@ -41,17 +33,27 @@ class CylCore(Core):
         
         Parameters
         ----------
+        x_c : float
+            Coordinate of the cylinder's center on the x-axis.
+        y_c : float
+            Coordinate of the cylinder's center on the y-axis.
         radius : float
             Radius of the core.
-        height : float
-            Height of the core.
+        z_max : float
+            Z-coordinate of the cylinder's top.
+        z_min : float
+            Z-coordinate of the cylinder's bottom.
         regions : list
             List containing the region_id of each element within the given
             CylCore object.
         '''
         super().__init__(*args, **kwargs)
-        self.core_radius = core_radius
-        self.core_height = core_height
+        self.x_c = x_c
+        self.y_c = y_c
+        self.radius = radius
+        self.z_max = z_max
+        self.z_min = z_min
+        self.height = abs(z_min) + abs(z_max)
         self.regions = regions
 
 class ConeCore(Core):
@@ -59,31 +61,36 @@ class ConeCore(Core):
     Class for a right truncated cone, such as those found in discharge chutes.
     The central axis is parallel to the z-axis.  
     '''
-    def __init__(self, upper_radius, lower_radius, height, regions):
+    def __init__(self, x_c, y_c, upper_radius, lower_radius, z_max, z_min, regions):
         '''
         Intializes a single instance of a ConeCore object.  All distances are
         in meters.
         Parameters
         ----------
+        x_c : float
+            Coordinate of the cone's center on the x_axis
+        y_c : float
+            Coordinate of the cone's center on the y_axis
         upper_radius : float
             Radius of the top of the cone.  Does not necessarily correspond to 
             the largest radius.
         lower_radius : float
             Radius of the bottom of the cone.  Does not necessarily correspond
             to the smallest radius.
-        height : float
-            Height of the cone, along central axis.
+        z_max : float
+            Z_coordinate of the cone's top
+        z_min : float
+            Z_coordinate of the cone's bottom
         regions : list
             List containing the region_id of each element within the given
             ConeCore object.
         '''
         super().__init__(*args, **kwargs)
+        self.x_c = x_c
+        self.y_c = y_c
         self.upper_radius = upper_radius
         self.lower_radius = lower_radius
-        self.height = height
+        self.z_max = z_max
+        self.z_min = z_min
+        self.height = abs(z_min)+abs(z_max)
         self.regions = regions
-
-
-        
-        
-        
