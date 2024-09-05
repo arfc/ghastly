@@ -4,13 +4,23 @@ class Region:
     '''
     Parent class for Region objects.
     '''
-    def __init__(self, reg_id, intake, outtake, start = False, end = False):
+    def __init__(self, x_c, y_c, z_max, z_min, reg_id, 
+                 intake, outtake, start = False, end = False):
         '''
-        Initializes a single instance of a Region object.  This does not
-        specify any geometry, and should not be used directly.
+        Initializes a single instance of a Region object.  All dimensions are
+        in meters. This does not define a specific geometry, and should not be 
+        used directly.
 
         Parameters
         ----------
+        x_c : float
+            Coordinate of the cylinder's center on the x-axis.
+        y_c : float
+            Coordinate of the cylinder's center on the y-axis.
+        z_max : float
+            Z-coordinate of the cylinder's top.
+        z_min : float
+            Z-coordinate of the cylinder's bottom.
         reg_id : str
             Unique ID for this region.
         intake : list
@@ -27,6 +37,10 @@ class Region:
             True if this region is at the end of the pebble pathway through
             the core - i.e., if it is the discharge region - False otherwise
         '''
+        self.x_c = x_c
+        self.y_c = y_c
+        self.z_max = z_max
+        self.z_min = z_min
         self.reg_id = reg_id
         self.intake = intake
         self.outtake = outtake
@@ -37,30 +51,18 @@ class CylReg(Region):
     '''
     Class for a cylindrical region aligned with the z-axis.
     '''
-    def __init__(self, x_c, y_c, r, z_max, z_min, *args, **kwargs):
+    def __init__(self, r, *args, **kwargs):
         '''
         Initializes a single instance of a CylReg object.  All dimensions
         should be in meters.
 
         Parameters
         ----------
-        x_c : float
-            Coordinate of the cylinder's center on the x-axis.
-        y_c : float
-            Coordinate of the cylinder's center on the y-axis.
         r : float
             Radius of the cylinder.
-        z_max : float
-            Z-coordinate of the cylinder's top.
-        z_min : float
-            Z-coordinate of the cylinder's bottom.
         '''
         super().__init__(*args, **kwargs)
-        self.x_c = x_c
-        self.y_c = y_c
         self.r = r
-        self.z_max = z_max
-        self.z_min = z_min
         self.h = abs(z_max) + abs(z_min)
         self.volume = np.pi*(r**2)*self.h
 
@@ -69,26 +71,18 @@ class AnnularReg(Region):
     '''
     Class for a sector of an annular region, to be used with CylCore objects.
     '''
-    def __init__(self, x_c, y_c, r_outer, r_inner, z_max, z_min,
-                 theta_min = 0, theta_max = 2*np.pi, *args, **kwargs):
+    def __init__(self, r_outer, r_inner, theta_min = 0, theta_max = 2*np.pi, 
+                 *args, **kwargs):
         '''
         Initializes a single instance of an AnnularReg object.  All distances
         should be in meters, all angles in radians.
 
         Parameters
         ----------
-        x_c : float
-            Coordinate of the region's center on the x-axis
-        y_c : float
-            Coordinate of the region's center on the y_axis
         r_outer : float
             Outer radius of the annulus
         r_inner : float
             Inner radius of the annulus
-        z_max : float
-            Z-coordinate of the top of the annulus
-        z_min : float
-            Z-coordinate of the bottom of the annulus
         theta_min : float
             Smaller angle that defines the sector of the annular region.
             Default is 0 radians.
@@ -97,12 +91,8 @@ class AnnularReg(Region):
             Default is 2pi radians.
         '''
         super().__init__(*args, **kwargs)
-        self.x_c = x_c
-        self.y_c = y_c
         self.r_outer = r_outer
         self.r_inner = r_inner
-        self.z_max = z_max
-        self.z_min = z_min
         self.theta_min = theta_min
         self.theta_max = theta_max
         self.h = abs(z_max)+abs(z_min)
@@ -113,33 +103,20 @@ class ConeReg(Region):
     '''
     Class for a region in the shape of a truncated right cone.
     '''
-    def __init__(self, x_c, y_c, r_upper, r_lower, z_max, z_min, 
-                 *args, **kwargs):
+    def __init__(self, r_upper, r_lower, *args, **kwargs):
         '''
         Initializes a ConeReg object.  All dimensions should be in meters.
 
         Parameters
         ----------
-        x_c : float
-            Coordinate of the cone's center on the x-axis
-        y_c : float
-            Coordinate of the cone's center on the y-axis
         r_upper : float
             Radius at the top of the cone
         r_lower : float
             Radius at the bottom of the cone
-        z_max : float
-            Z-coordinate of the top of the cone
-        z_min
-            Z-coordinate of the bottom of the cone
         '''
         super().__init__(*args, **kwargs)
-        self.x_c = x_c
-        self.y_c = y_c
         self.r_upper = r_upper
         self.r_lower = r_lower
-        self.z_max = z_max
-        self.z_min = z_min
         self.h = abs(z_max) + abs(z_min)
         self.volume = ((1/3)*np.pi*self.h
                        *(r_upper**2 + r_lower**2 + r_upper*r_lower))
