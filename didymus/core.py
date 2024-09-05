@@ -1,3 +1,5 @@
+import numpy as np
+
 class Core:
     '''
     Parent class for Core objects.
@@ -49,7 +51,8 @@ class CylCore(Core):
         self.r = r
         self.z_max = z_max
         self.z_min = z_min
-        self.height = abs(z_min) + abs(z_max)
+        self.h = abs(z_min) + abs(z_max)
+        self.volume = np.pi*(r**2)*self.h
         self.regions = regions
 
 class ConeCore(Core):
@@ -89,5 +92,7 @@ class ConeCore(Core):
         self.r_lower = r_lower
         self.z_max = z_max
         self.z_min = z_min
-        self.height = abs(z_min)+abs(z_max)
+        self.h = abs(z_min)+abs(z_max)
+        self.volume = ((1/3)*np.pi*self.h
+                       *(r_upper**2 + r_lower**2 + r_upper*r_lower))
         self.regions = regions

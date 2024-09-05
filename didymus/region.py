@@ -26,7 +26,6 @@ class Region:
         end : bool
             True if this region is at the end of the pebble pathway through
             the core - i.e., if it is the discharge region - False otherwise
-
         '''
         self.reg_id = reg_id
         self.intake = intake
@@ -62,6 +61,8 @@ class CylReg(Region):
         self.r = r
         self.z_max = z_max
         self.z_min = z_min
+        self.h = abs(z_max) + abs(z_min)
+        self.volume = np.pi*(r**2)*self.h
 
 
 class AnnularReg(Region):
@@ -104,6 +105,9 @@ class AnnularReg(Region):
         self.z_min = z_min
         self.theta_min = theta_min
         self.theta_max = theta_max
+        self.h = abs(z_max)+abs(z_min)
+        self.volume = ((np.pi*(r_outer**2 - r_inner**2)*self.h)
+                       *((theta_max-theta_min)/(2*np.pi)))
 
 class ConeReg(Region):
     '''
@@ -136,3 +140,6 @@ class ConeReg(Region):
         self.r_lower = r_lower
         self.z_max = z_max
         self.z_min = z_min
+        self.h = abs(z_max) + abs(z_min)
+        self.volume = ((1/3)*np.pi*self.h
+                       *(r_upper**2 + r_lower**2 + r_upper*r_lower))
