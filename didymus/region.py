@@ -34,6 +34,36 @@ class Region:
         self.start = start
         self.end = end
 
+class CylReg(Region):
+    '''
+    Class for a cylindrical region aligned with the z-axis.
+    '''
+    def __init__(self, x_c, y_c, r, z_max, z_min, *args, **kwargs):
+        '''
+        Initializes a single instance of a CylReg object.  All dimensions
+        should be in meters.
+
+        Parameters
+        ----------
+        x_c : float
+            Coordinate of the cylinder's center on the x-axis.
+        y_c : float
+            Coordinate of the cylinder's center on the y-axis.
+        r : float
+            Radius of the cylinder.
+        z_max : float
+            Z-coordinate of the cylinder's top.
+        z_min : float
+            Z-coordinate of the cylinder's bottom.
+        '''
+        super().__init__(*args, **kwargs)
+        self.x_c = x_c
+        self.y_c = y_c
+        self.r = r
+        self.z_max = z_max
+        self.z_min = z_min
+
+
 class AnnularReg(Region):
     '''
     Class for a sector of an annular region, to be used with CylCore objects.
@@ -65,6 +95,7 @@ class AnnularReg(Region):
             Larger angle that defines the sector of the annular region.
             Default is 2pi radians.
         '''
+        super().__init__(*args, **kwargs)
         self.x_c = x_c
         self.y_c = y_c
         self.r_outer = r_outer
@@ -73,4 +104,35 @@ class AnnularReg(Region):
         self.z_min = z_min
         self.theta_min = theta_min
         self.theta_max = theta_max
-        
+
+class ConeReg(Region):
+    '''
+    Class for a region in the shape of a truncated right cone.
+    '''
+    def __init__(self, x_c, y_c, r_upper, r_lower, z_max, z_min, 
+                 *args, **kwargs):
+        '''
+        Initializes a ConeReg object.  All dimensions should be in meters.
+
+        Parameters
+        ----------
+        x_c : float
+            Coordinate of the cone's center on the x-axis
+        y_c : float
+            Coordinate of the cone's center on the y-axis
+        r_upper : float
+            Radius at the top of the cone
+        r_lower : float
+            Radius at the bottom of the cone
+        z_max : float
+            Z-coordinate of the top of the cone
+        z_min
+            Z-coordinate of the bottom of the cone
+        '''
+        super().__init__(*args, **kwargs)
+        self.x_c = x_c
+        self.y_c = y_c
+        self.r_upper = r_upper
+        self.r_lower = r_lower
+        self.z_max = z_max
+        self.z_min = z_min
