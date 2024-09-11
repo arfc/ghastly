@@ -26,6 +26,7 @@ class Core:
         self.y_c = y_c
         self.z_max = z_max
         self.z_min = z_min
+        self.h = abs(z_min) + abs(z_max)
         self.down_flow = down_flow
     
 class CylCore(Core):
@@ -48,8 +49,33 @@ class CylCore(Core):
         '''
         super().__init__(*args, **kwargs)
         self.r = r
-        self.h = abs(z_min) + abs(z_max)
         self.volume = np.pi*(r**2)*self.h
+        self.regions = regions
+
+class AnnularCore(Core):
+    '''
+    Class for an annularly shaped core region, with its axis parallel to the
+    z-axis.
+    '''
+    def __init__(self, r_outer, r_inner, regions, *args, **kwargs):
+        '''
+        Initializes an AnnularCore object.  Note that unlike an AnnularRegion,
+        this assumes it is a full annular shell, not a sector.  Dimensions are
+        in meters.
+
+        Parameters
+        ----------
+        r_outer : float
+            Outer radius of the annulus
+        r_inner : float
+            Inner radius of the annulus.
+        regions : list
+            List containing the reg_id of each region within the core element.
+        '''
+        super().__init__(*args, **kwargs)
+        self.r_outer = r_outer
+        self.r_inner = r_inner
+        self.volume = (np.pi*(r_outer**2 - r_inner**2)*self.h)
         self.regions = regions
 
 class ConeCore(Core):
@@ -76,7 +102,38 @@ class ConeCore(Core):
         super().__init__(*args, **kwargs)
         self.r_upper = r_upper
         self.r_lower = r_lower
-        self.h = abs(z_min)+abs(z_max)
         self.volume = ((1/3)*np.pi*self.h
                        *(r_upper**2 + r_lower**2 + r_upper*r_lower))
         self.regions = regions
+
+class AnnConeCore(Core):
+    '''
+    Class for an annular right truncated cone, with its centerline parallel
+    to the z-axis
+    '''
+    def __init__(self, r_out_up, r_in_up, r_out_low, r_in_low,
+                 *regions, *args, **kwargs):
+        '''
+        Initializes an AnnConeCore object.  All distances should be in meters.
+
+        Parameters
+        ----------
+        r_out_up : float
+            The outer radius at the upper part of the annular cone.
+        r_in_up : float
+            The inner radius at the upper part of the annular cone.
+        r_out_low : float
+            The outer radius at the lower part of the annular cone.
+        r_in_low : float
+            The inner radius at the lower part of the annular cone.
+        regions : list
+            List containing the reg_id of each element within the core element.
+        '''
+        super().__init__(*args, **kwargs)
+        self.r_out_up = r_out_up
+        self.r_in_up = r_in_up
+        self.r_out_low = r_out_low
+        self.r_in_low = r_in_low
+        self.volume = ((1/3)*np.pi*self.h*( 
+                        (r_out_up**2 + r_out_low**2 + r_out_up*r_out_low) 
+                        - (r_in_up**2 + r_in_low**2 + r_in_up*r_in_low) ))

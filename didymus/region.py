@@ -41,6 +41,7 @@ class Region:
         self.y_c = y_c
         self.z_max = z_max
         self.z_min = z_min
+        self.h = abs(z_min) + abs(z_max)
         self.reg_id = reg_id
         self.intake = intake
         self.outtake = outtake
@@ -63,7 +64,6 @@ class CylReg(Region):
         '''
         super().__init__(*args, **kwargs)
         self.r = r
-        self.h = abs(z_max) + abs(z_min)
         self.volume = np.pi*(r**2)*self.h
 
 
@@ -95,7 +95,6 @@ class AnnularReg(Region):
         self.r_inner = r_inner
         self.theta_min = theta_min
         self.theta_max = theta_max
-        self.h = abs(z_max)+abs(z_min)
         self.volume = ((np.pi*(r_outer**2 - r_inner**2)*self.h)
                        *((theta_max-theta_min)/(2*np.pi)))
 
@@ -117,6 +116,34 @@ class ConeReg(Region):
         super().__init__(*args, **kwargs)
         self.r_upper = r_upper
         self.r_lower = r_lower
-        self.h = abs(z_max) + abs(z_min)
         self.volume = ((1/3)*np.pi*self.h
                        *(r_upper**2 + r_lower**2 + r_upper*r_lower))
+
+class AnnConeReg(Region):
+    '''
+    Class for a region in the shape of a truncated annular cone.
+    '''
+    def __init__(self, r_out_up, r_in_up, r_out_low, r_in_low, 
+                 *args, **kwargs):
+        '''
+        Initializes an AnnCoreReg object.  All dimensions should be in meters.
+
+        Parameters
+        ----------
+        r_out_up : float
+            Outer radius at the top of the region.
+        r_in_up : float
+            Inner radius at the top of the region.
+        r_out_low : float
+            Outer radius at the bottom of the region.
+        r_in_low : float
+            Inner radius at the bottom of the region.
+        '''
+        super().__init__(*args, **kwargs)
+        self.r_out_up = r_out_up
+        self.r_in_up = r_in_up
+        self.r_out_low = r_out_low
+        self.r_in_low = r_in_low
+        self.volume = ((1/3)*np.pi*self.h*( 
+                        (r_out_up**2 + r_out_low**2 + r_out_up*r_out_low) 
+                        - (r_in_up**2 + r_in_low**2 + r_in_up*r_in_low) ))
