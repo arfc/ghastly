@@ -4,7 +4,7 @@ class Core:
     '''
     Parent class for Core objects.
     '''
-    def __init__(self, x_c, y_c, z_max, z_min, down_flow = True):
+    def __init__(self, x_c, y_c, z_max, z_min):
         '''
         Initializes a single instance of a Core object.  As
         this does not specify the shape of the core, the Core
@@ -20,9 +20,6 @@ class Core:
             Z-coordinate of the cylinder's top.
         z_min : float
             Z-coordinate of the cylinder's bottom.
-        down_flow : bool
-            Whether axial flow in the core is upward or downward.
-            True means flow is downward, False means it is upward.
         
         '''
         self.x_c = x_c
