@@ -15,7 +15,7 @@ class Core:
         Parameters
         ----------
         x_c : float
-            Coordinate of the cone's center on the x_axis
+            Coordinate of the cone's center on the x_axis.
         y_c : float
             Coordinate of the cone's center on the y_axis.
         z_max : float
