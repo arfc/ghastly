@@ -3,14 +3,13 @@ import numpy as np
 
 class Core:
     '''
-    Parent class for Core objects.
+    Parent class for Core objects.  Because the Core class doesn't define
+    a specific geometry, the Core class should not be used directly.
     '''
 
     def __init__(self, x_c, y_c, z_max, z_min):
         '''
-        Initializes a single instance of a Core object.  As
-        this does not specify the shape of the core, the Core
-        parent class should not be used directly.
+        Initializes a single instance of a Core object.
 
         Parameters
         ----------
@@ -29,7 +28,6 @@ class Core:
         self.z_max = z_max
         self.z_min = z_min
         self.h = abs(z_min) + abs(z_max)
-        self.down_flow = down_flow
 
 
 class CylCore(Core):
