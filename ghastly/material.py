@@ -1,9 +1,11 @@
 import numpy as np
 
+
 class Mat():
     '''
     Class containing OpenMC material metadata necessary for pebble tracking
     '''
+
     def __init__(self, material, pass_num, reg_id, l_type=0):
         '''
         Initializes a single instance of the Mat class.

@@ -1,15 +1,17 @@
 import numpy as np
 
+
 class Core:
     '''
     Parent class for Core objects.
     '''
+
     def __init__(self, x_c, y_c, z_max, z_min):
         '''
         Initializes a single instance of a Core object.  As
         this does not specify the shape of the core, the Core
         parent class should not be used directly.
-        
+
         Parameters
         ----------
         x_c : float
@@ -20,7 +22,7 @@ class Core:
             Z-coordinate of the cylinder's top.
         z_min : float
             Z-coordinate of the cylinder's bottom.
-        
+
         '''
         self.x_c = x_c
         self.y_c = y_c
@@ -28,17 +30,19 @@ class Core:
         self.z_min = z_min
         self.h = abs(z_min) + abs(z_max)
         self.down_flow = down_flow
-    
+
+
 class CylCore(Core):
     '''
     Class for a cylindrically shaped core section, with its axis parallel
     to the z-axis.
     '''
+
     def __init__(self, r, regions, *args, **kwargs):
         '''
         Initializes a single instance of a CylCore object.  All dimensions
         should be in meters.
-        
+
         Parameters
         ----------
         r : float
@@ -49,14 +53,16 @@ class CylCore(Core):
         '''
         super().__init__(*args, **kwargs)
         self.r = r
-        self.volume = np.pi*(r**2)*self.h
+        self.volume = np.pi * (r**2) * self.h
         self.regions = regions
+
 
 class AnnularCore(Core):
     '''
     Class for an annularly shaped core region, with its axis parallel to the
     z-axis.
     '''
+
     def __init__(self, r_outer, r_inner, regions, *args, **kwargs):
         '''
         Initializes an AnnularCore object.  Note that unlike an AnnularRegion,
@@ -75,14 +81,16 @@ class AnnularCore(Core):
         super().__init__(*args, **kwargs)
         self.r_outer = r_outer
         self.r_inner = r_inner
-        self.volume = (np.pi*(r_outer**2 - r_inner**2)*self.h)
+        self.volume = (np.pi * (r_outer**2 - r_inner**2) * self.h)
         self.regions = regions
+
 
 class ConeCore(Core):
     '''
     Class for a right truncated cone, such as those found in discharge chutes.
-    The central axis is parallel to the z-axis.  
+    The central axis is parallel to the z-axis.
     '''
+
     def __init__(self, r_upper, r_lower, regions, *args, **kwargs):
         '''
         Intializes a single instance of a ConeCore object.  All distances are
@@ -90,7 +98,7 @@ class ConeCore(Core):
         Parameters
         ----------
         r_upper: float
-            Radius of the top of the cone.  Does not necessarily correspond to 
+            Radius of the top of the cone.  Does not necessarily correspond to
             the largest radius.
         r_lower : float
             Radius of the bottom of the cone.  Does not necessarily correspond
@@ -102,15 +110,17 @@ class ConeCore(Core):
         super().__init__(*args, **kwargs)
         self.r_upper = r_upper
         self.r_lower = r_lower
-        self.volume = ((1/3)*np.pi*self.h
-                       *(r_upper**2 + r_lower**2 + r_upper*r_lower))
+        self.volume = ((1 / 3) * np.pi * self.h
+                       * (r_upper**2 + r_lower**2 + r_upper * r_lower))
         self.regions = regions
+
 
 class AnnConeCore(Core):
     '''
     Class for an annular right truncated cone, with its centerline parallel
     to the z-axis
     '''
+
     def __init__(self, r_out_up, r_in_up, r_out_low, r_in_low,
                  *regions, *args, **kwargs):
         '''
@@ -134,6 +144,6 @@ class AnnConeCore(Core):
         self.r_in_up = r_in_up
         self.r_out_low = r_out_low
         self.r_in_low = r_in_low
-        self.volume = ((1/3)*np.pi*self.h*( 
-                        (r_out_up**2 + r_out_low**2 + r_out_up*r_out_low) 
-                        - (r_in_up**2 + r_in_low**2 + r_in_up*r_in_low) ))
+        self.volume = ((1 / 3) * np.pi * self.h * (
+            (r_out_up**2 + r_out_low**2 + r_out_up * r_out_low)
+            - (r_in_up**2 + r_in_low**2 + r_in_up * r_in_low)))

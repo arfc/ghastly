@@ -2,7 +2,8 @@ class Sim:
     '''
     Class for containing simulation-wide parameters and methods.
     '''
-    def __init__(self, r_pebble, t_final, down_flow = True):
+
+    def __init__(self, r_pebble, t_final, down_flow=True):
         '''
         Initializes the Sim class.
         '''

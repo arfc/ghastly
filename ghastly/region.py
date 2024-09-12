@@ -1,14 +1,16 @@
 import numpy as np
 
+
 class Region:
     '''
     Parent class for Region objects.
     '''
-    def __init__(self, x_c, y_c, z_max, z_min, reg_id, 
-                 intake, outtake, start = False, end = False):
+
+    def __init__(self, x_c, y_c, z_max, z_min, reg_id,
+                 intake, outtake, start=False, end=False):
         '''
         Initializes a single instance of a Region object.  All dimensions are
-        in meters. This does not define a specific geometry, and should not be 
+        in meters. This does not define a specific geometry, and should not be
         used directly.
 
         Parameters
@@ -48,10 +50,12 @@ class Region:
         self.start = start
         self.end = end
 
+
 class CylReg(Region):
     '''
     Class for a cylindrical region aligned with the z-axis.
     '''
+
     def __init__(self, r, *args, **kwargs):
         '''
         Initializes a single instance of a CylReg object.  All dimensions
@@ -64,14 +68,15 @@ class CylReg(Region):
         '''
         super().__init__(*args, **kwargs)
         self.r = r
-        self.volume = np.pi*(r**2)*self.h
+        self.volume = np.pi * (r**2) * self.h
 
 
 class AnnularReg(Region):
     '''
     Class for a sector of an annular region, to be used with CylCore objects.
     '''
-    def __init__(self, r_outer, r_inner, theta_min = 0, theta_max = 2*np.pi, 
+
+    def __init__(self, r_outer, r_inner, theta_min=0, theta_max=2 * np.pi,
                  *args, **kwargs):
         '''
         Initializes a single instance of an AnnularReg object.  All distances
@@ -95,13 +100,15 @@ class AnnularReg(Region):
         self.r_inner = r_inner
         self.theta_min = theta_min
         self.theta_max = theta_max
-        self.volume = ((np.pi*(r_outer**2 - r_inner**2)*self.h)
-                       *((theta_max-theta_min)/(2*np.pi)))
+        self.volume = ((np.pi * (r_outer**2 - r_inner**2) * self.h)
+                       * ((theta_max - theta_min) / (2 * np.pi)))
+
 
 class ConeReg(Region):
     '''
     Class for a region in the shape of a truncated right cone.
     '''
+
     def __init__(self, r_upper, r_lower, *args, **kwargs):
         '''
         Initializes a ConeReg object.  All dimensions should be in meters.
@@ -116,14 +123,16 @@ class ConeReg(Region):
         super().__init__(*args, **kwargs)
         self.r_upper = r_upper
         self.r_lower = r_lower
-        self.volume = ((1/3)*np.pi*self.h
-                       *(r_upper**2 + r_lower**2 + r_upper*r_lower))
+        self.volume = ((1 / 3) * np.pi * self.h
+                       * (r_upper**2 + r_lower**2 + r_upper * r_lower))
+
 
 class AnnConeReg(Region):
     '''
     Class for a region in the shape of a truncated annular cone.
     '''
-    def __init__(self, r_out_up, r_in_up, r_out_low, r_in_low, 
+
+    def __init__(self, r_out_up, r_in_up, r_out_low, r_in_low,
                  *args, **kwargs):
         '''
         Initializes an AnnCoreReg object.  All dimensions should be in meters.
@@ -144,6 +153,6 @@ class AnnConeReg(Region):
         self.r_in_up = r_in_up
         self.r_out_low = r_out_low
         self.r_in_low = r_in_low
-        self.volume = ((1/3)*np.pi*self.h*( 
-                        (r_out_up**2 + r_out_low**2 + r_out_up*r_out_low) 
-                        - (r_in_up**2 + r_in_low**2 + r_in_up*r_in_low) ))
+        self.volume = ((1 / 3) * np.pi * self.h * (
+            (r_out_up**2 + r_out_low**2 + r_out_up * r_out_low)
+            - (r_in_up**2 + r_in_low**2 + r_in_up * r_in_low)))
