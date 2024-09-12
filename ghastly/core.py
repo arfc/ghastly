@@ -97,11 +97,9 @@ class ConeCore(Core):
         Parameters
         ----------
         r_upper: float
-            Radius of the top of the cone [m].  Does not necessarily correspond
-            to the largest radius.
+            Radius of the top of the cone [m].
         r_lower : float
-            Radius of the bottom of the cone [m].  Does not necessarily
-            correspond to the smallest radius.
+            Radius of the bottom of the cone [m].
         regions : list
             List containing the region_id of each element within the given
             ConeCore object.
