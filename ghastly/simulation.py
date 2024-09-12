@@ -10,9 +10,9 @@ class Sim:
         Parameters
         ----------
         r_pebble : float
-            Radius of the pebbles in the simulation.
+            Radius of the pebbles in the simulation [m].
         t_final : float
-            Total reactor-time that is being simulated.
+            Total reactor-time that is being simulated [s].
         down_flow : bool
             The direction of flow in the reactor core.  True means it is
             flowing downward, False means it is flowing upward.  Default is

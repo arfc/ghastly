@@ -26,10 +26,10 @@ class Region:
         reg_id : str
             Unique ID for this region.
         intake : list
-            List of reg_ids that feed into this region.  A region may have
+            List of Region IDs that feed into this region.  A region may have
             more than one intake.
         outtake : str
-            reg_id for the region that this one feeds into.  A region may only
+            Region ID for the region that this one feeds into.  A region may only
             have one outtake.
         start : bool
             True if this region is part of the "start" of a pebble's

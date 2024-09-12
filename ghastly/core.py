@@ -14,13 +14,13 @@ class Core:
         Parameters
         ----------
         x_c : float
-            Coordinate of the cone's center on the x_axis.
+            Coordinate of the core element's center on the x_axis.
         y_c : float
-            Coordinate of the cone's center on the y_axis.
+            Coordinate of the core element's center on the y_axis.
         z_max : float
-            Z-coordinate of the cylinder's top.
+            Z-coordinate of the core element's top.
         z_min : float
-            Z-coordinate of the cylinder's bottom.
+            Z-coordinate of the core element's bottom.
 
         '''
         self.x_c = x_c
