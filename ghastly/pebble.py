@@ -18,7 +18,7 @@ class Pebble:
         radius : float
             Radius of the pebble, with the same units as core measurements.
         reg_id : str
-            reg_id corresponding to the region the pebble is located in,
+            Region identifier corresponding to the region the pebble is located in
             based upon its center coordinates.
         pass_num : int
             Number of passes the pebble has completed.  For example, a fresh

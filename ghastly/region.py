@@ -18,7 +18,7 @@ class Region:
         x_c : float
             Coordinate of the cylinder's center on the x-axis [m].
         y_c : float
-            Coordinate of the cylinder's center on the y-axis.
+            Coordinate of the cylinder's center on the y-axis [m].
         z_max : float
             Z-coordinate of the cylinder's top [m].
         z_min : float
@@ -36,7 +36,7 @@ class Region:
             path in the core - for example, if it is in the top of an HTGR -
             False otherwise.
         end : bool
-            True if this region is at the end of the pebble pathway through
+            True if this region is at the "end" of the pebble pathway through
             the core - i.e., if it is the discharge region - False otherwise
         '''
         self.x_c = x_c
