@@ -16,17 +16,17 @@ class Region:
         Parameters
         ----------
         x_c : float
-            Coordinate of the cylinder's center on the x-axis.
+            Coordinate of the cylinder's center on the x-axis [m].
         y_c : float
             Coordinate of the cylinder's center on the y-axis.
         z_max : float
-            Z-coordinate of the cylinder's top.
+            Z-coordinate of the cylinder's top [m].
         z_min : float
-            Z-coordinate of the cylinder's bottom.
+            Z-coordinate of the cylinder's bottom [m].
         reg_id : str
             Unique ID for this region.
         intake : list
-            list of reg_ids that feed into this region.  A region may have
+            List of reg_ids that feed into this region.  A region may have
             more than one intake.
         outtake : str
             reg_id for the region that this one feeds into.  A region may only
@@ -64,7 +64,7 @@ class CylReg(Region):
         Parameters
         ----------
         r : float
-            Radius of the cylinder.
+            Radius of the cylinder [m].
         '''
         super().__init__(*args, **kwargs)
         self.r = r
@@ -85,9 +85,9 @@ class AnnularReg(Region):
         Parameters
         ----------
         r_outer : float
-            Outer radius of the annulus
+            Outer radius of the annulus [m].
         r_inner : float
-            Inner radius of the annulus
+            Inner radius of the annulus [m].
         theta_min : float
             Smaller angle that defines the sector of the annular region.
             Default is 0 radians.
@@ -116,9 +116,9 @@ class ConeReg(Region):
         Parameters
         ----------
         r_upper : float
-            Radius at the top of the cone
+            Radius at the top of the cone [m].
         r_lower : float
-            Radius at the bottom of the cone
+            Radius at the bottom of the cone [m].
         '''
         super().__init__(*args, **kwargs)
         self.r_upper = r_upper
@@ -140,13 +140,13 @@ class AnnConeReg(Region):
         Parameters
         ----------
         r_out_up : float
-            Outer radius at the top of the region.
+            Outer radius at the top of the region [m].
         r_in_up : float
-            Inner radius at the top of the region.
+            Inner radius at the top of the region [m].
         r_out_low : float
-            Outer radius at the bottom of the region.
+            Outer radius at the bottom of the region [m].
         r_in_low : float
-            Inner radius at the bottom of the region.
+            Inner radius at the bottom of the region [m].
         '''
         super().__init__(*args, **kwargs)
         self.r_out_up = r_out_up

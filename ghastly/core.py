@@ -46,7 +46,7 @@ class CylCore(Core):
         Parameters
         ----------
         r : float
-            Radius of the cylinder.
+            Radius of the cylinder [m].
         regions : list
             List containing the region_id of each element within the given
             CylCore object.
@@ -72,9 +72,9 @@ class AnnularCore(Core):
         Parameters
         ----------
         r_outer : float
-            Outer radius of the annulus
+            Outer radius of the annulus [m].
         r_inner : float
-            Inner radius of the annulus.
+            Inner radius of the annulus [m].
         regions : list
             List containing the reg_id of each region within the core element.
         '''
@@ -95,13 +95,14 @@ class ConeCore(Core):
         '''
         Intializes a single instance of a ConeCore object.  All distances are
         in meters.
+
         Parameters
         ----------
         r_upper: float
-            Radius of the top of the cone.  Does not necessarily correspond to
+            Radius of the top of the cone [m].  Does not necessarily correspond to
             the largest radius.
         r_lower : float
-            Radius of the bottom of the cone.  Does not necessarily correspond
+            Radius of the bottom of the cone [m].  Does not necessarily correspond
             to the smallest radius.
         regions : list
             List containing the region_id of each element within the given
@@ -129,13 +130,13 @@ class AnnConeCore(Core):
         Parameters
         ----------
         r_out_up : float
-            The outer radius at the upper part of the annular cone.
+            The outer radius at the upper part of the annular cone [m].
         r_in_up : float
-            The inner radius at the upper part of the annular cone.
+            The inner radius at the upper part of the annular cone [m].
         r_out_low : float
-            The outer radius at the lower part of the annular cone.
+            The outer radius at the lower part of the annular cone [m].
         r_in_low : float
-            The inner radius at the lower part of the annular cone.
+            The inner radius at the lower part of the annular cone [m].
         regions : list
             List containing the reg_id of each element within the core element.
         '''
