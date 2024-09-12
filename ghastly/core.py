@@ -17,7 +17,7 @@ class Core:
         x_c : float
             Coordinate of the cone's center on the x_axis
         y_c : float
-            Coordinate of the cone's center on the y_axis
+            Coordinate of the cone's center on the y_axis.
         z_max : float
             Z-coordinate of the cylinder's top.
         z_min : float
