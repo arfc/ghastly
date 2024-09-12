@@ -20,7 +20,7 @@ class Mat():
             reg_id for the region this material corresponds to.
         l_type : int
             The type in LAMMPS that corresponds to this material.  These will
-            be determined by didymus during simulation set up.
+            be determined by ghastly during simulation set up.
         '''
         self.material = material
         self.pass_num = pass_num

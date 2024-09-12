@@ -7,7 +7,7 @@ class Pebble:
     and track its material composition and unique id number.
     '''
 
-    def __init__(self, coords, radius, mat_id, pebble_id, recirc=False):
+    def __init__(self, coords, r, reg_id, pass_num, l_type, pebble_id):
         '''
         Initializes a single instance of a Pebble object.
 
@@ -17,19 +17,23 @@ class Pebble:
             Array containing the x, y, and z coordinates of the pebble.
         radius : float
             Radius of the pebble, with the same units as core measurements.
-        mat_id : int or str
-            User-defined integer or string for the material in the pebble,
-            which multiple pebble objects can share.
+        reg_id : str
+            reg_id corresponding to the region the pebble is located in,
+            based upon its center coordinates.
+        pass_num : int
+            Number of passes the pebble has completed.  For example, a fresh
+            pebble's pass_num would be 0.
+        l_type : int
+            The 'type' number of the pebble, as defined by lammps.  Each
+            l_type corresponds to a specific material.
         pebble_id : int
             User-defined integer for identifying a specific pebble.
             Each pebble_id should be distinct.
-        recirc : bool
-            Boolean for determining if a given pebble should recirculate,
-            for use in multi-pass cycles.  Defaults to False.
 
         '''
         self.coords = coords
-        self.radius = radius
-        self.mat_id = mat_id
+        self.r = r
+        self.reg_id = reg_id
+        self.pass_num = pass_num
+        self.l_type = l_type
         self.pebble_id = pebble_id
-        self.recirc = recirc
