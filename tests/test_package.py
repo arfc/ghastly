@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import importlib.metadata
 
-import didymus as dy
+import ghastly
 
 
 def test_version():
-    assert importlib.metadata.version("didymus") == dy.__version__
+    assert importlib.metadata.version("ghastly") == ghastly.__version__

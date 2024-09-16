@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend =  "hatchling.build"
 
 [project]
-name = "didymus"
+name = "ghastly"
 authors = [{name="Zoe Richter", email="zoerichter96@gmail.com"},]
 description = "Pebble packing and movement tool"
 readme = "README.md"
@@ -12,4 +12,4 @@ requires-python = ">=3.8"
 dynamic = ["version",]
 
 [tool.hatch.version]
-path = "src/didymus/__about__.py"
+path = "ghastly/__about__.py"
