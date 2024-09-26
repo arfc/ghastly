@@ -1,0 +1,94 @@
+units		si
+
+##############################################################################
+#variables
+##############################################################################
+variable	pi equal 3.1415927
+
+include		{{variable_filename}}
+
+variable	skin equal ${r_pebble}/4
+
+variable	d_pebble equal 2*${r_pebble}
+variable	mass equal ${density_rho}*(4/3)*${pi}*(${r_pebble}^3)
+variable	shear_mod_G equal ${young_mod_E}/(2*(1+${poisson}))
+variable	k_n equal (4*${shear_mod_G})/(3*(1-${poisson}))
+variable	k_t equal (4*${shear_mod_G})/(2-${poisson})
+variable	numerator equal (2*${k_n})/${mass}
+variable	denominator equal (${pi}/(-2*log(${co+rest})))^2 + 0.25
+variable	gamma_n equal sqrt(numerator/denominator)
+variable	gamma_t equal 0.5*${gamma_n}
+
+variable	t_col equal ${pi}/sqrt(2*(${k_n}/${mass})-(${gamma_n}^2)/4)
+variable	dt equal ${t_col}/50
+variable	tot_run equal {{run_factor}}*${interval}
+
+##############################################################################
+#simulation parameters
+##############################################################################
+newton		on
+atom_style	sphere
+
+boundary	f f f
+region		bounds block &
+		${x_low} ${x_up} ${y_low} ${y_up} ${z_low} ${z_up}
+create_box	1 bounds
+
+pair_style	gran/hertz/history &
+		${k_n} ${k_t} ${gamma_n} ${gamma_t} ${xmu} 1
+pair_coeff	* *
+
+neighbor	${skin} multi
+neigh_modify	delay 0 every 1 check yes
+thermo		1000
+
+comm_style	brick
+comm_modify	mode multi group all vel yes
+balance		1.1 shift xyz 20 1.1
+fix		bal all balance 10000 1.1 shift xyz 20.1.01
+
+##############################################################################
+#geometry
+##############################################################################
+
+
+{% for file in region_files %}
+include		{{file.name}}
+{% endfor %}
+
+region		whole_core union {{n_regions}} &
+{% for file in region_files %}
+		{{file.reg_id}} &
+{% endfor %}
+
+fix		grav all gravity ${gravity} vector 0 0 -1
+fix		nve_int all nve/sphere
+fix		wall_gran all wall/gran/region hertz/history
+
+dump		peb_coords all custom ${interval} coords_*.txt id type x y z
+dump		peb_gif all movie 5000 pour.gif type diameter & view 90 0 &
+		box no 0.0 size (${x_low}+${x_up})*10 (${z_low}+${z_min})*5
+
+dump_modify	peb_gif acolor * powderblue
+
+thermo_style	custom step cpu time atoms ke
+thermo_modify	flush yes lost warn
+
+##############################################################################
+#filling core
+##############################################################################
+
+read_dump	rough-pack.txt 0 x y z add yes timestep no
+
+set		type 1 diameter ${d_pebble}
+
+region		pour_reg cylinder z ${x_c} ${y_c} ${r_pour} &
+		${z_pour_min} ${z_pour_max} side in units box
+
+fix		fill_core all pour {{pebbles_left}} 1 region pour_reg &
+		diam one ${d_pebble} dens ${density} ${density} vol 0.25 250
+
+run		${tot_run}
+
+
+

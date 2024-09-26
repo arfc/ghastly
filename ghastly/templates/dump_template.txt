@@ -1,0 +1,12 @@
+ITEM: TIMESTEP
+0
+ITEM: NUMBER OF ATOMS
+{{n_rough_pack}}
+ITEM: BOX BOUNDS {{bound_conds}}
+{{x_low}} {{x_up}}
+{{y_low}} {{y_up}}
+{{z_low}} {{z_up}}
+ITEM: ATOMS id type x y z
+{% for peb in peb_list %}
+{{peb.id} 1 {{peb.x}} {{peb.y}} {{peb.z}}
+{% endfor %}

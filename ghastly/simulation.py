@@ -7,7 +7,8 @@ class Sim:
     Class for containing simulation-wide parameters and methods.
     '''
 
-    def __init__(self, r_pebble, t_final,pf, down_flow=True):
+    def __init__(self, r_pebble, t_final, pf, k_rate = 0.001, 
+                 down_flow=True):
         '''
         Initializes the Sim class.
 
@@ -43,13 +44,35 @@ class Sim:
         '''
         packs a cylindrical core element
         '''
-        #make the openmc region based on the core
+        sides = openmc.ZCylinder(r=element.r)
+        top = openmc.ZPlane(z0=element.z_max)
+        bottom = openmc.ZPlane(z0=element.z_min)
+        region_bounds = -sides & -top & +bottom
         
+        coords = openmc.model.pack_spheres(self.r_pebble, 
+                                           region = region_bounds,
+                                           pf = self.pf,
+                                           contraction_rate = self.k_rate)
 
-        #pack region to pf
+        return coords
 
-        #return the coords you get
-        
+    def pack_annulus(self,element):
+        '''
+        packs an annular core element
+        '''
+        sides = openmc.ZCylinder(r=element.r_outer)
+        top = openmc.ZPlane(z0=self.z_max)
+        bottom = openmc.ZPlace(z0=self.z_min)
+        region_bounds = -sides & -top & +bottom
+
+        coords = opemmc.model.pack_spheres(self.r_pebble,
+                                           region = region_bounds,
+                                           pf = self.pf,
+                                           contraction_rate = self.k_rate)
+        center = [element.x_c, element.y_c]
+        coords = [list(coord) for coord in coords 
+                  if (sum((coord[:2]-center)**2))**(0.5) <= element.r_inner]
+        return coords
     
     def pack_core(self, core_elements):
         '''

@@ -1,0 +1,3 @@
+{% for variable in variables %}
+variable	{{variable.name}} equal {{variable.value}}
+{% endfor %}
