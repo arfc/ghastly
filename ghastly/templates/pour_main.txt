@@ -15,7 +15,7 @@ variable	shear_mod_G equal ${young_mod_E}/(2*(1+${poisson}))
 variable	k_n equal (4*${shear_mod_G})/(3*(1-${poisson}))
 variable	k_t equal (4*${shear_mod_G})/(2-${poisson})
 variable	numerator equal (2*${k_n})/${mass}
-variable	denominator equal (${pi}/(-2*log(${co+rest})))^2 + 0.25
+variable	denominator equal (${pi}/(-2*log(${co_rest})))^2 + 0.25
 variable	gamma_n equal sqrt(numerator/denominator)
 variable	gamma_t equal 0.5*${gamma_n}
 
