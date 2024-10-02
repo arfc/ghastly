@@ -4,14 +4,14 @@ from ghastly import core
 from jinja2 import Environment, FileSystemLoader
 
 environment = Environment(loader=FileSystemLoader("templates/"))
+rng = np.random.default_rng()
 
 class Sim:
     '''
     Class for containing simulation-wide parameters and methods.
     '''
-
     def __init__(self, r_pebble, t_final, pf, k_rate = 0.001, 
-                 down_flow=True):
+                 down_flow=True, seed = rng.integers(1000000,10000000)):
         '''
         Initializes the Sim class.
 
@@ -35,6 +35,7 @@ class Sim:
         self.t_final = t_final
         self.pf = pf
         self.down_flow = down_flow
+        self.seed = seed
 
     def run_sim(self):
         '''
@@ -159,9 +160,13 @@ class Sim:
 
         #next: variable block
         #for each variable, you'll need the name and the value
-        #you will either need to escape the ${ for use in lammps templates
-        # OR you will have to add a lammps-formatted name as a separate
-        #entry from name
+
+        #this is also where you'll first need to explicitly use the input file
+        #parameters.  YOu may/will likely want a single input object that has
+        #the params read in, so you don't have to constantly call a read on
+        # the json file, and it might be more organized than adding them all
+        #to the sim class raw (though the sim class should probably take an
+        #input object
         
 
 
