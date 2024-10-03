@@ -21,7 +21,7 @@
 			"z_max" : 10.1,
 			"z_min" : 10.0,
 			"r_upper" : 0.24,
-			"r_lower" : 1.2
+			"r_lower" : 1.2,
 			"open_bottom" : "open 1"
 		}
 	},

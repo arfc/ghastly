@@ -10,7 +10,8 @@ class Sim:
     '''
     Class for containing simulation-wide parameters and methods.
     '''
-    def __init__(self, r_pebble, t_final, pf, k_rate = 0.001, 
+    def __init__(self, r_pebble, t_final, pf, core_intake = {},
+                 core_main = {}, core_outtake = {}, k_rate = 0.001, 
                  down_flow=True, seed = rng.integers(1000000,10000000)):
         '''
         Initializes the Sim class.
@@ -92,25 +93,25 @@ class Sim:
         dump_text = dump_template.render(n_rough_atoms = len(coords),
                                          bound_conds = bound_conds,
                                          x_b = x_b,
-                                         y_b = y_b
+                                         y_b = y_b,
                                          z_b = z_b,
                                          peb_list = peb_list)
 
         with open(dump_filename, mode='w') as f:
             f.write(dump_text)
 
-    def find_box_bounds(self, core_intake = [], core_main = [], 
-                        core_outtake = []):
+    def find_box_bounds(self, core_intake ={}, core_main = {}, 
+                        core_outtake = {}):
         '''
         given lists of core component elements, determine the appropriate size
         of the lammps bounding box
         '''
 
-        core_list = core_intake+core_main+core_outtake
+        core_list = core_intake | core_main | core_outtake
         x_list = []
         y_list = []
         z_list = []
-        for element in core_list:
+        for element in core_list.values:
             z_list += [element.z_min, element.z_max]
             if type(element) == ghastly.core.CylCore:
                 x_list += [-element.r, element.r]
@@ -139,7 +140,7 @@ class Sim:
         '''
         rough_pack = []
         core_volume = 0
-        for element in core_main:
+        for element in core_main.values():
             core_volume += element.volume
             if type(element) == ghastly.core.CylCore:
                 coords = self.pack_cyl(element)
