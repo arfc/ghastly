@@ -35,8 +35,23 @@ class Sim:
         self.pebble_volume = (4/3)*np.pi*(r_pebble**3)
         self.t_final = t_final
         self.pf = pf
-        self.down_flow = down_flow
-        self.seed = seed
+        self.core_intake = core_intake
+        self.core_main = core_main
+        self.core_outtake = core_outtake
+        if k_rate == None:
+            self.k_rate = 0.001
+        else:
+            self.k_rate = k_rate
+
+        if down_flow == None:
+            self.down_flow = True
+        else:
+            self.down_flow = down_flow
+
+        if seed == None:
+            self.seed = rng.integers(1000000,100000000)
+        else:
+            self.seed = seed
 
     def run_sim(self):
         '''
