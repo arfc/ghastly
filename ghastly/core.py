@@ -7,7 +7,8 @@ class Core:
     a specific geometry, the Core class should not be used directly.
     '''
 
-    def __init__(self, x_c, y_c, z_max, z_min, regions = []):
+    def __init__(self, x_c, y_c, z_max, z_min, regions = [], 
+                 open_bottom = "open 1"):
         '''
         Initializes a single instance of a Core object.
 
