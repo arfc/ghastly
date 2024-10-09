@@ -21,7 +21,7 @@ variable	gamma_t equal 0.5*${gamma_n}
 
 variable	t_col equal ${pi}/sqrt(2*(${k_n}/${mass})-(${gamma_n}^2)/4)
 variable	dt equal ${t_col}/50
-variable	tot_run equal {{run_factor}}*${interval}
+variable	tot_run equal ${run_factor}*${interval}
 
 ##############################################################################
 #simulation parameters
@@ -31,7 +31,7 @@ atom_style	sphere
 
 boundary	f f f
 region		bounds block &
-		${x_low} ${x_up} ${y_low} ${y_up} ${z_low} ${z_up}
+		{{x_b.low}} {{x_b.up}} {{y_b.low}} {{y_b.up}} {{z_low}} {{z_b.up}}
 create_box	1 bounds
 
 pair_style	gran/hertz/history &
@@ -52,22 +52,25 @@ fix		bal all balance 10000 1.1 shift xyz 20.1.01
 ##############################################################################
 
 
-{% for file in region_files %}
-include		{{file.name}}
-{% endfor %}
+{% for filename in region_files -%}
+include		{{filename}}
+{% endfor -%}
 
 region		whole_core union {{n_regions}} &
-{% for file in region_files %}
-		{{file.reg_id}} &
-{% endfor %}
+{% for name in region_names -%}
+		{{name}} &
+{% endfor -%}
 
-fix		grav all gravity ${gravity} vector 0 0 -1
+fix		grav all gravity ${gravity} vector {{flow_vector}}
 fix		nve_int all nve/sphere
 fix		wall_gran all wall/gran/region hertz/history
 
+variable	pix_width equal (abs({{x_b.low}})+abs({{x_b.up}}))*250
+variable	pix_height equal (abs({{z_b.low}})+abs({{z_b.up}}))*250
+
 dump		peb_coords all custom ${interval} coords_*.txt id type x y z
 dump		peb_gif all movie 5000 pour.gif type diameter & view 90 0 &
-		box no 0.0 size (${x_low}+${x_up})*10 (${z_low}+${z_min})*5
+		box no 0.0 size ${pix_width} ${pix_height}
 
 dump_modify	peb_gif acolor * powderblue
 
@@ -82,10 +85,10 @@ read_dump	rough-pack.txt 0 x y z add yes timestep no
 
 set		type 1 diameter ${d_pebble}
 
-region		pour_reg cylinder z ${x_c} ${y_c} ${r_pour} &
-		${z_pour_min} ${z_pour_max} side in units box
+region		pour_reg cylinder z {{x_c_pour} {{y_c_pour}} {{r_pour}} &
+		{{z_pour_min}} {{z_pour_max}} side in units box
 
-fix		fill_core all pour {{pebbles_left}} 1 region pour_reg &
+fix		fill_core all pour {{pebbles_left}} 1 ${seed} region pour_reg &
 		diam one ${d_pebble} dens ${density} ${density} vol 0.25 250
 
 run		${tot_run}

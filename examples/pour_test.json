@@ -2,7 +2,7 @@
 	"simulation" : {
 		"r_pebble" : 0.03,
 		"t_final" : 3600,
-		"pf" : 0.60
+		"pf" : 0.10
 	},
 	"core_intake" : {
 		"intake_cyl" : {
@@ -68,6 +68,7 @@
 		}
 	},
 	"lammps_var" : {
+		"gravity" : 9.81,
 		"density_rho" : 1700,
 		"young_mod_E" : 1.0055e+10,
 		"poisson" : 0.12,

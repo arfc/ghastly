@@ -32,6 +32,7 @@ class Core:
         self.z_max = z_max
         self.z_min = z_min
         self.regions = regions
+        self.open_bottom = open_bottom
         self.h = abs(z_min) + abs(z_max)
 
 
