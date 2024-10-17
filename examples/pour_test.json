@@ -2,7 +2,7 @@
 	"simulation" : {
 		"r_pebble" : 0.03,
 		"t_final" : 3600,
-		"pf" : 0.10
+		"pf" : 0.30
 	},
 	"core_intake" : {
 		"intake_cyl" : {
@@ -73,7 +73,7 @@
 		"young_mod_E" : 1.0055e+10,
 		"poisson" : 0.12,
 		"co_fric" : 0.035,
-		"co_rest" : 0.2,
+		"co_rest" : 0.02,
 		"run_factor" : 20,
 		"interval" : 250000
 	}

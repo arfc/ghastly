@@ -1,13 +1,14 @@
 import numpy as np
 import openmc
-from jinja2 import Environment, PackageLoader
 import ghastly
+from jinja2 import Environment, PackageLoader
 from ghastly import read_input
 from ghastly import region
+from lammps import lammps
 
 env = Environment(loader=PackageLoader('ghastly','templates'))
 
-def fill_core(input_file):
+def fill_core(input_file, rough_pf):
     '''
     Fill core with pebbles using parameters from input file, and a combination
     of OpenMC packing and LAMMPS gran package's pour fix
@@ -27,14 +28,19 @@ def fill_core(input_file):
     for element in pack_zones.values():
         core_volume += element.volume
         if type(element) == ghastly.core.CylCore:
-            coords = pack_cyl(sim_block, element)
+            coords = pack_cyl(sim_block, element, rough_pf)
             rough_pack += coords
         else:
             pass
 
     n_pebbles = int((sim_block.pf*core_volume)/sim_block.pebble_volume)
+    print("Equivalent number of pebbles is "+str(n_pebbles))
 
     pebbles_left = n_pebbles - len(rough_pack)
+
+    if pebbles_left < 0.0:
+        raise ValueError('''Negative pebbles left - core overfilled.  Reduce
+                         rough_pf and try again.''')
 
     x_b, y_b, z_b = find_box_bounds(sim_block, pour = True)
 
@@ -85,7 +91,7 @@ def fill_core(input_file):
                                            z_max = element.z_max,
                                            open_bottom = element.open_bottom)
             reg_filename = str(element_name)+"_region.txt"
-            reg_files.append(reg_filenames)
+            reg_files.append(reg_filename)
             with open(reg_filename, mode='w') as f:
                 f.write(reg_text)
 
@@ -102,17 +108,19 @@ def fill_core(input_file):
         case _:
             raise TypeError("down_flow should be true or false")
     
-    #you need to determine the dimensions of the pour region based on whatever
-    #core element in the core_main section is on top.  you will also
-    #need to use that region's x_c and y_c (arguably you can average the box
-    #bounds for that, but if you get any rounding it might throw things off,
-    #so it's safer to copy the x_c/y_c of the region you are pouring into
 
-    #for pour zone height - you have a bigger gap on top if you are pouring,
-    #so the height of the pour region is just inside z_b.up to just above
-    #the z_max of the z-most core_main section.
+    main_core_z_max = max([(key, element.z_max)
+                           for key, element in sim_block.core_main.items()])
+    main_top = sim_block.core_main[main_core_z_max[0]]
 
-    #Godspeed.
+    x_c_pour = main_top.x_c
+    y_c_pour = main_top.y_c
+    z_max_pour = 0.95*z_b["up"]
+    z_min_pour = 1.05*main_core_z_max[1]
+    if type(main_top) == ghastly.core.CylCore:
+        r_pour = 0.75*main_top.r
+    elif type(main_top) == ghastly.core.ConeCore:
+        r_pour = 0.75*main_top.r_upper
 
     main_template = env.get_template("pour_main.txt")
     main_text = main_template.render(variable_filename = variable_filename,
@@ -123,12 +131,26 @@ def fill_core(input_file):
                                      n_regions = len(reg_files),
                                      region_names = reg_names,
                                      flow_vector = flow_vector,
-
+                                     x_c_pour = x_c_pour,
+                                     y_c_pour = y_c_pour,
+                                     r_pour = r_pour,
+                                     z_min_pour = z_min_pour,
+                                     z_max_pour = z_max_pour,
                                      pebbles_left = pebbles_left)
 
+    main_filename = "pour_main_input.txt"
+    with open(main_filename, mode='w') as f:
+        f.write(main_text)
+
+    lmp = lammps()
+    lmp.file(main_filename)
+
+    print("done with LAMMPS in ghastly")
 
 
-def pack_cyl(simblock, element):
+
+
+def pack_cyl(simblock, element, rough_pf):
         '''
         packs a cylindrical core element
         '''
@@ -139,7 +161,7 @@ def pack_cyl(simblock, element):
         
         coords = openmc.model.pack_spheres(simblock.r_pebble, 
                                            region = region_bounds,
-                                           pf = simblock.pf,
+                                           pf = rough_pf,
                                            contraction_rate = simblock.k_rate)
 
         return list(coords)
@@ -159,27 +181,36 @@ def find_box_bounds(sim_block, pour = False):
         for element in core_list.values():
             z_list += [element.z_min, element.z_max]
             if type(element) == ghastly.core.CylCore:
-                x_list += [-element.r, element.r]
-                y_list += [-element.r, element.r]
+                x_list += [(element.x_c - element.r),
+                           (element.x_c + element.r)]
+                y_list += [(element.y_c - element.r),
+                           (element.y_c + element.r)]
             elif type(element) == ghastly.core.ConeCore:
-                x_list += [-element.r_upper, element.r_upper, 
-                           -element.r_lower, element.r_lower]
-                y_list += [-element.r_upper, element.r_upper,
-                           -element.r_lower, element.r_lower]
+                x_list += [(element.x_c - element.r_upper), 
+                           (element.x_c + element.r_upper), 
+                           (element.x_c - element.r_lower), 
+                           (element.x_c + element.r_lower)]
+                y_list += [(element.y_c - element.r_upper),
+                           (element.y_c + element.r_upper),
+                           (element.y_c - element.r_lower),
+                           (element.y_c + element.r_lower)]
+        #adjust for center coords for x and y
+        #x_list = [x+element.x_c for x in x_list]
+        #y_list = [y+element.y_c for y in y_list]
 
-        #error!  you need the magnitude of the disance bt x_min and x_max to
-        # always increase, but this will not always do that
-        x_b = {"low": (min(x_list) - 0.05*min(x_list)), 
-               "up": (max(x_list) + 0.05*max(x_list))}
-
-        y_b = {"low": (min(y_list) - 0.05*min(y_list)), 
-               "up": (max(y_list) + 0.05*max(y_list))}
-        if pour = True:
-            z_b = {"low": (min(z_list) - 0.05*min(z_list)), 
-                    "up": (max(z_list) + 0.2*max(z_list))}
-        else:
-            z_b = {"low": (min(z_list) - 0.05*min(z_list)), 
-                    "up": (max(z_list) + 0.05*max(z_list))}
+        match pour:
+            case True:
+                f = 1.05
+                f_zup = 1.2
+            case _:
+                f = 1.05
+                f_zup = 1.05
+        x_b = {"low": ((1-f)*element.x_c + f*min(x_list)), 
+               "up": ((1-f)*element.x_c + f*max(x_list))}
+        y_b = {"low": ((1-f)*element.y_c + f*min(y_list)), 
+               "up": ((1-f)*element.y_c + f*max(y_list))}
+        z_b = {"low": ((1-f)*0.5*(max(z_list)-min(z_list)) + f*min(z_list)), 
+               "up": ((1-f)*0.5*(max(z_list)-min(z_list)) + f_zup*max(z_list))}
 
         return x_b, y_b, z_b
 
