@@ -194,9 +194,6 @@ def find_box_bounds(sim_block, pour = False):
                            (element.y_c + element.r_upper),
                            (element.y_c - element.r_lower),
                            (element.y_c + element.r_lower)]
-        #adjust for center coords for x and y
-        #x_list = [x+element.x_c for x in x_list]
-        #y_list = [y+element.y_c for y in y_list]
 
         match pour:
             case True:

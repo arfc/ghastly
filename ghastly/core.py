@@ -33,7 +33,7 @@ class Core:
         self.z_min = z_min
         self.regions = regions
         self.open_bottom = open_bottom
-        self.h = abs(z_min) + abs(z_max)
+        self.h = z_max - z_min
 
 
 class CylCore(Core):
@@ -80,6 +80,7 @@ class AnnularCore(Core):
         self.r_outer = r_outer
         self.r_inner = r_inner
         self.volume = (np.pi * (r_outer**2 - r_inner**2) * self.h)
+        raise NotImplementedError("Annular core regions are not implemented")
 
 
 class ConeCore(Core):
@@ -137,3 +138,4 @@ class AnnConeCore(Core):
         self.volume = ((1 / 3) * np.pi * self.h * (
             (r_out_up**2 + r_out_low**2 + r_out_up * r_out_low)
             - (r_in_up**2 + r_in_low**2 + r_in_up * r_in_low)))
+        raise NotImplementedError("Annular core regions are not implemented")

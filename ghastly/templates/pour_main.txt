@@ -69,8 +69,8 @@ fix		wall_gran all wall/gran/region hertz/history &
 		${k_n} ${k_t} ${gamma_n} ${gamma_t} ${co_fric} 1 &
 		region whole_core	
 
-variable	pix_width equal (abs({{x_b.low}})+abs({{x_b.up}}))*250
-variable	pix_height equal (abs({{z_b.low}})+abs({{z_b.up}}))*250
+variable	pix_width equal round((abs({{x_b.low}})+abs({{x_b.up}}))*250)
+variable	pix_height equal round((abs({{z_b.low}})+abs({{z_b.up}}))*250)
 
 dump		peb_coords all custom ${interval} coords_*.txt id type x y z
 dump		peb_gif all movie 5000 pour.gif type diameter & 
