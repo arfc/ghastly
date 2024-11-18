@@ -7,11 +7,20 @@ rng = np.random.default_rng()
 
 class InputBlock:
     '''
-    class for reading data from a ghastly input file (json)
+    Class for reading data from a JSON ghastly input file.
     '''
     def __init__(self, input_file):
         '''
-        initializes ghastly input object using a ghastly input file.
+        Initializes ghastly InputBlock object from data read from input_file
+
+        Parameters
+        ----------
+        input_file : JSON
+            JSON file containing information necessary to run ghastly, see
+            examples directory for example input files.  With the exception
+            of core element names, such as "main_cyl" in the example input,
+            variable names must match those in sample input.
+
         '''
 
         f = open(input_file, 'r')
@@ -26,10 +35,16 @@ class InputBlock:
 
     def create_obj(self):
         '''
-        using input file, create ghastly objects need to run simulation
+        Using the InputBlock, create other ghastly objects needed to run
+        LAMMPS and/or OpenMC
+
+        Returns
+        ----------
+        sim_block: Sim object
+            Ghastly Sim object with simulation-specific parameters and core
+            zone dictionaries
+
         '''
-        #start with core parts, get core main/outtake/intake dicts, so then
-        #you can pass them to sim class.
 
         core_intake = self.create_core_zone(self.core_intake_var)
         core_main = self.create_core_zone(self.core_main_var)
@@ -41,7 +56,17 @@ class InputBlock:
 
     def create_core_zone(self, core_zone):
         '''
-        sub-function in create_obj to make the core objects specfically
+        Given a specific core_zone, such as intake, main, or outtake, create
+        a dictionary with key:value pairs where each key is the name of a
+        core element, and each value is the corresponding ghastly Core class
+        object.
+
+        Returns
+        ----------
+        core_block : dict
+            Dicitonary with key:value pairs where the key is the core element
+            name, and the value is the corresponding ghastly Core object.
+
         '''
 
         core_block = {}
@@ -84,7 +109,14 @@ class InputBlock:
         
     def create_sim_block(self, core_intake, core_main, core_outtake):
         '''
-        create sim class object
+        Creates a Sim object, using the intake, main, and outtake core zone
+        dictionaries.
+
+        Returns
+        ----------
+        sim_block : Sim object
+            Ghastly sim object containing simulation parameters and core
+            objects.
         '''
         k_case = self.sim_var.get("k_rate")
         if type(k_case) != float and k_case != None:

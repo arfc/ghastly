@@ -10,18 +10,27 @@ env = Environment(loader=PackageLoader('ghastly','templates'))
 
 def fill_core(input_file, rough_pf):
     '''
-    Fill core with pebbles using parameters from input file, and a combination
-    of OpenMC packing and LAMMPS gran package's pour fix
+    This function uses OpenMC's model.pack_spheres function to "rough" pack
+    the full core region defined by the Ghastly input file, then uses a series
+    of Jinja templates to create a LAMMPS input file that will run a physics
+    simulation, modeling not only the settling of the roughly packed pebbles
+    due to gravtiy, but also handle the addtion of any extra pebbles needed to
+    reach the target number of pebbles needed.
+
+    Parameters
+    ----------
+    input_file : str
+        Name of ghastly input file, which should be in JSON format, following
+        the layout and parameter naming convention given in the example inputs.
+    rough_pf : float
+        Packing fraction used in OpenMC packing function.  Can match the target
+        packing fraction provided in the input file, but users should take care 
+        supplying a rough_pf that is greater than the input's target pf.
     '''
 
     input_block = read_input.InputBlock(input_file)
     sim_block = input_block.create_obj()
 
-    #should this also pack the outtake?  does pf/number of pebbles consider
-    #only the main core when used in literature?
-
-    #for now - require pf, fill number needed to get core_main+core_outtake
-    #to that pf.  you can report pf if you want but lammps will also log it.
     rough_pack = []
     core_volume = 0
     pack_zones = sim_block.core_main | sim_block.core_outtake
@@ -144,32 +153,61 @@ def fill_core(input_file, rough_pf):
 
     lmp = lammps()
     lmp.file(main_filename)
-
-    print("done with LAMMPS in ghastly")
-
+    
 
 
 
-def pack_cyl(simblock, element, rough_pf):
+
+def pack_cyl(sim_block, element, rough_pf):
         '''
-        packs a cylindrical core element
+        Given a cylindrical core object, this function creates a corresponding
+        OpenMC region, and the the pack_spheres function to generate a list of
+        non-overlapping pebble centroids that fit within that region.
+
+        Parameters
+        ----------
+        sim_block : ghastly Sim object
+            Sim class object that contains simulation-specific simulation,
+            read from input_file.
+        element : ghastly CylCore object
+            CylCore object for a portion of the core model.
+        rough_pf : float
+            Packing fraction that OpenMC will pack this cylinder to.  Not the
+            same as the packing fraction in the input.
+
         '''
-        sides = openmc.ZCylinder(r=element.r)
+        sides = openmc.ZCylinder(x0 = element.x_c,
+                                 y0 = element.y_c,
+                                 r=element.r)
         top = openmc.ZPlane(z0=element.z_max)
         bottom = openmc.ZPlane(z0=element.z_min)
         region_bounds = -sides & -top & +bottom
         
-        coords = openmc.model.pack_spheres(simblock.r_pebble, 
+        coords = openmc.model.pack_spheres(sim_block.r_pebble, 
                                            region = region_bounds,
                                            pf = rough_pf,
-                                           contraction_rate = simblock.k_rate)
+                                           contraction_rate = sim_block.k_rate)
 
         return list(coords)
 
 def find_box_bounds(sim_block, pour = False):
         '''
-        given lists of core component elements, determine the appropriate size
-        of the lammps bounding box
+        Using the core_zones contained in the sim_block, this function
+        uses the dimensions of all core elements in the model to determine the
+        appropriate size of the bounding box used in LAMMPS simulations.
+        Note that when used to determine the bounding box for a simulation
+        using the pour LAMMPS fix, the bounding box is extended in the
+        positive z direction, to allow for a temporary insertion region to
+        be added.
+
+        Parameters
+        ----------
+        sim_block : Sim object
+            Sim object created from parameters in the input file for ghastly.
+        pour : bool
+            Default False.  Whether or not the LAMMPS simulation the bounds
+            are being generated for is using the pour fix in LAMMPS
+
         '''
 
         core_list = (sim_block.core_intake | 
@@ -206,20 +244,37 @@ def find_box_bounds(sim_block, pour = False):
                "up": ((1-f)*element.x_c + f*max(x_list))}
         y_b = {"low": ((1-f)*element.y_c + f*min(y_list)), 
                "up": ((1-f)*element.y_c + f*max(y_list))}
-        z_b = {"low": ((1-f)*0.5*(max(z_list)-min(z_list)) + f*min(z_list)), 
-               "up": ((1-f)*0.5*(max(z_list)-min(z_list)) + f_zup*max(z_list))}
+        z_b = {"low": ((1-f)*0.5*(max(z_list)+min(z_list)) + f*min(z_list)), 
+               "up": ((1-f)*0.5*(max(z_list)+min(z_list)) + f_zup*max(z_list))}
 
         return x_b, y_b, z_b
 
 def fake_dump_file(coords, dump_filename, bound_conds,
                        x_b, y_b, z_b):
         '''
-        given coord array, create a "fake" dump file that can be imported into
-        LAMMPS
+        Using the coordinate array and simulation boundary conditions and
+        dimentions, this function uses a jinja template
+        to create a LAMMPS dumpfile that be read into LAMMPS.
+
+        Parameters
+        ----------
+        coords : list
+            List of pebble centroid coordinates
+        dump_filename : str
+            Desired name of LAMMPS dumpfile created.
+        bound_conds : str
+            String providing the exact surface boundary conditions to be used
+            in the LAMMPS bounding box.  See LAMMPS documentation for more
+            information on bounding box conditions.
+        x_b : dict
+            Dictionary with key: value pairs giving the upper and lower
+            bounds in the x-direction for the bounding box.
+        y_b : dict
+            As x_b, but for the y direction.
+        z_b : dict
+            as x_b but for the z direction.
+
         '''
-
-        #environment = Environment(loader=PackageLoader('./ghastly/templates'))
-
 
         peb_list = [{"id":i, "x":v[0], "y":v[1], "z":v[2]} 
                     for i, v in enumerate(coords)]

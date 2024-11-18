@@ -64,7 +64,7 @@
 		"poisson" : 0.12,
 		"co_fric" : 0.035,
 		"co_rest" : 0.02,
-		"run_factor" : 15,
+		"run_factor" : 20,
 		"interval" : 500000
 	}
 }

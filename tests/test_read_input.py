@@ -1,6 +1,7 @@
 import pytest
 from ghastly import read_input
 from ghastly import simulation
+from ghastly import core
 
 def test_InputBlock():
     '''
@@ -27,10 +28,28 @@ def test_create_core_zone():
     '''
     Test InputBlock's create_core_zone method
     '''
-    pass
+    test_input = read_input.InputBlock("sample_input.json")
+    test_main = test_input.create_core_zone(test_input.core_main_var)
+    assert len(test_main) == 2
+    assert type(test_main) == dict
+    assert type(test_main["main_cyl"]) == core.CylCore
+    assert test_main["main_cyl"].r == 0.5
+    assert test_main["main_cyl"].z_max == 1.0
+    assert type(test_main["main_cone"]) == core.ConeCore
+    assert test_main["main_cone"].r_lower == 0.1
+    assert test_main["main_cone"].x_c == 0.05
 
 def create_sim_block():
     '''
     Tests InputBlock's create_sim_block method
     '''
-    pass
+    
+    test_input = read_input.InputBlock("sample_input.json")
+    test_intake = test_input.create_core_zone(test_input.core_intake_var)
+    test_main = test_input.create_core_zone(test_input.core_main_var)
+    test_outtake = test_input.create_core_zone(test_input.core_outtake_var)
+    test_sim_block = test_input.create_cim_block(test_intake, 
+                                                 test_main, 
+                                                 test_outtake)
+    assert test_sim_block.pf == 0.60
+    assert test_sim_block.r_pebble == 0.03
