@@ -19,7 +19,7 @@ class Mat():
             material would have completed.  A fresh pebble would have a
             pass_num of 0, for example.
         reg_id  : str
-            Region identifier, `reg_id`, for the region this material 
+            Region identifier, `reg_id`, for the region this material
             corresponds to.
         l_type : int
             The type in LAMMPS that corresponds to this material.  These will

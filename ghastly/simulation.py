@@ -2,13 +2,15 @@ import numpy as np
 
 rng = np.random.default_rng()
 
+
 class Sim:
     '''
     Class for containing simulation-wide parameters and methods.
     '''
-    def __init__(self, r_pebble, t_final, pf, core_intake = {},
-                 core_main = {}, core_outtake = {}, k_rate = 0.001, 
-                 down_flow=True, seed = rng.integers(1000000,100000000)):
+
+    def __init__(self, r_pebble, t_final, pf, core_intake={},
+                 core_main={}, core_outtake={}, k_rate=0.001,
+                 down_flow=True, seed=rng.integers(1000000, 100000000)):
         '''
         Initializes the Sim class.
 
@@ -28,7 +30,7 @@ class Sim:
             down.
         '''
         self.r_pebble = r_pebble
-        self.pebble_volume = (4/3)*np.pi*(r_pebble**3)
+        self.pebble_volume = (4 / 3) * np.pi * (r_pebble**3)
         self.t_final = t_final
         self.pf = pf
         self.core_intake = core_intake
@@ -37,6 +39,3 @@ class Sim:
         self.k_rate = k_rate
         self.down_flow = down_flow
         self.seed = seed
-
-
-                   
