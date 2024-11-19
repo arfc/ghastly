@@ -7,8 +7,8 @@ class Core:
     a specific geometry, the Core class should not be used directly.
     '''
 
-    def __init__(self, x_c, y_c, z_max, z_min, regions=[],
-                 open_bottom="open 1"):
+    def __init__(self, x_c, y_c, z_max, z_min, regions = [], 
+                 open_bottom = "open 1"):
         '''
         Initializes a single instance of a Core object.
 
@@ -114,7 +114,7 @@ class AnnConeCore(Core):
     to the z-axis
     '''
 
-    def __init__(self, r_out_up, r_in_up, r_out_low, r_in_low,
+    def __init__(self, r_out_up, r_in_up, r_out_low, r_in_low, 
                  *args, **kwargs):
         '''
         Initializes an AnnConeCore object.  All distances should be in meters.
