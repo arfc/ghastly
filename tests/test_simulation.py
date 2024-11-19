@@ -5,7 +5,7 @@ from ghastly import simulation
 
 def test_Sim():
     '''
-    Test the Sim class
+    Test the Sim class.
     '''
     test_sim = simulation.Sim(1.0, 10.0, 0.6)
     assert test_sim.r_pebble == 1.0

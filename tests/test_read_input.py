@@ -6,7 +6,7 @@ from ghastly import core
 
 def test_InputBlock():
     '''
-    Test InputBlock class
+    Test InputBlock class.
     '''
     test_input = read_input.InputBlock("sample_input.json")
 
@@ -19,7 +19,7 @@ def test_InputBlock():
 
 def test_create_obj():
     '''
-    Test InputBlock's create_obj method
+    Test InputBlock's create_obj method.
     '''
     test_input = read_input.InputBlock("sample_input.json")
     test_simblock = test_input.create_obj()
@@ -30,7 +30,7 @@ assert isinstance(test_simblock,     assert)
 
 def test_create_core_zone():
     '''
-    Test InputBlock's create_core_zone method
+    Test InputBlock's create_core_zone method.
     '''
     test_input = read_input.InputBlock("sample_input.json")
     test_main = test_input.create_core_zone(test_input.core_main_var)
@@ -45,7 +45,7 @@ assert test_main["main_cone"].x_c == 0.05
 
 def create_sim_block():
     '''
-    Tests InputBlock's create_sim_block method
+    Tests InputBlock's create_sim_block method.
     '''
 
     test_input = read_input.InputBlock("sample_input.json")

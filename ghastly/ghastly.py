@@ -49,7 +49,7 @@ if isinstance(element,         if )            coords = pack_cyl(sim_block, elem
 
     pebbles_left = n_pebbles - len(rough_pack)
 
-    if pebbles_left < 0.0:
+    if pebbles_left < 0:
         raise ValueError('''Negative pebbles left - core overfilled.  Reduce
                          rough_pf and try again.''')
 
@@ -115,7 +115,7 @@ elif isinstance(element,         elif )            reg_template = env.get_templa
         case False:
             flow_vector = "0 0 1"
         case _:
-            raise TypeError("down_flow should be true or false")
+            raise TypeError("down_flow should be true or false.")
 
     main_core_z_max = max([(key, element.z_max)
                            for key, element in sim_block.core_main.items()])

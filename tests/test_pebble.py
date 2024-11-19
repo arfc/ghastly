@@ -5,7 +5,7 @@ from ghastly import pebble
 
 def test_Pebble():
     '''
-    Tests the pebble class
+    Tests the pebble class.
     '''
     test_peb = pebble.Pebble(np.array([1.0, 2.0, 3.0]), "test_reg",
                              0, 1, 27)
