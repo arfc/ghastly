@@ -47,7 +47,7 @@ def fill_core(input_file, rough_pf):
 
     pebbles_left = n_pebbles - len(rough_pack)
 
-    if pebbles_left < 0.0:
+    if pebbles_left < 0:
         raise ValueError('''Negative pebbles left - core overfilled.  Reduce
                          rough_pf and try again.''')
 
@@ -115,9 +115,7 @@ def fill_core(input_file, rough_pf):
         case False:
             flow_vector = "0 0 1"
         case _:
-            raise TypeError("down_flow should be true or false")
-    
-
+            raise TypeError("down_flow should be True or False.")
     main_core_z_max = max([(key, element.z_max)
                            for key, element in sim_block.core_main.items()])
     main_top = sim_block.core_main[main_core_z_max[0]]

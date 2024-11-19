@@ -4,7 +4,7 @@ import pytest
 
 def test_CylCore():
     '''
-    Tests the CylCore class
+    Tests the CylCore class.
     '''
 
     test_cyl = core.CylCore(0.5,1.0,2.0,4.0,3.0)

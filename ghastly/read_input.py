@@ -11,7 +11,7 @@ class InputBlock:
     '''
     def __init__(self, input_file):
         '''
-        Initializes ghastly InputBlock object from data read from input_file
+        Initializes ghastly InputBlock object from data read from input_file.
 
         Parameters
         ----------
@@ -36,13 +36,13 @@ class InputBlock:
     def create_obj(self):
         '''
         Using the InputBlock, create other ghastly objects needed to run
-        LAMMPS and/or OpenMC
+        LAMMPS and/or OpenMC.
 
         Returns
-        ----------
+        -------
         sim_block: Sim object
             Ghastly Sim object with simulation-specific parameters and core
-            zone dictionaries
+            zone dictionaries.
 
         '''
 
@@ -62,7 +62,7 @@ class InputBlock:
         object.
 
         Returns
-        ----------
+        -------
         core_block : dict
             Dicitonary with key:value pairs where the key is the core element
             name, and the value is the corresponding ghastly Core object.
@@ -113,7 +113,7 @@ class InputBlock:
         dictionaries.
 
         Returns
-        ----------
+        -------
         sim_block : Sim object
             Ghastly sim object containing simulation parameters and core
             objects.
@@ -131,7 +131,7 @@ class InputBlock:
         flow_case = self.sim_var.get("down_flow")
         if type(flow_case) != bool and flow_case != None:
             raise TypeError('''down_flow should be true for downward flow
-                            and false for upward flow''')
+                            and false for upward flow.''')
 
         match flow_case:
             case None:
@@ -142,7 +142,7 @@ class InputBlock:
         seed_case = self.sim_var.get("seed")
         if type(seed_case) != int and seed_case != None:
             raise TypeError('''The random seed should be a large integer value,
-                            or not in input block to randomly generate one''')
+                            or not in input block to randomly generate one.''')
 
         match seed_case:
             case None:
