@@ -2,6 +2,7 @@ import pytest
 import numpy as np
 from ghastly import simulation
 
+
 def test_Sim():
     '''
     Test the Sim class.
