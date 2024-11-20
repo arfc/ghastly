@@ -105,7 +105,7 @@ def fill_core(input_file, rough_pf):
                 f.write(reg_text)
 
         else:
-            raise TypeError(str(element_name)+" is not a CylCore or ConeCore")
+            raise TypeError(str(element_name)+" is not a CylCore or ConeCore.")
 
     # now the main file:
 
