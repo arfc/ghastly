@@ -33,10 +33,9 @@ def fill_core(input_file, rough_pf):
     sim_block = input_block.create_obj()
 
     rough_pack = []
-    core_volume = 0
     pack_zones = sim_block.core_main | sim_block.core_outtake
+    core_volume = sum([i.volume for i in pack_zones.values()])
     for element in pack_zones.values():
-        core_volume += element.volume
         if type(element) == ghastly.core.CylCore:
             coords = pack_cyl(sim_block, element, rough_pf)
             rough_pack += coords
