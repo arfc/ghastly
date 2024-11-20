@@ -62,6 +62,14 @@ class InputBlock:
         core element, and each value is the corresponding ghastly Core class
         object.
 
+        Parameters
+        ----------
+        core_zone : dict
+            Dictionary where each key:value pair corresponds to a single core
+            element within the core_zone.  Values are also dictionaries with
+            each key:value pair containing a parameter for the element and its
+            value.
+
         Returns
         -------
         core_block : dict
@@ -111,7 +119,9 @@ class InputBlock:
     def create_sim_block(self, core_intake, core_main, core_outtake):
         '''
         Creates a Sim object, using the intake, main, and outtake core zone
-        dictionaries.
+        dictionaries.  Default values for k_rate, down_flow, and seed are
+        0.001, True, and a random integer between 1,000,000 and 100,000,000,
+        respectively.
 
         Returns
         -------

@@ -24,9 +24,17 @@ def fill_core(input_file, rough_pf):
         Name of ghastly input file, which should be in JSON format, following
         the layout and parameter naming convention given in the example inputs.
     rough_pf : float
-        Packing fraction used in OpenMC packing function.  Can match the target
-        packing fraction provided in the input file, but users should take care 
-        supplying a rough_pf that is greater than the input's target pf.
+        Packing fraction used in OpenMC packing function.  Choosing a rough_pf
+        greater than the target pf in the input file can result in overfilling
+        of the core, and so it is reccommended to use a rough_pf that is
+        less than or equal to the desired final pf.
+
+    Returns
+    -------
+    While this function does not have a return at its completion, it will
+    generate a number of files - both LAMMPS input files and files LAMMPS
+    itself will generate.  For that reason, it's recommended that this be
+    run inside its own directory, in order to keep these files organized.
     '''
 
     input_block = read_input.InputBlock(input_file)
