@@ -250,13 +250,11 @@ def find_box_bounds(sim_block, pour=False):
                        (element.y_c + element.r_upper),
                        (element.y_c - element.r_lower),
                        (element.y_c + element.r_lower)]
-
+    f = 1.05
     match pour:
         case True:
-            f = 1.05
             f_zup = 1.2
         case _:
-            f = 1.05
             f_zup = 1.05
     x_b = {"low": ((1-f)*element.x_c + f*min(x_list)),
            "up": ((1-f)*element.x_c + f*max(x_list))}
@@ -300,7 +298,7 @@ def fake_dump_file(coords, dump_filename, bound_conds,
         Generated file with the same name as dump_filename.
     '''
 
-    peb_list = [{"id": i, "x": v[0], "y": v[1], "z": v[2]}
+    pebble_coords = [{"id": i, "x": v[0], "y": v[1], "z": v[2]}
                 for i, v in enumerate(coords)]
 
     dump_template = env.get_template("dump_template.txt")
@@ -309,7 +307,7 @@ def fake_dump_file(coords, dump_filename, bound_conds,
                                      x_b=x_b,
                                      y_b=y_b,
                                      z_b=z_b,
-                                     peb_list=peb_list)
+                                     peb_list=pebble_coords)
 
     with open(dump_filename, mode='w') as f:
         f.write(dump_text)
