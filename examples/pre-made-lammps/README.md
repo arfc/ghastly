@@ -26,8 +26,8 @@ Files included:
     - This file is identical to generic-start-pebs.txt, except that all
     pebbles in the file are type 1.
 - generic-start-pebs.csv
-    - contains the same pebble centroid coordinates as the LAMMPS dumpfile, 
-    but in csv file format and without the LAMMPS header, pebble ID, or type 
-    columns.
+    - This contains the same pebble centroid coordinates as the LAMMPS dump 
+    file, but in csv file format and without the LAMMPS header, pebble ID, 
+    or type columns.
 - pour-220000-peb.txt
-    - input file that created the pebble positions in LAMMPS.
+    - This file is the input file that created the pebble positions in LAMMPS.
