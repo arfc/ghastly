@@ -61,104 +61,22 @@ def fill_core(input_file, rough_pf):
 
     x_b, y_b, z_b = find_box_bounds(sim_block, pour=True)
 
-    fake_dump_file(rough_pack, "rough-pack.txt", "ff ff ff",
+    write_lammps_dump_file(rough_pack, "rough-pack.txt", "ff ff ff",
                    x_b, y_b, z_b)
 
-    # next: you have the input file read into input block, so now the next step
-    # is feeding everything into jinja templates.
-
-    # first, make the variable block file
-
-    variables = input_block.lammps_var
-    variables["r_pebble"] = sim_block.r_pebble
-    variables["seed"] = sim_block.seed
-
-    variables_template = env.get_template("variable_template.txt")
-    variable_text = variables_template.render(variables=variables)
     variable_filename = "pour_variables.txt"
-    with open(variable_filename, mode='w') as f:
-        f.write(variable_text)
+    write_variable_block(variable_filename, input_block, sim_block)
 
-    # now regions:
-    reg_files = []
-    reg_names = []
-    for element_name, element in pack_zones.items():
-        reg_names.append(str(element_name))
-        if type(element) == ghastly.core.CylCore:
-            reg_template = env.get_template("cylcore_template.txt")
-            reg_text = reg_template.render(region_name=element_name,
-                                           x_c=element.x_c,
-                                           y_c=element.y_c,
-                                           r=element.r,
-                                           z_min=element.z_min,
-                                           z_max=element.z_max,
-                                           open_bottom=element.open_bottom)
-            reg_filename = str(element_name)+"_region.txt"
-            reg_files.append(reg_filename)
-            with open(reg_filename, mode='w') as f:
-                f.write(reg_text)
-        elif type(element) == ghastly.core.ConeCore:
-            reg_template = env.get_template("conecore_template.txt")
-            reg_text = reg_template.render(region_name=element_name,
-                                           x_c=element.x_c,
-                                           y_c=element.y_c,
-                                           r_lower=element.r_lower,
-                                           r_upper=element.r_upper,
-                                           z_min=element.z_min,
-                                           z_max=element.z_max,
-                                           open_bottom=element.open_bottom)
-            reg_filename = str(element_name)+"_region.txt"
-            reg_files.append(reg_filename)
-            with open(reg_filename, mode='w') as f:
-                f.write(reg_text)
-
-        else:
-            raise TypeError(str(element_name)+" is not a CylCore or ConeCore.")
+    reg_files, reg_names = write_region_blocks(pack_zones)
 
     # now the main file:
 
-    match sim_block.down_flow:
-        case True:
-            flow_vector = "0 0 -1"
-        case False:
-            flow_vector = "0 0 1"
-        case _:
-            raise TypeError("down_flow should be True or False.")
-    main_core_z_max = max([(key, element.z_max)
-                           for key, element in sim_block.core_main.items()])
-    main_top = sim_block.core_main[main_core_z_max[0]]
-
-    x_c_pour = main_top.x_c
-    y_c_pour = main_top.y_c
-    z_max_pour = 0.95*z_b["up"]
-    z_min_pour = 1.05*main_core_z_max[1]
-    if type(main_top) == ghastly.core.CylCore:
-        r_pour = 0.75*main_top.r
-    elif type(main_top) == ghastly.core.ConeCore:
-        r_pour = 0.75*main_top.r_upper
-
-    main_template = env.get_template("pour_main.txt")
-    main_text = main_template.render(variable_filename=variable_filename,
-                                     x_b=x_b,
-                                     y_b=y_b,
-                                     z_b=z_b,
-                                     region_files=reg_files,
-                                     n_regions=len(reg_files),
-                                     region_names=reg_names,
-                                     flow_vector=flow_vector,
-                                     x_c_pour=x_c_pour,
-                                     y_c_pour=y_c_pour,
-                                     r_pour=r_pour,
-                                     z_min_pour=z_min_pour,
-                                     z_max_pour=z_max_pour,
-                                     pebbles_left=pebbles_left)
-
-    main_filename = "pour_main_input.txt"
-    with open(main_filename, mode='w') as f:
-        f.write(main_text)
+    pour_filename = "pour_main_input.txt"
+    write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
+                    reg_files, reg_names, pebbles_left)
 
     lmp = lammps()
-    lmp.file(main_filename)
+    lmp.file(pour_filename)
 
 
 def pack_cyl(sim_block, element, rough_pf):
@@ -266,7 +184,7 @@ def find_box_bounds(sim_block, pour=False):
     return x_b, y_b, z_b
 
 
-def fake_dump_file(coords, dump_filename, bound_conds,
+def write_lammps_dump_file(coords, dump_filename, bound_conds,
                    x_b, y_b, z_b):
     '''
     Using the coordinate array and simulation boundary conditions and
@@ -311,3 +229,168 @@ def fake_dump_file(coords, dump_filename, bound_conds,
 
     with open(dump_filename, mode='w') as f:
         f.write(dump_text)
+
+
+def write_variable_block(variable_filename, input_block, sim_block):
+    '''
+    Create the file containing LAMMPS variables, which can later be included
+    in a main LAMMPS input.
+
+    Parameters
+    ----------
+    variable_filename : str
+        The name of the variable block file to be created.
+    input_block : Ghastly InputBlock object
+        Ghastly object made from reading a Ghastly input file.
+    sim_block : Ghastly Sim object
+        Object containing simulation-specific information.
+
+    Returns
+    -------
+    variable_filename : file
+        Generated file with the same name as variable_filename.
+    '''
+
+    variables = input_block.lammps_var
+    variables["r_pebble"] = sim_block.r_pebble
+    variables["seed"] = sim_block.seed
+
+    variables_template = env.get_template("variable_template.txt")
+    variable_text = variables_template.render(variables=variables)
+    with open(variable_filename, mode='w') as f:
+        f.write(variable_text)
+
+
+def write_region_blocks(core_zones):
+    '''
+    Creates region block LAMMPS files for each core element in the core zones
+    passed to this function, which can be included in a main LAMMPS file.
+
+    Parameters
+    ----------
+    core_zones : dict
+        Dictionary with key:value pairs where each key is the name of a core
+        element, and each value is a Ghastly Core object containing that
+        element's parameters.
+
+    Returns
+    -------
+    reg_files : list
+        List of the filenames for each region block generated.
+    reg_names : list
+        List of the element names for each region block generated, which is
+        used as the region's name in LAMMPS.
+    '''
+    reg_files = []
+    reg_names = []
+    for element_name, element in core_zones.items():
+        reg_names.append(str(element_name))
+        if type(element) == ghastly.core.CylCore:
+            reg_template = env.get_template("cylcore_template.txt")
+            reg_text = reg_template.render(region_name=element_name,
+                                           x_c=element.x_c,
+                                           y_c=element.y_c,
+                                           r=element.r,
+                                           z_min=element.z_min,
+                                           z_max=element.z_max,
+                                           open_bottom=element.open_bottom)
+            reg_filename = str(element_name)+"_region.txt"
+            reg_files.append(reg_filename)
+            with open(reg_filename, mode='w') as f:
+                f.write(reg_text)
+        elif type(element) == ghastly.core.ConeCore:
+            reg_template = env.get_template("conecore_template.txt")
+            reg_text = reg_template.render(region_name=element_name,
+                                           x_c=element.x_c,
+                                           y_c=element.y_c,
+                                           r_lower=element.r_lower,
+                                           r_upper=element.r_upper,
+                                           z_min=element.z_min,
+                                           z_max=element.z_max,
+                                           open_bottom=element.open_bottom)
+            reg_filename = str(element_name)+"_region.txt"
+            reg_files.append(reg_filename)
+            with open(reg_filename, mode='w') as f:
+                f.write(reg_text)
+
+        else:
+            raise TypeError(str(element_name)+" is not a CylCore or ConeCore.")
+
+    return reg_files, reg_names
+
+
+def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
+                    reg_files, reg_names, pebbles_left):
+    '''
+    Create the main LAMMPS file for pouring pebbles into the core.
+
+    Parameters
+    ----------
+    pour_filename : str
+        Name of the main pour file to be created.
+    sim_block : Ghastly Sim object
+        Sim class object with simulation-specific parameters.
+    variable_filename : str
+        Name of the file containing the LAMMPS variable block
+    x_b : dict
+        Dictionary with key: value pairs giving the upper and lower
+        bounds in the x-direction for the bounding box.
+    y_b : dict
+        As x_b, but for the y direction.
+    z_b : dict
+        as x_b but for the z direction.
+    reg_files : list
+        A list of the filenames for the region blocks in LAMMPS.
+    reg_names : list
+        A list of the names of the regions used in LAMMPS.
+    pebbles_left : int
+        Number of pebbles that LAMMPS will be pouring.
+
+    Returns
+    -------
+    pour_filename : file
+        Generated file with the same name as pour_filename.
+    '''
+
+    match sim_block.down_flow:
+        case True:
+            flow_vector = "0 0 -1"
+        case False:
+            flow_vector = "0 0 1"
+        case _:
+            raise TypeError("down_flow should be True or False.")
+    main_core_z_max = max([(key, element.z_max)
+                           for key, element in sim_block.core_main.items()])
+    main_top = sim_block.core_main[main_core_z_max[0]]
+
+    x_c_pour = main_top.x_c
+    y_c_pour = main_top.y_c
+    z_max_pour = 0.95*z_b["up"]
+    z_min_pour = 1.05*main_core_z_max[1]
+    if type(main_top) == ghastly.core.CylCore:
+        r_pour = 0.75*main_top.r
+    elif type(main_top) == ghastly.core.ConeCore:
+        r_pour = 0.75*main_top.r_upper
+
+    main_template = env.get_template("pour_main.txt")
+    main_text = main_template.render(variable_filename=variable_filename,
+                                     x_b=x_b,
+                                     y_b=y_b,
+                                     z_b=z_b,
+                                     region_files=reg_files,
+                                     n_regions=len(reg_files),
+                                     region_names=reg_names,
+                                     flow_vector=flow_vector,
+                                     x_c_pour=x_c_pour,
+                                     y_c_pour=y_c_pour,
+                                     r_pour=r_pour,
+                                     z_min_pour=z_min_pour,
+                                     z_max_pour=z_max_pour,
+                                     pebbles_left=pebbles_left)
+
+    pour_filename = "pour_main_input.txt"
+    with open(pour_filename, mode='w') as f:
+        f.write(main_text)
+
+     
+
