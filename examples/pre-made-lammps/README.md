@@ -31,3 +31,7 @@ Files included:
     or type columns.
 - pour-220000-peb.txt
     - This file is the input file that created the pebble positions in LAMMPS.
+- run_lammps.py
+    - a simple script that runs pour-220000-peb.text.  It can also be run from
+    the command line instead.  Additonally, the original run 
+    used OMP_NUM_THREADS=4.
