@@ -25,7 +25,11 @@ class Core:
         regions : list
             List containing the region_id of each element within the given
             CylCore object.
-
+        open_bottom : str
+            LAMMPS parameter describing whether the bottom surface of the 
+            region is open.  "open 1", the default, means that the bottom
+            is open, while entering "" will input nothing, resulting in
+            a closed surface.
         '''
         self.x_c = x_c
         self.y_c = y_c

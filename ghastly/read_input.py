@@ -141,8 +141,8 @@ class InputBlock:
 
         flow_case = self.sim_var.get("down_flow")
         if type(flow_case) != bool and flow_case != None:
-            raise TypeError('''down_flow should be true for downward flow
-                            and false for upward flow.''')
+            raise TypeError('''down_flow should be True for downward flow
+                            and False for upward flow.''')
 
         match flow_case:
             case None:

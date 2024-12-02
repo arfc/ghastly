@@ -124,7 +124,7 @@ def find_box_bounds(sim_block, pour=False):
     appropriate size of the bounding box used in LAMMPS simulations.
     Note that when used to determine the bounding box for a simulation
     using the pour LAMMPS fix, the bounding box is extended in the
-    positive z direction, to allow for a temporary insertion region to
+    positive z-direction, to allow for a temporary insertion region to
     be added.
 
     Parameters
@@ -133,7 +133,7 @@ def find_box_bounds(sim_block, pour=False):
         Sim object created from parameters in the input file for ghastly.
     pour : bool
         Default False.  Whether or not the LAMMPS simulation the bounds
-        are being generated for is using the pour fix in LAMMPS
+        are being generated for is using the pour fix in LAMMPS.
 
     Returns
     -------
@@ -141,9 +141,9 @@ def find_box_bounds(sim_block, pour=False):
         Dictionary with key: value pairs giving the upper and lower
         bounds in the x-direction for the bounding box.
     y_b : dict
-        As x_b, but for the y direction.
+        As x_b, but for the y-direction.
     z_b : dict
-        as x_b but for the z direction.
+        As x_b but for the z-direction.
     '''
 
     core_list = (sim_block.core_intake |
@@ -194,7 +194,7 @@ def write_lammps_dump_file(coords, dump_filename, bound_conds,
     Parameters
     ----------
     coords : list
-        List of pebble centroid coordinates
+        List of pebble centroid coordinates.
     dump_filename : str
         Desired name of LAMMPS dumpfile created.  Please see LAMMPS read dump
         documentation for a full list of acceptable dump file types.
@@ -206,9 +206,9 @@ def write_lammps_dump_file(coords, dump_filename, bound_conds,
         Dictionary with key: value pairs giving the upper and lower
         bounds in the x-direction for the bounding box.
     y_b : dict
-        As x_b, but for the y direction.
+        As x_b, but for the y-direction.
     z_b : dict
-        as x_b but for the z direction.
+        as x_b but for the z-direction.
 
     Returns
     -------
@@ -336,9 +336,9 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
         Dictionary with key: value pairs giving the upper and lower
         bounds in the x-direction for the bounding box.
     y_b : dict
-        As x_b, but for the y direction.
+        As x_b, but for the y-direction.
     z_b : dict
-        as x_b but for the z direction.
+        as x_b but for the z-direction.
     reg_files : list
         A list of the filenames for the region blocks in LAMMPS.
     reg_names : list
