@@ -7,7 +7,8 @@ class Core:
     a specific geometry, the Core class should not be used directly.
     '''
 
-    def __init__(self, x_c, y_c, z_max, z_min):
+    def __init__(self, x_c, y_c, z_max, z_min, regions=[],
+                 open_bottom="open 1"):
         '''
         Initializes a single instance of a Core object.
 
@@ -21,13 +22,22 @@ class Core:
             Z-coordinate of the core element's top.
         z_min : float
             Z-coordinate of the core element's bottom.
-
+        regions : list
+            List containing the region_id of each element within the given
+            CylCore object.
+        open_bottom : str
+            LAMMPS parameter describing whether the bottom surface of the 
+            region is open.  "open 1", the default, means that the bottom
+            is open, while entering "" will input nothing, resulting in
+            a closed surface.
         '''
         self.x_c = x_c
         self.y_c = y_c
         self.z_max = z_max
         self.z_min = z_min
-        self.h = abs(z_min) + abs(z_max)
+        self.regions = regions
+        self.open_bottom = open_bottom
+        self.h = z_max - z_min
 
 
 class CylCore(Core):
@@ -36,7 +46,7 @@ class CylCore(Core):
     to the z-axis.
     '''
 
-    def __init__(self, r, regions, *args, **kwargs):
+    def __init__(self, r, *args, **kwargs):
         '''
         Initializes a single instance of a CylCore object.  All dimensions
         should be in meters.
@@ -45,14 +55,10 @@ class CylCore(Core):
         ----------
         r : float
             Radius of the cylinder [m].
-        regions : list
-            List containing the region_id of each element within the given
-            CylCore object.
         '''
         super().__init__(*args, **kwargs)
         self.r = r
         self.volume = np.pi * (r**2) * self.h
-        self.regions = regions
 
 
 class AnnularCore(Core):
@@ -61,7 +67,7 @@ class AnnularCore(Core):
     z-axis.
     '''
 
-    def __init__(self, r_outer, r_inner, regions, *args, **kwargs):
+    def __init__(self, r_outer, r_inner, *args, **kwargs):
         '''
         Initializes an AnnularCore object.  Note that unlike an AnnularRegion,
         this assumes it is a full annular shell, not a sector.  Dimensions are
@@ -73,14 +79,12 @@ class AnnularCore(Core):
             Outer radius of the annulus [m].
         r_inner : float
             Inner radius of the annulus [m].
-        regions : list
-            List containing the reg_id of each region within the core element.
         '''
         super().__init__(*args, **kwargs)
         self.r_outer = r_outer
         self.r_inner = r_inner
         self.volume = (np.pi * (r_outer**2 - r_inner**2) * self.h)
-        self.regions = regions
+        raise NotImplementedError("Annular core regions are not implemented.")
 
 
 class ConeCore(Core):
@@ -89,7 +93,7 @@ class ConeCore(Core):
     The central axis is parallel to the z-axis.
     '''
 
-    def __init__(self, r_upper, r_lower, regions, *args, **kwargs):
+    def __init__(self, r_upper, r_lower, *args, **kwargs):
         '''
         Intializes a single instance of a ConeCore object.  All distances are
         in meters.
@@ -100,16 +104,12 @@ class ConeCore(Core):
             Radius of the top of the cone [m].
         r_lower : float
             Radius of the bottom of the cone [m].
-        regions : list
-            List containing the region_id of each element within the given
-            ConeCore object.
         '''
         super().__init__(*args, **kwargs)
         self.r_upper = r_upper
         self.r_lower = r_lower
         self.volume = ((1 / 3) * np.pi * self.h
                        * (r_upper**2 + r_lower**2 + r_upper * r_lower))
-        self.regions = regions
 
 
 class AnnConeCore(Core):
@@ -119,7 +119,7 @@ class AnnConeCore(Core):
     '''
 
     def __init__(self, r_out_up, r_in_up, r_out_low, r_in_low,
-                 *regions, *args, **kwargs):
+                 *args, **kwargs):
         '''
         Initializes an AnnConeCore object.  All distances should be in meters.
 
@@ -133,8 +133,6 @@ class AnnConeCore(Core):
             The outer radius at the lower part of the annular cone [m].
         r_in_low : float
             The inner radius at the lower part of the annular cone [m].
-        regions : list
-            List containing the reg_id of each element within the core element.
         '''
         super().__init__(*args, **kwargs)
         self.r_out_up = r_out_up
@@ -144,3 +142,4 @@ class AnnConeCore(Core):
         self.volume = ((1 / 3) * np.pi * self.h * (
             (r_out_up**2 + r_out_low**2 + r_out_up * r_out_low)
             - (r_in_up**2 + r_in_low**2 + r_in_up * r_in_low)))
+        raise NotImplementedError("Annular core regions are not implemented.")

@@ -1,0 +1,280 @@
+#this is a modification of the lammps funnel model  from the lammps examples
+#in the example/granregion directory - in.granregion.funnel
+
+variable	name string htgr
+
+thermo_modify	flush yes
+units 		si  
+variable	PI equal 3.141592653589
+variable	seed equal 14314
+
+###############################################
+# Geometry-related parameters
+###############################################
+#core sizing pulled from argonne's ANL/NSE-22/59 report,
+#modeling of a generic pebble bed high-temperatire gas cooled reactor
+#with SAM
+variable	xlo equal -1.30
+variable	xhi equal 1.30
+variable	ylo equal -1.30
+variable	yhi equal 1.30
+variable	zlo equal -1.50
+variable	zhi equal 12.5
+
+variable	xc equal 0
+variable	yc equal 0
+
+variable	zconehi equal 0.54
+variable	zconelo equal 0
+variable	zcyllo equal -1.34
+variable	radconelo equal 0.24
+variable	radconehi equal 1.20
+
+variable    	topcylhi equal 9.45
+
+################################################
+# Particle sizes
+################################################
+
+variable	rlo equal 0.015
+variable	rhi equal 0.03
+variable	dlo equal 2.0*${rlo}
+variable	dhi equal 2.0*${rhi}
+
+variable 	skin equal ${rhi}
+
+###############################################
+# Granular contact parameters
+###############################################
+variable	coeffRes equal 0.1
+variable	coeffFric equal 0.1
+
+variable	density equal 1.0
+variable	EYoung equal 10^5
+variable 	Poisson equal 2.0/7.0
+variable	GShear equal ${EYoung}/(2*(1+${Poisson})) 
+
+variable	gravity equal 9.8
+
+variable	reff equal 0.5*(${rhi}+${rlo})
+variable	meff equal ${density}*4.0/3.0*${PI}*${reff}^3
+variable	min_mass equal ${density}*4.0/3.0*${PI}*${rlo}*${rlo}*${rlo}
+variable	max_mass equal ${density}*4.0/3.0*${PI}*${rhi}*${rhi}*${rhi}
+
+## Typical way to set kn, kt, etc.:
+variable        kn equal 4.0*${GShear}/(3*(1-${Poisson}))
+variable        kt equal 4.0*${GShear}/(2-${Poisson})
+
+variable	a equal (-2.0*log(${coeffRes})/${PI})^2
+variable        gamma_n equal sqrt($a*2*${kn}/${min_mass}/(1+0.25*$a))
+variable        gamma_t equal ${gamma_n}*0.5
+
+variable	tcol equal ${PI}/sqrt(2*${kn}/${min_mass}-${gamma_n}/4.0)
+
+variable	dt equal ${tcol}*0.05
+timestep	${dt}
+
+###############################################
+variable	dumpfreq equal 1000
+variable	logfreq equal 1000
+
+newton 		off
+atom_style	sphere
+
+boundary	f f f
+
+region		boxreg block ${xlo} ${xhi} ${ylo} ${yhi} ${zlo} ${zhi}
+create_box	2 boxreg
+
+pair_style	gran/hertz/history &
+		${kn} ${kt} ${gamma_n} ${gamma_t} ${coeffFric} 1
+pair_coeff	* *
+
+neighbor        ${skin} multi
+thermo 		${logfreq}
+
+comm_style	brick
+comm_modify 	mode multi group all vel yes
+balance		1.1 shift xyz 20 1.1
+fix		bal all balance 10000 1.1 shift xyz 20 1.01
+
+####################### Options specific to pouring #########################
+
+# insertion region for fix/pour
+
+region	     insreg cylinder z ${xc} ${yc} 1.0 9.5 12.4 side in units box
+
+# define cone and cylinder regions - see lammps doc on region command
+# note new open options
+		
+region		conereg cone z ${xc} ${yc} ${radconelo} ${radconehi} &
+            ${zconelo} ${zconehi} side in units box & 
+            open 2 #top is open
+        
+region      topcyl cylinder z ${xc} ${yc} ${radconehi} &
+        	${zconehi} ${topcylhi} side in units box &
+        	open 1 open 2
+
+region	    cylreg cylinder z ${xc} ${yc} ${radconelo} &
+            ${zcyllo} ${zconelo} side in units box &
+            open 1 open 2
+
+region		hopreg union 3 topcyl conereg cylreg
+
+fix		grav all gravity ${gravity} vector 0 0 -1
+fix		1 all nve/sphere
+
+
+fix		hopper3 all wall/gran/region hertz/history &
+        ${kn} ${kt} ${gamma_n} ${gamma_t} ${coeffFric} 1 region hopreg
+
+fix		insblue all pour 10000 1 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+
+fix		inspink all pour 10000 2 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+
+dump 	pebFacts all atom 1000000 atoms*.txt
+
+dump    pebmovie all movie 4000 pebbles.mp4 type diameter &
+        view 60 -30 zoom 1.0 &
+        box no 0.0 axes no 0.0 0.0 &
+		size 1040 5600
+
+dump_modify	pebmovie pad 6 acolor * powderblue/hotpink
+		
+
+thermo_style	custom step cpu atoms ke
+thermo_modify	flush yes lost warn
+
+# Initial run to fill up the cone
+
+fix		insblue all pour 10000 1 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix 		insblue
+fix		inspink all pour 10000 2 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix		inspink
+
+
+fix		insblue all pour 10000 1 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix 		insblue
+fix		inspink all pour 10000 2 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix		inspink
+
+
+fix		insblue all pour 10000 1 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix 		insblue
+fix		inspink all pour 10000 2 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix		inspink
+
+fix		insblue all pour 10000 1 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix 		insblue
+fix		inspink all pour 10000 2 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix		inspink
+
+fix		insblue all pour 10000 1 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix 		insblue
+fix		inspink all pour 10000 2 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix		inspink
+
+fix		insblue all pour 10000 1 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix 		insblue
+fix		inspink all pour 10000 2 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix		inspink
+
+fix		insblue all pour 10000 1 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix 		insblue
+fix		inspink all pour 10000 2 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix		inspink
+
+fix		insblue all pour 10000 1 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix 		insblue
+fix		inspink all pour 10000 2 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix		inspink
+
+fix		insblue all pour 10000 1 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix 		insblue
+fix		inspink all pour 10000 2 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix		inspink
+
+fix		insblue all pour 10000 1 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix 		insblue
+fix		inspink all pour 10000 2 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix		inspink
+
+fix		insblue all pour 10000 1 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix 		insblue
+fix		inspink all pour 10000 2 42424 region insreg &
+		diam one ${dhi} &
+		dens ${density} ${density} vol 0.25 250
+run		1500000
+unfix		inspink
+
+set		type 1 diameter ${dhi}
+set		type 2 diameter ${dhi}
+
+run     4000000
