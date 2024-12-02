@@ -17,4 +17,4 @@ def test_Sim():
     assert test_sim.core_outtake == {}
     assert test_sim.k_rate == 0.001
     assert test_sim.down_flow == True
-    assert test_sim.seed >= 1000000 or test_sim.seed <= 100000000
+    assert test_sim.seed >= 1000000 and test_sim.seed <= 100000000

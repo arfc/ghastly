@@ -34,4 +34,4 @@ def test_find_box_bounds():
 
     assert x_b["low"] == pytest.approx(0.05 - 1.05*0.5)
     assert y_b["up"] == pytest.approx(0.0 + 1.05*0.5)
-    assert z_b["low"] == pytest.approx(0.55 - 1.05*.65)
+    assert z_b["low"] == pytest.approx(0.55 - 1.05*0.65)
