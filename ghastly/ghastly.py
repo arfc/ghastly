@@ -169,16 +169,21 @@ def find_box_bounds(sim_block, pour=False):
                        (element.y_c - element.r_lower),
                        (element.y_c + element.r_lower)]
     f = 1.05
-    match pour:
-        case True:
+    match (pour, sim_block.down_flow):
+        case (True, True):
+            f_zl = 1.05
             f_zup = 1.2
+        case (True, False):
+            f_zl = 1.2
+            f_zup = 1.05
         case _:
+            f_zl = 1.05
             f_zup = 1.05
     x_b = {"low": ((1-f)*element.x_c + f*min(x_list)),
            "up": ((1-f)*element.x_c + f*max(x_list))}
     y_b = {"low": ((1-f)*element.y_c + f*min(y_list)),
            "up": ((1-f)*element.y_c + f*max(y_list))}
-    z_b = {"low": ((1-f)*0.5*(max(z_list)+min(z_list)) + f*min(z_list)),
+    z_b = {"low": ((1-f_zl)*0.5*(max(z_list)+min(z_list)) + f_zl*min(z_list)),
            "up": ((1-f)*0.5*(max(z_list)+min(z_list)) + f_zup*max(z_list))}
 
     return x_b, y_b, z_b
@@ -293,7 +298,8 @@ def write_region_blocks(core_zones):
                                            r=element.r,
                                            z_min=element.z_min,
                                            z_max=element.z_max,
-                                           open_bottom=element.open_bottom)
+                                           open_bottom=element.open_bottom,
+                                           open_top=element.open_top)
             reg_filename = str(element_name)+"_region.txt"
             reg_files.append(reg_filename)
             with open(reg_filename, mode='w') as f:
@@ -307,7 +313,8 @@ def write_region_blocks(core_zones):
                                            r_upper=element.r_upper,
                                            z_min=element.z_min,
                                            z_max=element.z_max,
-                                           open_bottom=element.open_bottom)
+                                           open_bottom=element.open_bottom,
+                                           open_top=element.open_top)
             reg_filename = str(element_name)+"_region.txt"
             reg_files.append(reg_filename)
             with open(reg_filename, mode='w') as f:
@@ -359,18 +366,39 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
             flow_vector = "0 0 1"
         case _:
             raise TypeError("down_flow should be True or False.")
-    main_core_z_max = max([(key, element.z_max)
-                           for key, element in sim_block.core_main.items()])
-    main_top = sim_block.core_main[main_core_z_max[0]]
+    
+    #here is where you determine the z_max in the core (after taking out the
+    #intake region).  for a system flowing up, you'd want to find the min
+    #after taking the intake off (which is at the bottom).  Then, your pour
+    #radius and center x and y should be able to be found the exact same way,
+    #but the pour z max and zmin will be different.  NOTE:  zmin will be the
+    #farthest from entrance of the main core region!  z max is the closest - 
+    #those are based on the min and max as LAMMPS defines it.
+    
+    if sim_block.down_flow == False:
+        main_core_z_min = min([(key, element.z_min) 
+                        for key, element in sim_block.core_main.items()])
+        main_intake = sim_block.core_main[main_core_z_min[0]]
 
-    x_c_pour = main_top.x_c
-    y_c_pour = main_top.y_c
-    z_max_pour = 0.95*z_b["up"]
-    z_min_pour = 1.05*main_core_z_max[1]
-    if type(main_top) == ghastly.core.CylCore:
-        r_pour = 0.75*main_top.r
-    elif type(main_top) == ghastly.core.ConeCore:
-        r_pour = 0.75*main_top.r_upper
+        x_c_pour = main_intake.x_c
+        y_c_pour = main_intake.y_c
+        z_max_pour = main_core_z_min[1] - 0.01
+        z_min_pour = z_b["low"] + 0.01
+
+    elif sim_block.down_flow == True:
+        main_core_z_max = max([(key, element.z_max)
+                        for key, element in sim_block.core_main.items()])
+        main_intake = sim_block.core_main[main_core_z_max[0]]
+
+        x_c_pour = main_intake.x_c
+        y_c_pour = main_intake.y_c
+        z_max_pour = z_b["up"] - 0.01
+        z_min_pour = main_core_z_max[1] + 0.01
+
+    if type(main_intake) == ghastly.core.CylCore:
+        r_pour = 0.75*main_intake.r
+    elif type(main_intake) == ghastly.core.ConeCore:
+        r_pour = 0.75*main_intake.r_upper
 
     main_template = env.get_template("pour_main.txt")
     main_text = main_template.render(variable_filename=variable_filename,

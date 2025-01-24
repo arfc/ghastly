@@ -81,36 +81,23 @@ class InputBlock:
         core_block = {}
         for key, val in core_zone.items():
             if val["type"].casefold() == "cylinder":
-                if val["open_bottom"] == True:
-                    core_block[key] = core.CylCore(x_c=val["x_c"],
-                                                   y_c=val["y_c"],
-                                                   z_max=val["z_max"],
-                                                   z_min=val["z_min"],
-                                                   r=val["r"])
-                else:
-                    core_block[key] = core.CylCore(x_c=val["x_c"],
-                                                   y_c=val["y_c"],
-                                                   z_max=val["z_max"],
-                                                   z_min=val["z_min"],
-                                                   r=val["r"],
-                                                   open_bottom="")
+                core_block[key] = core.CylCore(x_c=val["x_c"],
+                                               y_c=val["y_c"],
+                                               z_max=val["z_max"],
+                                               z_min=val["z_min"],
+                                               r=val["r"],
+                                               open_bottom=val["open_bottom"],
+                                               open_top=val["open_top"])
 
             elif val["type"].casefold() == "cone":
-                if val["open_bottom"] == True:
-                    core_block[key] = core.ConeCore(x_c=val["x_c"],
-                                                    y_c=val["y_c"],
-                                                    z_max=val["z_max"],
-                                                    z_min=val["z_min"],
-                                                    r_upper=val["r_upper"],
-                                                    r_lower=val["r_lower"])
-                else:
-                    core_block[key] = core.ConeCore(x_c=val["x_c"],
-                                                    y_c=val["y_c"],
-                                                    z_max=val["z_max"],
-                                                    z_min=val["z_min"],
-                                                    r_upper=val["r_upper"],
-                                                    r_lower=val["r_lower"],
-                                                    open_bottom="")
+                core_block[key] = core.ConeCore(x_c=val["x_c"],
+                                                y_c=val["y_c"],
+                                                z_max=val["z_max"],
+                                                z_min=val["z_min"],
+                                                r_upper=val["r_upper"],
+                                                r_lower=val["r_lower"],
+                                                open_bottom=val["open_bottom"],
+                                                open_top=val["open_top"])
             else:
                 raise NameError("Type must be cylinder or cone.")
 
