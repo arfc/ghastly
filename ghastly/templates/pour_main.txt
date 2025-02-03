@@ -63,7 +63,7 @@ region		whole_core union {{n_regions}} &
 {% endfor -%}
 		{{region_names[-1]}}
 
-fix		grav all gravity ${gravity} vector {{flow_vector}}
+fix		grav all gravity ${gravity} vector 0 0 -1
 fix		nve_int all nve/sphere
 fix		wall_gran all wall/gran/region hertz/history &
 		${k_n} ${k_t} ${gamma_n} ${gamma_t} ${co_fric} 1 &
@@ -99,6 +99,10 @@ fix		fill_core all pour {{pebbles_left}} 1 ${seed} region pour_reg &
 		diam one ${d_pebble} dens ${density_rho} ${density_rho} vol 0.25 250
 
 run		${tot_run}
+
+{% for line in settle -%}
+{{line}}
+{% endfor -%}
 
 
 

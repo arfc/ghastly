@@ -75,8 +75,8 @@ def fill_core(input_file, rough_pf):
     write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
                     reg_files, reg_names, pebbles_left)
 
-    lmp = lammps()
-    lmp.file(pour_filename)
+    #lmp = lammps()
+    #lmp.file(pour_filename)
 
 
 def pack_cyl(sim_block, element, rough_pf):
@@ -169,22 +169,17 @@ def find_box_bounds(sim_block, pour=False):
                        (element.y_c - element.r_lower),
                        (element.y_c + element.r_lower)]
     f = 1.05
-    match (pour, sim_block.down_flow):
-        case (True, True):
-            f_zl = 1.05
+    match pour:
+        case True:
             f_zup = 1.2
-        case (True, False):
-            f_zl = 1.2
-            f_zup = 1.05
         case _:
-            f_zl = 1.05
             f_zup = 1.05
     x_b = {"low": ((1-f)*element.x_c + f*min(x_list)),
            "up": ((1-f)*element.x_c + f*max(x_list))}
     y_b = {"low": ((1-f)*element.y_c + f*min(y_list)),
            "up": ((1-f)*element.y_c + f*max(y_list))}
-    z_b = {"low": ((1-f_zl)*0.5*(max(z_list)+min(z_list)) + f_zl*min(z_list)),
-           "up": ((1-f)*0.5*(max(z_list)+min(z_list)) + f_zup*max(z_list))}
+    z_b = {"low": ((1-f)*0.5*(max(z_list)+min(z_list)) + f*min(z_list)),
+           "up": ((1-f_zup)*0.5*(max(z_list)+min(z_list)) + f_zup*max(z_list))}
 
     return x_b, y_b, z_b
 
@@ -359,46 +354,30 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
         Generated file with the same name as pour_filename.
     '''
 
-    match sim_block.down_flow:
-        case True:
-            flow_vector = "0 0 -1"
-        case False:
-            flow_vector = "0 0 1"
-        case _:
-            raise TypeError("down_flow should be True or False.")
-    
-    #here is where you determine the z_max in the core (after taking out the
-    #intake region).  for a system flowing up, you'd want to find the min
-    #after taking the intake off (which is at the bottom).  Then, your pour
-    #radius and center x and y should be able to be found the exact same way,
-    #but the pour z max and zmin will be different.  NOTE:  zmin will be the
-    #farthest from entrance of the main core region!  z max is the closest - 
-    #those are based on the min and max as LAMMPS defines it.
-    
-    if sim_block.down_flow == False:
-        main_core_z_min = min([(key, element.z_min) 
-                        for key, element in sim_block.core_main.items()])
-        main_intake = sim_block.core_main[main_core_z_min[0]]
+    main_core_z_max = max([(key, element.z_max)
+                    for key, element in sim_block.core_main.items()])
+    main_intake = sim_block.core_main[main_core_z_max[0]]
 
-        x_c_pour = main_intake.x_c
-        y_c_pour = main_intake.y_c
-        z_max_pour = main_core_z_min[1] - 0.01
-        z_min_pour = z_b["low"] + 0.01
-
-    elif sim_block.down_flow == True:
-        main_core_z_max = max([(key, element.z_max)
-                        for key, element in sim_block.core_main.items()])
-        main_intake = sim_block.core_main[main_core_z_max[0]]
-
-        x_c_pour = main_intake.x_c
-        y_c_pour = main_intake.y_c
-        z_max_pour = z_b["up"] - 0.01
-        z_min_pour = main_core_z_max[1] + 0.01
+    x_c_pour = main_intake.x_c
+    y_c_pour = main_intake.y_c
+    z_max_pour = z_b["up"] - 0.01
+    z_min_pour = main_core_z_max[1] + 0.01
 
     if type(main_intake) == ghastly.core.CylCore:
-        r_pour = 0.75*main_intake.r
+        r_pour= 0.75*main_intake.r
     elif type(main_intake) == ghastly.core.ConeCore:
         r_pour = 0.75*main_intake.r_upper
+
+    match sim_block.down_flow:
+        case True:
+            settle = [""]
+        case _:
+            settle = ["unfix            fill_core", 
+                      "unfix            grav",
+                "fix              grav all gravity ${gravity} vector 0 0 1",
+                      "run              ${interval}", 
+                      "run              ${interval}",
+                      "run              ${interval}"]
 
     main_template = env.get_template("pour_main.txt")
     main_text = main_template.render(variable_filename=variable_filename,
@@ -408,13 +387,13 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
                                      region_files=reg_files,
                                      n_regions=len(reg_files),
                                      region_names=reg_names,
-                                     flow_vector=flow_vector,
                                      x_c_pour=x_c_pour,
                                      y_c_pour=y_c_pour,
                                      r_pour=r_pour,
                                      z_min_pour=z_min_pour,
                                      z_max_pour=z_max_pour,
-                                     pebbles_left=pebbles_left)
+                                     pebbles_left=pebbles_left,
+                                     settle = settle)
 
     pour_filename = "pour_main_input.txt"
     with open(pour_filename, mode='w') as f:

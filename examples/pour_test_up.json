@@ -2,7 +2,7 @@
 	"simulation" : {
 		"r_pebble" : 0.03,
 		"t_final" : 3600,
-		"pf" : 0.30,
+		"pf" : 0.60,
 		"down_flow" : false
 	},
 	"core_intake" : {
@@ -70,7 +70,7 @@
 		"poisson" : 0.12,
 		"co_fric" : 0.035,
 		"co_rest" : 0.02,
-		"run_factor" : 5,
+		"run_factor" : 15,
 		"interval" : 500000
 	}
 }
