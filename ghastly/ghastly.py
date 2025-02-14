@@ -41,8 +41,12 @@ def fill_core(input_file, rough_pf):
     sim_block = input_block.create_obj()
 
     rough_pack = []
-    pack_zones = sim_block.core_main | sim_block.core_outtake
-    core_volume = sum([i.volume for i in pack_zones.values()])
+    match sim_block.down_flow:
+        case True:
+            pack_zones = sim_block.core_main | sim_block.core_outtake
+        case False:
+            pack_zones = sim_block.core_main | sim_block.core_intake
+    
     for element in pack_zones.values():
         if type(element) == ghastly.core.CylCore:
             coords = pack_cyl(sim_block, element, rough_pf)
@@ -50,7 +54,13 @@ def fill_core(input_file, rough_pf):
         else:
             pass
 
-    n_pebbles = int((sim_block.pf*core_volume)/sim_block.pebble_volume)
+    #because pebbles will settle into the outtake region, the target number
+    #of pebbles is calculated using an assumed 0.6 pf in the outtake region,
+    #and the target pf in the main region
+    outtake_volume = sum([i.volume for i in sim_block.core_outtake.values()])
+    main_volume = sum([i.volume for i in sim_block.core_main.values()])
+    n_pebbles = int(np.floor((0.60*outtake_volume)/sim_block.pebble_volume) +
+                np.floor((sim_block.pf*main_volume)/sim_block.pebble_volume))
     print("Equivalent number of pebbles is "+str(n_pebbles))
 
     pebbles_left = n_pebbles - len(rough_pack)
@@ -320,6 +330,22 @@ def write_region_blocks(core_zones):
 
     return reg_files, reg_names
 
+def write_settle_block(settle_filename, sim_block, reg_files, reg_names):
+    '''
+    write lammps code block that adds the outtake region to the simulation
+    and reverses gravity, allowing pebbles to settle upwards after pouring
+    for upwards flowing systems
+    '''
+
+    out_reg_files, out_reg_names = write_region_blocks(sim_block.core_outtake)
+    reg_files += out_reg_files
+    reg_names += out_reg_names
+    #from here, you need to create the settle block using the settle_template
+    #the most complicated part will be the region loop, but you can copy the
+    #steps the main file uses to create its region in the first place
+
+
+
 
 def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
                     reg_files, reg_names, pebbles_left):
@@ -372,12 +398,14 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
         case True:
             settle = [""]
         case _:
-            settle = ["unfix            fill_core", 
-                      "unfix            grav",
-                "fix              grav all gravity ${gravity} vector 0 0 1",
-                      "run              ${interval}", 
-                      "run              ${interval}",
-                      "run              ${interval}"]
+            #settle = ["unfix            fill_core", 
+            #          "unfix            grav",
+            #    "fix              grav all gravity ${gravity} vector 0 0 1",
+            #          "run              ${interval}", 
+            #          "run              ${interval}",
+            #          "run              ${interval}"]
+            write_settle_block("settle.txt", sim_block, reg_files, reg_names)
+            settle = "include           settle.txt"
 
     main_template = env.get_template("pour_main.txt")
     main_text = main_template.render(variable_filename=variable_filename,

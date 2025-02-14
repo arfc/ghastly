@@ -2,7 +2,7 @@
 	"simulation" : {
 		"r_pebble" : 0.03,
 		"t_final" : 3600,
-		"pf" : 0.60,
+		"pf" : 0.20,
 		"down_flow" : false
 	},
 	"core_intake" : {
@@ -13,7 +13,7 @@
 			"z_max" : -0.1,
 			"z_min" : -0.2,
 			"r": 0.24,
-			"open_bottom" : "open 1",
+			"open_bottom" : "",
 			"open_top" : "open 2"
 		},
 		"intake_cone" : {
