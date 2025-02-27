@@ -85,8 +85,8 @@ def fill_core(input_file, rough_pf):
     write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
                     reg_files, reg_names, pebbles_left)
 
-    lmp = lammps()
-    lmp.file(pour_filename)
+    #lmp = lammps()
+    #lmp.file(pour_filename)
 
 
 def pack_cyl(sim_block, element, rough_pf):
@@ -338,12 +338,16 @@ def write_settle_block(settle_filename, sim_block, reg_files, reg_names):
     '''
 
     out_reg_files, out_reg_names = write_region_blocks(sim_block.core_outtake)
-    reg_files += out_reg_files
-    reg_names += out_reg_names
-    #from here, you need to create the settle block using the settle_template
-    #the most complicated part will be the region loop, but you can copy the
-    #steps the main file uses to create its region in the first place
-
+    out_reg_names += reg_names
+    
+    settle_template = env.get_template("settle_template.txt")
+    settle_text = settle_template.render(out_reg_files=out_reg_files,
+                                         n_regions=len(out_reg_names),
+                                         region_names=out_reg_names)
+    
+    
+    with open(settle_filename, mode='w') as f:
+        f.write(settle_text)
 
 
 
@@ -398,12 +402,6 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
         case True:
             settle = [""]
         case _:
-            #settle = ["unfix            fill_core", 
-            #          "unfix            grav",
-            #    "fix              grav all gravity ${gravity} vector 0 0 1",
-            #          "run              ${interval}", 
-            #          "run              ${interval}",
-            #          "run              ${interval}"]
             write_settle_block("settle.txt", sim_block, reg_files, reg_names)
             settle = "include           settle.txt"
 

@@ -1,4 +1,6 @@
+suffix		omp
 units		si
+package		omp 4
 
 ##############################################################################
 #variables
@@ -34,7 +36,7 @@ region		bounds block &
 		{{x_b.low}} {{x_b.up}} {{y_b.low}} {{y_b.up}} {{z_b.low}} {{z_b.up}}
 create_box	1 bounds
 
-pair_style	gran/hertz/history &
+pair_style	gran/hertz/history/omp &
 		${k_n} ${k_t} ${gamma_n} ${gamma_t} ${co_fric} 1
 pair_coeff	* *
 
@@ -100,9 +102,7 @@ fix		fill_core all pour {{pebbles_left}} 1 ${seed} region pour_reg &
 
 run		${tot_run}
 
-{% for line in settle -%}
-{{line}}
-{% endfor -%}
+{{settle}}
 
 
 

@@ -1,6 +1,9 @@
 unfix		fill_core
 unfix		grav
 unfix		wall_gran
+{% for filename in out_reg_files -%}
+include		{{filename}}
+{% endfor -%}
 
 region		whole_core delete
 region		whole_core union {{n_regions}} &

@@ -2,7 +2,7 @@
 	"simulation" : {
 		"r_pebble" : 0.03,
 		"t_final" : 3600,
-		"pf" : 0.20,
+		"pf" : 0.30,
 		"down_flow" : false
 	},
 	"core_intake" : {
@@ -11,7 +11,7 @@
 			"x_c" : 0.0,
 			"y_c" : 0.0,
 			"z_max" : -0.1,
-			"z_min" : -0.2,
+			"z_min" : -0.4,
 			"r": 0.24,
 			"open_bottom" : "",
 			"open_top" : "open 2"
@@ -22,8 +22,8 @@
 			"y_c" : 0.0,
 			"z_max" : 0.0,
 			"z_min" : -0.1,
-			"r_upper" : 0.24,
-			"r_lower" : 1.2,
+			"r_upper" : 1.2,
+			"r_lower" : 0.24,
 			"open_bottom" : "open 1",
 			"open_top" : "open 2"
 		}
@@ -38,17 +38,6 @@
 			"r" : 1.2,
 			"open_bottom" : "open 1",
 			"open_top" : "open 2"
-		},
-		"main_cone" : {
-			"type" : "cone",
-			"x_c" : 0.0,
-			"y_c" : 0.0,
-			"z_max" : 10.0,
-			"z_min" : 9.46,
-			"r_upper" : 1.2,
-			"r_lower" : 0.24,
-			"open_bottom" : "open 1",
-			"open_top" : "open 2"
 		}
 	},
 	"core_outtake" : {
@@ -61,6 +50,17 @@
 			"r" : 0.24,
 			"open_bottom" : "open 1",
 			"open_top" : ""
+		},
+		"outtake_cone" : {
+			"type" : "cone",
+			"x_c" : 0.0,
+			"y_c" : 0.0,
+			"z_max" : 10.0,
+			"z_min" : 9.46,
+			"r_upper" : 0.24,
+			"r_lower" : 1.2,
+			"open_bottom" : "open 1",
+			"open_top" : "open 2"
 		}
 	},
 	"lammps_var" : {
