@@ -334,7 +334,26 @@ def write_settle_block(settle_filename, sim_block, reg_files, reg_names):
     '''
     write lammps code block that adds the outtake region to the simulation
     and reverses gravity, allowing pebbles to settle upwards after pouring
-    for upwards flowing systems
+    for upwards flowing systems.
+
+    Parameters
+    ----------
+    settle_filename : str
+        name of the LAMMPS input file that will be created.
+    sim_block : Ghastly Sim object
+        Ghastly Sim object containing simulation-specific parameters.
+        Generally created automatically from an input file.
+    reg_files : list
+        List of strings, where each string is the list of region files that
+        have been created during the automatic input file creation process.
+    reg_names : list
+        List of strings, where each string is the ID of the region
+        corresponding to the region file with the same index in reg_files.
+
+    Returns
+    -------
+    settle_filename : file
+        Generated file with the same name as settle_filename.
     '''
 
     out_reg_files, out_reg_names = write_region_blocks(sim_block.core_outtake)

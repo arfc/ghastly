@@ -12,7 +12,8 @@
 			"z_max" : 1.2,
 			"z_min" : 1.1,
 			"r": 0.1,
-			"open_bottom" : true
+			"open_bottom" : "open 1",
+			"open_top" : "open 2"
 		},
 		"intake_cone" : {
 			"type" : "cone",
@@ -22,7 +23,8 @@
 			"z_min" : 1.0,
 			"r_upper" : 0.1,
 			"r_lower" : 0.5,
-			"open_bottom" : true
+			"open_bottom" : "open 1",
+			"open_top" : "open 2"
 		}
 	},
 	"core_main" : {
@@ -33,7 +35,8 @@
 			"z_max" : 1.0,
 			"z_min" : 0.1,
 			"r" : 0.5,
-			"open_bottom" : true
+			"open_bottom" : "open 1",
+			"open_top" : "open 2"
 		},
 		"main_cone" : {
 			"type" : "cone",
@@ -43,7 +46,8 @@
 			"z_min" : 0.0,
 			"r_upper" : 0.5,
 			"r_lower" : 0.1,
-			"open_bottom" : true
+			"open_bottom" : "open 1",
+			"open_top" : "open 2"
 		}
 	},
 	"core_outtake" : {
@@ -54,7 +58,8 @@
 			"z_max" : 0.0,
 			"z_min" : -0.1,
 			"r" : 0.1,
-			"open_bottom" : true
+			"open_bottom" : "",
+			"open_top" : "open 2"
 		}
 	},
 	"lammps_var" : {
