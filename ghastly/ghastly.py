@@ -46,7 +46,7 @@ def fill_core(input_file, rough_pf):
             pack_zones = sim_block.core_main | sim_block.core_outtake
         case False:
             pack_zones = sim_block.core_main | sim_block.core_intake
-    
+
     for element in pack_zones.values():
         if type(element) == ghastly.core.CylCore:
             coords = pack_cyl(sim_block, element, rough_pf)
@@ -54,13 +54,13 @@ def fill_core(input_file, rough_pf):
         else:
             pass
 
-    #because pebbles will settle into the outtake region, the target number
-    #of pebbles is calculated using an assumed 0.6 pf in the outtake region,
-    #and the target pf in the main region
-    outtake_volume = sum([i.volume for i in sim_block.core_outtake.values()])
-    main_volume = sum([i.volume for i in sim_block.core_main.values()])
-    n_pebbles = int(np.floor((0.60*outtake_volume)/sim_block.pebble_volume) +
-                np.floor((sim_block.pf*main_volume)/sim_block.pebble_volume))
+    # because pebbles will settle into the outtake region, the target number
+    # of pebbles is calculated using an assumed 0.6 pf in the outtake region,
+    # and the target pf in the main region
+    outtake_vol = sum([i.volume for i in sim_block.core_outtake.values()])
+    main_vol = sum([i.volume for i in sim_block.core_main.values()])
+    n_pebbles = int(np.floor((0.60*outtake_vol)/sim_block.pebble_volume) +
+                    np.floor((sim_block.pf*main_vol)/sim_block.pebble_volume))
     print("Equivalent number of pebbles is "+str(n_pebbles))
 
     pebbles_left = n_pebbles - len(rough_pack)
@@ -72,7 +72,7 @@ def fill_core(input_file, rough_pf):
     x_b, y_b, z_b = find_box_bounds(sim_block, pour=True)
 
     write_lammps_dump_file(rough_pack, "rough-pack.txt", "ff ff ff",
-                   x_b, y_b, z_b)
+                           x_b, y_b, z_b)
 
     variable_filename = "pour_variables.txt"
     write_variable_block(variable_filename, input_block, sim_block)
@@ -85,8 +85,8 @@ def fill_core(input_file, rough_pf):
     write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
                     reg_files, reg_names, pebbles_left)
 
-    #lmp = lammps()
-    #lmp.file(pour_filename)
+    # lmp = lammps()
+    # lmp.file(pour_filename)
 
 
 def pack_cyl(sim_block, element, rough_pf):
@@ -195,7 +195,7 @@ def find_box_bounds(sim_block, pour=False):
 
 
 def write_lammps_dump_file(coords, dump_filename, bound_conds,
-                   x_b, y_b, z_b):
+                           x_b, y_b, z_b):
     '''
     Using the coordinate array and simulation boundary conditions and
     dimentions, this function uses a jinja template
@@ -227,7 +227,7 @@ def write_lammps_dump_file(coords, dump_filename, bound_conds,
     '''
 
     pebble_coords = [{"id": i, "x": v[0], "y": v[1], "z": v[2]}
-                for i, v in enumerate(coords)]
+                     for i, v in enumerate(coords)]
 
     dump_template = env.get_template("dump_template.txt")
     dump_text = dump_template.render(n_rough_pack=len(coords),
@@ -330,6 +330,7 @@ def write_region_blocks(core_zones):
 
     return reg_files, reg_names
 
+
 def write_settle_block(settle_filename, sim_block, reg_files, reg_names):
     '''
     write lammps code block that adds the outtake region to the simulation
@@ -358,16 +359,14 @@ def write_settle_block(settle_filename, sim_block, reg_files, reg_names):
 
     out_reg_files, out_reg_names = write_region_blocks(sim_block.core_outtake)
     out_reg_names += reg_names
-    
+
     settle_template = env.get_template("settle_template.txt")
     settle_text = settle_template.render(out_reg_files=out_reg_files,
                                          n_regions=len(out_reg_names),
                                          region_names=out_reg_names)
-    
-    
+
     with open(settle_filename, mode='w') as f:
         f.write(settle_text)
-
 
 
 def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
@@ -404,7 +403,7 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
     '''
 
     main_core_z_max = max([(key, element.z_max)
-                    for key, element in sim_block.core_main.items()])
+                           for key, element in sim_block.core_main.items()])
     main_intake = sim_block.core_main[main_core_z_max[0]]
 
     x_c_pour = main_intake.x_c
@@ -413,7 +412,7 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
     z_min_pour = main_core_z_max[1] + 0.01
 
     if type(main_intake) == ghastly.core.CylCore:
-        r_pour= 0.75*main_intake.r
+        r_pour = 0.75*main_intake.r
     elif type(main_intake) == ghastly.core.ConeCore:
         r_pour = 0.75*main_intake.r_upper
 
@@ -438,11 +437,8 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
                                      z_min_pour=z_min_pour,
                                      z_max_pour=z_max_pour,
                                      pebbles_left=pebbles_left,
-                                     settle = settle)
+                                     settle=settle)
 
     pour_filename = "pour_main_input.txt"
     with open(pour_filename, mode='w') as f:
         f.write(main_text)
-
-     
-
