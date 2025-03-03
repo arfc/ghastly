@@ -85,8 +85,6 @@ def fill_core(input_file, rough_pf):
     write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
                     reg_files, reg_names, pebbles_left)
 
-    # lmp = lammps()
-    # lmp.file(pour_filename)
 
 
 def pack_cyl(sim_block, element, rough_pf):
@@ -333,14 +331,14 @@ def write_region_blocks(core_zones):
 
 def write_settle_block(settle_filename, sim_block, reg_files, reg_names):
     '''
-    write lammps code block that adds the outtake region to the simulation
+    Write lammps code block that adds the outtake region to the simulation
     and reverses gravity, allowing pebbles to settle upwards after pouring
     for upwards flowing systems.
 
     Parameters
     ----------
     settle_filename : str
-        name of the LAMMPS input file that will be created.
+        Name of the LAMMPS input file that will be created.
     sim_block : Ghastly Sim object
         Ghastly Sim object containing simulation-specific parameters.
         Generally created automatically from an input file.
