@@ -1,0 +1,22 @@
+unfix		fill_core
+unfix		grav
+unfix		wall_gran
+{% for filename in out_reg_files -%}
+include		{{filename}}
+{% endfor -%}
+
+region		whole_core delete
+region		whole_core union {{n_regions}} &
+{%		for name in region_names[0:-1] -%}
+		{{name}} &
+{% endfor -%}
+		{{region_names[-1]}}
+
+fix		grav all gravity ${gravity} vector 0 0 1
+fix		wall_gran all wall/gran/region hertz/history &
+		${k_n} ${k_t} ${gamma_n} ${gamma_t} ${co_fric} 1 &
+		region whole_core
+
+run		${interval}
+run		${interval}
+run		${interval}

@@ -2,27 +2,28 @@
 	"simulation" : {
 		"r_pebble" : 0.03,
 		"t_final" : 3600,
-		"pf" : 0.35
+		"pf" : 0.30,
+		"down_flow" : false
 	},
 	"core_intake" : {
 		"intake_cyl" : {
 			"type" : "cylinder",
-			"x_c" : 0.05,
+			"x_c" : 0.0,
 			"y_c" : 0.0,
-			"z_max" : 1.2,
-			"z_min" : 1.1,
-			"r": 0.1,
-			"open_bottom" : "open 1",
+			"z_max" : -0.1,
+			"z_min" : -0.4,
+			"r": 0.24,
+			"open_bottom" : "",
 			"open_top" : "open 2"
 		},
 		"intake_cone" : {
 			"type" : "cone",
-			"x_c" : 0.05,
+			"x_c" : 0.0,
 			"y_c" : 0.0,
-			"z_max" : 1.1,
-			"z_min" : 1.0,
-			"r_upper" : 0.1,
-			"r_lower" : 0.5,
+			"z_max" : 0.0,
+			"z_min" : -0.1,
+			"r_upper" : 1.2,
+			"r_lower" : 0.24,
 			"open_bottom" : "open 1",
 			"open_top" : "open 2"
 		}
@@ -30,35 +31,35 @@
 	"core_main" : {
 		"main_cyl" : {
 			"type" : "cylinder",
-			"x_c" : 0.05,
+			"x_c" : 0.0,
 			"y_c" : 0.0,
-			"z_max" : 1.0,
-			"z_min" : 0.1,
-			"r" : 0.5,
-			"open_bottom" : "open 1",
-			"open_top" : "open 2"
-		},
-		"main_cone" : {
-			"type" : "cone",
-			"x_c" : 0.05,
-			"y_c" : 0.0,
-			"z_max" : 0.1,
+			"z_max" : 9.46,
 			"z_min" : 0.0,
-			"r_upper" : 0.5,
-			"r_lower" : 0.1,
+			"r" : 1.2,
 			"open_bottom" : "open 1",
 			"open_top" : "open 2"
 		}
 	},
 	"core_outtake" : {
 		"outtake_cyl" : {
-			"type" : "cylinder",		
-			"x_c" : 0.05,
+			"type" : "cylinder",
+			"x_c" : 0.0,
 			"y_c" : 0.0,
-			"z_max" : 0.0,
-			"z_min" : -0.1,
-			"r" : 0.1,
-			"open_bottom" : "",
+			"z_max" : 11.34,
+			"z_min" : 10.0,
+			"r" : 0.24,
+			"open_bottom" : "open 1",
+			"open_top" : ""
+		},
+		"outtake_cone" : {
+			"type" : "cone",
+			"x_c" : 0.0,
+			"y_c" : 0.0,
+			"z_max" : 10.0,
+			"z_min" : 9.46,
+			"r_upper" : 0.24,
+			"r_lower" : 1.2,
+			"open_bottom" : "open 1",
 			"open_top" : "open 2"
 		}
 	},
@@ -69,7 +70,7 @@
 		"poisson" : 0.12,
 		"co_fric" : 0.035,
 		"co_rest" : 0.02,
-		"run_factor" : 3,
-		"interval" : 1000
+		"run_factor" : 15,
+		"interval" : 500000
 	}
 }

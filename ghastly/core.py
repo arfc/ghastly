@@ -8,7 +8,7 @@ class Core:
     '''
 
     def __init__(self, x_c, y_c, z_max, z_min, regions=[],
-                 open_bottom="open 1"):
+                 open_bottom="open 1", open_top="open 2"):
         '''
         Initializes a single instance of a Core object.
 
@@ -37,6 +37,7 @@ class Core:
         self.z_min = z_min
         self.regions = regions
         self.open_bottom = open_bottom
+        self.open_top = open_top
         self.h = z_max - z_min
 
 

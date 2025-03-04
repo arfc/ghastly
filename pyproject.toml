@@ -16,7 +16,3 @@ path = "ghastly/__about__.py"
 
 [tool.hatch.metadata]
 allow-direct-references = false
-
-[tool.pytest.ini_options]
-pythonpath = [".", "tests", "ghastly"]
-testpaths = ["tests"]
