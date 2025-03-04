@@ -416,7 +416,7 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
 
     match sim_block.down_flow:
         case True:
-            settle = [""]
+            settle = ""
         case _:
             write_settle_block("settle.txt", sim_block, reg_files, reg_names)
             settle = "include           settle.txt"
