@@ -2,7 +2,7 @@ name: Build and Deploy Sphinx Docs
 
 on:
   push:
-    branches: [docs]
+    branches: [ghastly]
 
 jobs:
   build-docs:
