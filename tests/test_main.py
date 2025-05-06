@@ -1,12 +1,12 @@
 import pytest
 import numpy as np
-from ghastly import ghastly
+from ghastly import main
 from ghastly import read_input
 
 
 def test_pack_cyl():
     '''
-    Tests the ghastly function pack_cyl.
+    Tests the main function pack_cyl.
     '''
     test_input = read_input.InputBlock("sample_input.json")
     test_sim = test_input.create_obj()
@@ -26,7 +26,7 @@ def test_pack_cyl():
 
 def test_find_box_bounds():
     '''
-    Tests the find_box_bounds function in ghastly.py.
+    Tests the find_box_bounds function in main.py.
     '''
     test_input = read_input.InputBlock("sample_input.json")
     test_sim = test_input.create_obj()

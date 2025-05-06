@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>ghastly.main &#8212; ghastly 0.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=01f34227"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ghastly.material" href="material.html" />
+    <link rel="prev" title="ghastly.core" href="core.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-ghastly.main">
+<span id="ghastly-main"></span><h1>ghastly.main<a class="headerlink" href="#module-ghastly.main" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ghastly.main.fill_core">
+<span class="sig-prename descclassname"><span class="pre">ghastly.main.</span></span><span class="sig-name descname"><span class="pre">fill_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rough_pf</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ghastly.main.fill_core" title="Link to this definition">¶</a></dt>
+<dd><p>This function uses OpenMC’s model.pack_spheres function to “rough” pack
+the full core region defined by the Ghastly input file, then uses a series
+of Jinja templates to create a LAMMPS input file that will run a physics
+simulation, modeling not only the settling of the roughly packed pebbles
+due to gravtiy, but also handle the addtion of any extra pebbles needed to
+reach the target number of pebbles needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_file</strong> (<em>str</em>) – Name of ghastly input file, which should be in JSON format, following
+the layout and parameter naming convention given in the example inputs.</p></li>
+<li><p><strong>rough_pf</strong> (<em>float</em>) – Packing fraction used in OpenMC packing function.  Choosing a rough_pf
+greater than the target pf in the input file can result in overfilling
+of the core, and so it is reccommended to use a rough_pf that is
+less than or equal to the desired final pf.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>While this function does not have a return at its completion, it will</em></p></li>
+<li><p><em>generate a number of files - both LAMMPS input files and files LAMMPS</em></p></li>
+<li><p><em>itself will generate.  For that reason, it’s recommended that this be</em></p></li>
+<li><p><em>run inside its own directory, in order to keep these files organized.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ghastly.main.find_box_bounds">
+<span class="sig-prename descclassname"><span class="pre">ghastly.main.</span></span><span class="sig-name descname"><span class="pre">find_box_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_block</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pour</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ghastly.main.find_box_bounds" title="Link to this definition">¶</a></dt>
+<dd><p>Using the core_zones contained in the sim_block, this function
+uses the dimensions of all core elements in the model to determine the
+appropriate size of the bounding box used in LAMMPS simulations.
+Note that when used to determine the bounding box for a simulation
+using the pour LAMMPS fix, the bounding box is extended in the
+positive z-direction, to allow for a temporary insertion region to
+be added.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sim_block</strong> (<em>Sim object</em>) – Sim object created from parameters in the input file for ghastly.</p></li>
+<li><p><strong>pour</strong> (<em>bool</em>) – Default False.  Whether or not the LAMMPS simulation the bounds
+are being generated for is using the pour fix in LAMMPS.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>x_b</strong> (<em>dict</em>) – Dictionary with key: value pairs giving the upper and lower
+bounds in the x-direction for the bounding box.</p></li>
+<li><p><strong>y_b</strong> (<em>dict</em>) – As x_b, but for the y-direction.</p></li>
+<li><p><strong>z_b</strong> (<em>dict</em>) – As x_b but for the z-direction.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ghastly.main.pack_cyl">
+<span class="sig-prename descclassname"><span class="pre">ghastly.main.</span></span><span class="sig-name descname"><span class="pre">pack_cyl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_block</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rough_pf</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ghastly.main.pack_cyl" title="Link to this definition">¶</a></dt>
+<dd><p>Given a cylindrical core object, this function creates a corresponding
+OpenMC region, and the the pack_spheres function to generate a list of
+non-overlapping pebble centroids that fit within that region.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sim_block</strong> (<em>ghastly Sim object</em>) – Sim class object that contains simulation-specific simulation,
+read from input_file.</p></li>
+<li><p><strong>element</strong> (<em>ghastly CylCore object</em>) – CylCore object for a portion of the core model.</p></li>
+<li><p><strong>rough_pf</strong> (<em>float</em>) – Packing fraction that OpenMC will pack this cylinder to.  Not the
+same as the packing fraction in the input.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>coords</strong> – List of pebble centroid coordinates generated by OpenMC, within a
+cylindrical region matching the core element passed to pack_cyl.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ghastly.main.write_lammps_dump_file">
+<span class="sig-prename descclassname"><span class="pre">ghastly.main.</span></span><span class="sig-name descname"><span class="pre">write_lammps_dump_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bound_conds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ghastly.main.write_lammps_dump_file" title="Link to this definition">¶</a></dt>
+<dd><p>Using the coordinate array and simulation boundary conditions and
+dimentions, this function uses a jinja template
+to create a LAMMPS dumpfile that be read into LAMMPS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coords</strong> (<em>list</em>) – List of pebble centroid coordinates.</p></li>
+<li><p><strong>dump_filename</strong> (<em>str</em>) – Desired name of LAMMPS dumpfile created.  Please see LAMMPS read dump
+documentation for a full list of acceptable dump file types.</p></li>
+<li><p><strong>bound_conds</strong> (<em>str</em>) – String providing the exact surface boundary conditions to be used
+in the LAMMPS bounding box.  See LAMMPS documentation for more
+information on bounding box conditions.</p></li>
+<li><p><strong>x_b</strong> (<em>dict</em>) – Dictionary with key: value pairs giving the upper and lower
+bounds in the x-direction for the bounding box.</p></li>
+<li><p><strong>y_b</strong> (<em>dict</em>) – As x_b, but for the y-direction.</p></li>
+<li><p><strong>z_b</strong> (<em>dict</em>) – as x_b but for the z-direction.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dump_filename</strong> – Generated file with the same name as dump_filename.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ghastly.main.write_pour_main">
+<span class="sig-prename descclassname"><span class="pre">ghastly.main.</span></span><span class="sig-name descname"><span class="pre">write_pour_main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pour_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_block</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reg_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reg_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pebbles_left</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ghastly.main.write_pour_main" title="Link to this definition">¶</a></dt>
+<dd><p>Create the main LAMMPS file for pouring pebbles into the core.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pour_filename</strong> (<em>str</em>) – Name of the main pour file to be created.</p></li>
+<li><p><strong>sim_block</strong> (<em>Ghastly Sim object</em>) – Sim class object with simulation-specific parameters.</p></li>
+<li><p><strong>variable_filename</strong> (<em>str</em>) – Name of the file containing the LAMMPS variable block</p></li>
+<li><p><strong>x_b</strong> (<em>dict</em>) – Dictionary with key: value pairs giving the upper and lower
+bounds in the x-direction for the bounding box.</p></li>
+<li><p><strong>y_b</strong> (<em>dict</em>) – As x_b, but for the y-direction.</p></li>
+<li><p><strong>z_b</strong> (<em>dict</em>) – as x_b but for the z-direction.</p></li>
+<li><p><strong>reg_files</strong> (<em>list</em>) – A list of the filenames for the region blocks in LAMMPS.</p></li>
+<li><p><strong>reg_names</strong> (<em>list</em>) – A list of the names of the regions used in LAMMPS.</p></li>
+<li><p><strong>pebbles_left</strong> (<em>int</em>) – Number of pebbles that LAMMPS will be pouring.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>pour_filename</strong> – Generated file with the same name as pour_filename.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ghastly.main.write_region_blocks">
+<span class="sig-prename descclassname"><span class="pre">ghastly.main.</span></span><span class="sig-name descname"><span class="pre">write_region_blocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">core_zones</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ghastly.main.write_region_blocks" title="Link to this definition">¶</a></dt>
+<dd><p>Creates region block LAMMPS files for each core element in the core zones
+passed to this function, which can be included in a main LAMMPS file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>core_zones</strong> (<em>dict</em>) – Dictionary with key:value pairs where each key is the name of a core
+element, and each value is a Ghastly Core object containing that
+element’s parameters.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>reg_files</strong> (<em>list</em>) – List of the filenames for each region block generated.</p></li>
+<li><p><strong>reg_names</strong> (<em>list</em>) – List of the element names for each region block generated, which is
+used as the region’s name in LAMMPS.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ghastly.main.write_settle_block">
+<span class="sig-prename descclassname"><span class="pre">ghastly.main.</span></span><span class="sig-name descname"><span class="pre">write_settle_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settle_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_block</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reg_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reg_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ghastly.main.write_settle_block" title="Link to this definition">¶</a></dt>
+<dd><p>Write lammps code block that adds the outtake region to the simulation
+and reverses gravity, allowing pebbles to settle upwards after pouring
+for upwards flowing systems.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>settle_filename</strong> (<em>str</em>) – Name of the LAMMPS input file that will be created.</p></li>
+<li><p><strong>sim_block</strong> (<em>Ghastly Sim object</em>) – Ghastly Sim object containing simulation-specific parameters.
+Generally created automatically from an input file.</p></li>
+<li><p><strong>reg_files</strong> (<em>list</em>) – List of strings, where each string is the list of region files that
+have been created during the automatic input file creation process.</p></li>
+<li><p><strong>reg_names</strong> (<em>list</em>) – List of strings, where each string is the ID of the region
+corresponding to the region file with the same index in reg_files.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>settle_filename</strong> – Generated file with the same name as settle_filename.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ghastly.main.write_variable_block">
+<span class="sig-prename descclassname"><span class="pre">ghastly.main.</span></span><span class="sig-name descname"><span class="pre">write_variable_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_block</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_block</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ghastly.main.write_variable_block" title="Link to this definition">¶</a></dt>
+<dd><p>Create the file containing LAMMPS variables, which can later be included
+in a main LAMMPS input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variable_filename</strong> (<em>str</em>) – The name of the variable block file to be created.</p></li>
+<li><p><strong>input_block</strong> (<em>Ghastly InputBlock object</em>) – Ghastly object made from reading a Ghastly input file.</p></li>
+<li><p><strong>sim_block</strong> (<em>Ghastly Sim object</em>) – Object containing simulation-specific information.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>variable_filename</strong> – Generated file with the same name as variable_filename.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>file</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ghastly</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="core.html">ghastly.core</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ghastly.main</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ghastly.main.fill_core"><code class="docutils literal notranslate"><span class="pre">fill_core()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ghastly.main.find_box_bounds"><code class="docutils literal notranslate"><span class="pre">find_box_bounds()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ghastly.main.pack_cyl"><code class="docutils literal notranslate"><span class="pre">pack_cyl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ghastly.main.write_lammps_dump_file"><code class="docutils literal notranslate"><span class="pre">write_lammps_dump_file()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ghastly.main.write_pour_main"><code class="docutils literal notranslate"><span class="pre">write_pour_main()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ghastly.main.write_region_blocks"><code class="docutils literal notranslate"><span class="pre">write_region_blocks()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ghastly.main.write_settle_block"><code class="docutils literal notranslate"><span class="pre">write_settle_block()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ghastly.main.write_variable_block"><code class="docutils literal notranslate"><span class="pre">write_variable_block()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="material.html">ghastly.material</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pebble.html">ghastly.pebble</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read_input.html">ghastly.read_input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="region.html">ghastly.region</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulation.html">ghastly.simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">ghastly.tests</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="core.html" title="previous chapter">ghastly.core</a></li>
+      <li>Next: <a href="material.html" title="next chapter">ghastly.material</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Zoe Richter.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/main.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
