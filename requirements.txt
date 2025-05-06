@@ -1,0 +1,9 @@
+sphinx
+sphinx-rtd-theme
+sphinx-autoapi
+sphinx-book-theme
+sphinx-toolbox
+sphinx-jinja2-compat==0.2.0b1
+nbsphinx
+openmc; sys_platform != 'win32'  # optional, mock it in Sphinx config if not installed
+
