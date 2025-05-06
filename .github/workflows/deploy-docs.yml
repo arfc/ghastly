@@ -1,0 +1,37 @@
+name: Build and Deploy Sphinx Docs
+
+on:
+  push:
+    branches: [docs]
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install sphinx sphinx-rtd-theme
+
+      - name: Build HTML docs
+        run: |
+          make -C docs html
+          touch docs/_build/html/.nojekyll
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_build/html
+          commit_message: "Deploy docs from commit: ${{ github.sha }}"
+
+
