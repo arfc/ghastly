@@ -1,0 +1,101 @@
+suffix		omp
+units		si
+package		omp 4
+
+##############################################################################
+#variables
+##############################################################################
+variable	pi equal 3.1415927
+
+include		{{variable_filename}}
+
+variable	skin equal ${r_pebble}/4
+
+variable	d_pebble equal 2*${r_pebble}
+variable	mass equal ${density_rho}*(4/3)*${pi}*(${r_pebble}^3)
+variable	shear_mod_G equal ${young_mod_E}/(2*(1+${poisson}))
+variable	k_n equal (4*${shear_mod_G})/(3*(1-${poisson}))
+variable	k_t equal (4*${shear_mod_G})/(2-${poisson})
+variable	numerator equal (2*${k_n})/${mass}
+variable	denominator equal (${pi}/(-2*log(${co_rest})))^2+0.25
+variable	gamma_n equal sqrt(${numerator}/${denominator})
+variable	gamma_t equal 0.5*${gamma_n}
+
+variable	t_col equal ${pi}/sqrt(2*(${k_n}/${mass})-(${gamma_n}^2)/4)
+variable	dt equal ${t_col}/50
+variable	tot_run equal ${run_factor}*${interval}
+
+##############################################################################
+#simulation parameters
+##############################################################################
+newton		on
+atom_style	sphere
+
+boundary	f f f
+region		bounds block &
+		{{x_b.low}} {{x_b.up}} {{y_b.low}} {{y_b.up}} {{z_b.low}} {{z_b.up}}
+create_box	1 bounds
+
+pair_style	gran/hertz/history/omp &
+		${k_n} ${k_t} ${gamma_n} ${gamma_t} ${co_fric} 1
+pair_coeff	* *
+
+neighbor	${skin} multi
+neigh_modify	delay 0 every 1 check yes
+thermo		1000
+timestep	${dt}
+
+comm_style	brick
+comm_modify	mode multi group all vel yes
+balance		1.1 shift xyz 20 1.1
+fix		bal all balance 10000 1.1 shift xyz 20 1.01
+
+##############################################################################
+#geometry
+##############################################################################
+
+
+{% for filename in region_files -%}
+include		{{filename}}
+{% endfor -%}
+
+region		whole_core union {{n_regions}} &
+{% 		for name in region_names[0:-1] -%}
+                {{name}} &
+{% endfor -%}
+		{{region_names[-1]}}
+
+fix		grav all gravity ${gravity} vector 0 0 -1
+fix		nve_int all nve/sphere
+fix		wall_gran all wall/gran/region hertz/history &
+		${k_n} ${k_t} ${gamma_n} ${gamma_t} ${co_fric} 1 &
+		region whole_core	
+
+variable	pix_width equal round((abs({{x_b.low}})+abs({{x_b.up}}))*250)
+variable	pix_height equal round((abs({{z_b.low}})+abs({{z_b.up}}))*250)
+
+dump		peb_coords all custom ${interval} coords_*.txt id type x y z
+dump		peb_gif all movie 5000 pour.gif type diameter & 
+		view 90 0 box no 0.0 size ${pix_width} ${pix_height}
+
+dump_modify	peb_gif acolor * powderblue
+
+thermo_style	custom step cpu time atoms ke
+thermo_modify	flush yes lost warn
+
+##############################################################################
+#filling core
+##############################################################################
+
+read_dump	starting-bed.txt 0 x y z add yes timestep no
+
+set		type 1 diameter ${d_pebble}$
+
+include		{{recirc_reg_file}}
+
+group 		recirc dynamic all region {{recirc_reg_name}}
+
+
+
+
+

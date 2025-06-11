@@ -25,3 +25,18 @@
 # and then use that to auto-calculate timing somehow.
 #do it again
 #for a REALLY long time
+
+
+
+updated notes:
+
+alright.  displace atoms is good, creating a group to recirc SHOULD be good,
+but some commands don't actually work with dynamic groups (I did not see a list
+of commands that do, and the doc page for displace_atoms doesn't say either way)
+
+
+You're gonna want to loop your commands.  There are two ways to do this - one,
+using the lammps python interface, and one using the jump command in LAMMPS to
+create a loop that jumps back into itself from a certain point.  You're gonna
+want to reference the docs and make a few small test inputs with print statements
+or something to make sure you're looping the right number of times.
