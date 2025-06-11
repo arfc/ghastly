@@ -52,7 +52,7 @@ he.temperature = 778.15 #K
 peb_or = 3.0 #outer radius of whole pebble
 peb_ir = 2.5 # radius of the region that has trisos in it only
 triso_r = [0.02125, 0.03125, 0.03525, 0.03875, 0.04275]
-bcc_l = (4*peb_or)/(3**(0.5))
+bcc_l = 100/(2697**(1/3)) #based on pf = 5394 pebs/m3
 c_coord = 0.5*bcc_l
 
 
@@ -393,10 +393,11 @@ openmc.Materials(materials).export_to_xml()
 settings = openmc.Settings()
 #settings.run_mode = 'eigenvalue'
 settings.verbosity = 6
-settings.particles = 1000
+settings.particles = 5000
 settings.generations_per_batch = 5
-settings.batches = 50
-settings.inactive = 10
+settings.batches = 60
+settings.inactive = 20
+settings.seed = 987654321
 settings.temperature = {'method' : 'interpolation', 'tolerance' : 10.0}
 settings.output = {'tallies': False}
 #settings.volume_calculations = [vol_calc]
@@ -418,7 +419,10 @@ operator = openmc.deplete.CoupledOperator(bcc_model)
 #operator = openmc.deplete.IndependentOperator(materials, fluxes, micros)
 
 # 1549 effective full power days over 6 passes = 6 258 day passes (~8.6 months)
-d_steps = [258]*6
+# dt steps based on table 1 in adaptive burnup..., Walter and Manera
+# 165/1549 gives that 1 EFPD is approximately 0.1 MWd/kgHM
+d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24
+#d_steps = [1] #test to get to a good pcm
 
 reactor_power = 165.0*(10**6) #165 MWth, converted to W
 #220K pebs, 19k triso per peb, vol_kernel, uco density, wt percent of u in uco
