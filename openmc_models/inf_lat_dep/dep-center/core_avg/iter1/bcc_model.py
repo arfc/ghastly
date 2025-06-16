@@ -140,9 +140,9 @@ uco56= openmc.Material(name='UCO_56')
 uco56.set_density('g/cm3', 10.4)
 uco56.add_components(pass56, percent_type = 'ao')
 
-ucoavg = openmc.Material.mix_materials([pass01, pass12,
-                                        pass23, pass34,
-                                        pass45, pass56], [0.16, 0.17,
+ucoavg = openmc.Material.mix_materials([uco01, uco12,
+                                        uco23, uco34,
+                                        uco45, uco56], [0.16, 0.17,
                                                           0.17, 0.17,
                                                           0.17, 0.16], 'vo')
 ucoavg.add_s_alpha_beta('c_Graphite')
@@ -561,7 +561,7 @@ bcc_model = openmc.model.Model(geometry, materials, settings)
 
 #chain file set as environment variable
 uco_volume = 1.5209
-uco.volume = uco_volume
+ucot.volume = uco_volume
 
 #Here is the coupled operator version
 operator = openmc.deplete.CoupledOperator(bcc_model)
@@ -580,7 +580,7 @@ d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24
 
 reactor_power = 165.0*(10**6) #165 MWth, converted to W
 #220K pebs, 19k triso per peb, vol_kernel, uco density, wt percent of u in uco
-uco_weight = (223000*19000*(4/3)*np.pi*triso_r[0]**3)*uco.density*0.8945
+uco_weight = (223000*19000*(4/3)*np.pi*triso_r[0]**3)*ucot.density*0.8945
 specific_power = reactor_power/uco_weight #this is in W/gHM
 
 celi = openmc.deplete.CELIIntegrator(
