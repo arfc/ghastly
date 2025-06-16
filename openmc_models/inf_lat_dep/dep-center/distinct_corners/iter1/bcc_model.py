@@ -2,20 +2,146 @@ import openmc
 import openmc.deplete
 import numpy as np
 
-
+dep_file = 'i0-dep-res.h5'
+mat_file = 'input_mats.xml'
+res = openmc.deplete.Results(dep_file)
+dep_t = res.get_times()
+step_comps = [res.export_to_materials(i, 
+                                      path=mat_file)[0].get_nuclide_densities()
+              for i in range(len(dep_t))]
 
 #materials
 #also doublecheck isotopic compostions conventions in mats
 #graphite based on a3-3, triso layers pulled from reported values in
 #Neutronics characteristics of a 165 MWth Xe-100 reactor, Mulder et al
-uco = openmc.Material(name='UCO')
-uco.set_density('g/cm3', 10.4)
-uco.add_nuclide("U235", 0.1386, percent_type='wo')
-uco.add_nuclide("U238",0.7559, percent_type='wo')
-uco.add_element("O", 0.06025, percent_type='wo')
-uco.add_element('C', 0.04523, percent_type='wo')
-uco.add_s_alpha_beta('c_Graphite')
-uco.temperature = 1159.15 #K
+
+#from below, d_steps are as follows (in [days]), so the pass-wise
+#indices would be (remember open on end, each pass ~= 258 days
+#pass1 : 0, then everything from 1 to 10 days, inclusive, then the first 6
+#steps of [25] days : 
+#d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24
+
+
+#realized something - discuss most logical option with Luke??
+# if I have "fresh" as a pass, and weight it like the other passes, it will
+#skew the results towards fresh, bc fresh doesn't exist the whole time (just
+#like how the last step of pass 5 -> 6, the most burnt, doesn't always exist, 
+# "fresh" is just the first step of pass 0->1
+#also, each step is not the same in terms of residence time, so for early
+#steps, the compositons need to be weighted by their dep_t
+pass01 = {}
+tot_time_01 = sum(dep_t[0:19])
+for i, step in enumerate(step_comps[0:19]):
+    for k, v in step.items():
+        if k in pass01:
+            pass01[k] += v[1]*(dep_t[i]/tot_time01)
+        else:
+            pass01[k] = {}
+            pass01[k] = v[1]*(dep_t[i]/tot_time01)
+
+pass12 = {}
+tot_time_12 = sum(dep_t[19:26])
+for i, step in enumerate(step_comps[0:19]):
+    for k, v in step.items():
+        if k in pass12:
+            pass12[k] += v[1]*(dep_t[i+19]/tot_time12)
+        else:
+            pass12[k] = {}
+            pass12[k] = v[1]*(dep_t[i+19]/tot_time12)
+
+pass23 = {}
+tot_time_23 = sum(dep_t[26:31])
+for i, step in enumerate(step_comps[26:31]):
+    for k, v in step.items():
+        if k in pass23:
+            pass23[k] += v[1]*(dep_t[i+26]/tot_time23)
+        else:
+            pass23[k] = {}
+            pass23[k] = v[1]*(dep_t[i+26]/tot_time23)
+
+pass34 = {}
+tot_time_34 = sum(dep_t[31:36])
+for i, step in enumerate(step_comps[31:36]):
+    for k, v in step.items():
+        if k in pass34:
+            pass34[k] += v[1]*(dep_t[i+31]/tot_time34)
+        else:
+            pass34[k] = {}
+            pass34[k] = v[1]*(dep_t[i+31]/tot_time34)
+
+pass45 = {}
+tot_time_45 = sum(dep_t[36:41])
+for i, step in enumerate(step_comps[36:41]):
+    for k, v in step.items():
+        if k in pass45:
+            pass45[k] += v[1]*(dep_t[i+36]/tot_time45)
+        else:
+            pass45[k] = {}
+            pass45[k] = v[1]*(dep_t[i+36]/tot_time45)
+
+pass56 = {}
+tot_time_56 = sum(dep_t[41:])
+for i, step in enumerate(step_comps[41:]):
+    for k, v in step.items():
+        if k in pass56:
+            pass56[k] += v[1]*(dep_t[i+41]/tot_time56)
+        else:
+            pass56[k] = {}
+            pass56[k] = v[1]*(dep_t[i+41]/tot_time56)
+
+
+uco01= openmc.Material(name='UCO_01')
+uco01.set_density('g/cm3', 10.4)
+uco01.add_components(pass01, percent_type = 'ao')
+uco01.add_s_alpha_beta('c_Graphite')
+uco01.depletable = False
+uco01.temperature = 1159.15 
+
+uco12= openmc.Material(name='UCO_12')
+uco12.set_density('g/cm3', 10.4)
+uco12.add_components(pass12, percent_type = 'ao')
+uco12.add_s_alpha_beta('c_Graphite')
+uco12.depletable = False
+uco12.temperature = 1159.15 
+
+uco23= openmc.Material(name='UCO_23')
+uco23.set_density('g/cm3', 10.4)
+uco23.add_components(pass23, percent_type = 'ao')
+uco23.add_s_alpha_beta('c_Graphite')
+uco23.depletable = False
+uco23.temperature = 1159.15 
+
+uco34= openmc.Material(name='UCO_34')
+uco34.set_density('g/cm3', 10.4)
+uco34.add_components(pass34, percent_type = 'ao')
+uco34.add_s_alpha_beta('c_Graphite')
+uco34.depletable = False
+uco34.temperature = 1159.15 
+
+uco45= openmc.Material(name='UCO_45')
+uco45.set_density('g/cm3', 10.4)
+uco45.add_components(pass45, percent_type = 'ao')
+uco45.add_s_alpha_beta('c_Graphite')
+uco45.depletable = False
+uco45.temperature = 1159.15 
+
+uco56= openmc.Material(name='UCO_56')
+uco56.set_density('g/cm3', 10.4)
+uco56.add_components(pass56, percent_type = 'ao')
+uco56.add_s_alpha_beta('c_Graphite')
+uco56.depletable = False
+uco56.temperature = 1159.15 
+
+
+ucot = openmc.Material(name='UCO_TRACKED')
+ucot.set_density('g/cm3', 10.4)
+ucot.add_nuclide("U235", 0.1386, percent_type='wo')
+ucot.add_nuclide("U238",0.7559, percent_type='wo')
+ucot.add_element("O", 0.06025, percent_type='wo')
+ucot.add_element('C', 0.04523, percent_type='wo')
+ucot.add_s_alpha_beta('c_Graphite')
+ucot.depletable = True
+ucot.temperature = 1159.15 #K
 
 buffer = openmc.Material(name='buffer')
 buffer.set_density('g/cm3', 1.05)
@@ -66,17 +192,80 @@ bcc_min_z = openmc.ZPlane(z0=-c_coord, boundary_type='reflective')
 bcc_max_z = openmc.ZPlane(z0=c_coord, boundary_type='reflective')
 
 #define the cells and universe for the triso particles
-triso_bounds = [openmc.Sphere(r=r) for r in triso_r[:-1]]
-triso_cells = [openmc.Cell(fill=uco, region=-triso_bounds[0]),
-               openmc.Cell(fill=buffer,
-                           region=+triso_bounds[0] & -triso_bounds[1]),
-               openmc.Cell(fill=pyc, 
-                           region=+triso_bounds[1] & -triso_bounds[2]),
-               openmc.Cell(fill=sic, 
-                           region=+triso_bounds[2] & -triso_bounds[3]),
-               openmc.Cell(fill=pyc, region=+triso_bounds[3])]
-triso_univ = openmc.Universe(cells=triso_cells)
+triso_reg = [openmc.Sphere(r=r) for r in triso_r[:-1]]
 
+tr_triso_cells = [openmc.Cell(fill=ucot, region=-triso_reg[0]),
+               openmc.Cell(fill=buffer,
+                           region=+triso_reg[0] & -triso_reg[1]),
+               openmc.Cell(fill=pyc, 
+                           region=+triso_reg[1] & -triso_reg[2]),
+               openmc.Cell(fill=sic, 
+                           region=+triso_reg[2] & -triso_reg[3]),
+               openmc.Cell(fill=pyc, region=+triso_reg[3])]
+tr_triso_univ = openmc.Universe(cells=tr_triso_cells)
+
+# for the corners, each corner is a distinct composition, instead of an
+#averaged composition.  Since there are 6 comps and 8 corners, there will be
+#2 pebs each of uco23 and uco34
+uco01_cells = [openmc.Cell(fill=uco01, region=-triso_reg[0]),
+               openmc.Cell(fill=buffer,
+                           region=+triso_reg[0] & -triso_reg[1]),
+               openmc.Cell(fill=pyc, 
+                           region=+triso_reg[1] & -triso_reg[2]),
+               openmc.Cell(fill=sic, 
+                           region=+triso_reg[2] & -triso_reg[3]),
+               openmc.Cell(fill=pyc, region=+triso_reg[3])]
+uco01_univ = openmc.Universe(cells=uco01_cells)
+
+uco12_cells = [openmc.Cell(fill=uc012, region=-triso_reg[0]),
+               openmc.Cell(fill=buffer,
+                           region=+triso_reg[0] & -triso_reg[1]),
+               openmc.Cell(fill=pyc, 
+                           region=+triso_reg[1] & -triso_reg[2]),
+               openmc.Cell(fill=sic, 
+                           region=+triso_reg[2] & -triso_reg[3]),
+               openmc.Cell(fill=pyc, region=+triso_reg[3])]
+uco12_univ = openmc.Universe(cells=uco12_cells)
+
+uco23_cells = [openmc.Cell(fill=uco23, region=-triso_reg[0]),
+               openmc.Cell(fill=buffer,
+                           region=+triso_reg[0] & -triso_reg[1]),
+               openmc.Cell(fill=pyc, 
+                           region=+triso_reg[1] & -triso_reg[2]),
+               openmc.Cell(fill=sic, 
+                           region=+triso_reg[2] & -triso_reg[3]),
+               openmc.Cell(fill=pyc, region=+triso_reg[3])]
+uco23_univ = openmc.Universe(cells=uco23_cells)
+
+uco34_cells = [openmc.Cell(fill=uco34, region=-triso_reg[0]),
+               openmc.Cell(fill=buffer,
+                           region=+triso_reg[0] & -triso_reg[1]),
+               openmc.Cell(fill=pyc, 
+                           region=+triso_reg[1] & -triso_reg[2]),
+               openmc.Cell(fill=sic, 
+                           region=+triso_reg[2] & -triso_reg[3]),
+               openmc.Cell(fill=pyc, region=+triso_reg[3])]
+uco34_univ = openmc.Universe(cells=uco34_cells)
+
+uco45_cells = [openmc.Cell(fill=uco45, region=-triso_reg[0]),
+               openmc.Cell(fill=buffer,
+                           region=+triso_reg[0] & -triso_reg[1]),
+               openmc.Cell(fill=pyc, 
+                           region=+triso_reg[1] & -triso_reg[2]),
+               openmc.Cell(fill=sic, 
+                           region=+triso_reg[2] & -triso_reg[3]),
+               openmc.Cell(fill=pyc, region=+triso_reg[3])]
+uco45_univ = openmc.Universe(cells=uco45_cells)
+
+uco56_cells = [openmc.Cell(fill=ucoavg, region=-triso_reg[0]),
+               openmc.Cell(fill=buffer,
+                           region=+triso_reg[0] & -triso_reg[1]),
+               openmc.Cell(fill=pyc, 
+                           region=+triso_reg[1] & -triso_reg[2]),
+               openmc.Cell(fill=sic, 
+                           region=+triso_reg[2] & -triso_reg[3]),
+               openmc.Cell(fill=pyc, region=+triso_reg[3])]
+uco56_univ = openmc.Universe(cells=uco56_cells)
 
 
 # define where the particles will be packed
@@ -97,7 +286,7 @@ body_nofuel_reg = -body_peb_out & +body_peb_in
 
 body_centers = openmc.model.pack_spheres(triso_r[-1], region=body_wfuel_bound,
                                          num_spheres=19000, seed = 978397880)
-body_trisos = [openmc.model.TRISO(triso_r[-1], triso_univ, center) 
+body_trisos = [openmc.model.TRISO(triso_r[-1], tr_triso_univ, center) 
                for center in body_centers]
 
 #now define the no-fueled outer shell for the body peb
@@ -118,7 +307,7 @@ body_cells = [body_wfuel, body_nofuel]
 
 #this will follow the same basic steps as the center pebble.  initial triso 
 #definition shouldn't change.
-#this one is the -1,-1,-1 corner
+#this one is the -1,-1,-1 corner = uco56
 c1_peb_in = openmc.Sphere(x0 = -c_coord, 
                           y0 =-c_coord, 
                           z0 =-c_coord, 
@@ -133,7 +322,7 @@ c1_nofuel_reg = -c1_peb_out & +c1_peb_in & c1_corner_bound
 
 c1_centers = openmc.model.pack_spheres(triso_r[-1], region=-c1_peb_in, 
                                        num_spheres=19000, seed = 987432789)
-c1_trisos = [openmc.model.TRISO(triso_r[-1], triso_univ, center) 
+c1_trisos = [openmc.model.TRISO(triso_r[-1], uco56_univ, center) 
              for center in c1_centers]
 
 c1_wfuel = openmc.Cell(region=c1_wfuel_reg)
@@ -150,7 +339,7 @@ c1_cells = [c1_wfuel, c1_nofuel]
 
 
 
-#c2: -1,-1,1
+#c2: -1,-1,1 = uco34
 c2_peb_in = openmc.Sphere(x0 = -c_coord, y0 =-c_coord, z0 =c_coord, r = peb_ir)
 c2_peb_out = openmc.Sphere(x0 = -c_coord, y0 =-c_coord, z0 =c_coord,r = peb_or)
 c2_corner_bound = +bcc_min_x & +bcc_min_y & -bcc_max_z
@@ -159,7 +348,7 @@ c2_nofuel_reg = -c2_peb_out & +c2_peb_in & c2_corner_bound
 
 c2_centers = openmc.model.pack_spheres(triso_r[-1], region=-c2_peb_in, 
                                        num_spheres=19000, seed = 895490889)
-c2_trisos = [openmc.model.TRISO(triso_r[-1], triso_univ, center) 
+c2_trisos = [openmc.model.TRISO(triso_r[-1], uco34_univ, center) 
              for center in c2_centers]
 
 c2_wfuel = openmc.Cell(region=c2_wfuel_reg)
@@ -176,7 +365,7 @@ c2_cells = [c2_wfuel, c2_nofuel]
 
 
 
-#c3: -1, 1, -1
+#c3: -1, 1, -1 = uco12
 c3_peb_in = openmc.Sphere(x0 = -c_coord, 
                           y0 =c_coord, 
                           z0 =-c_coord,
@@ -191,7 +380,7 @@ c3_nofuel_reg = -c3_peb_out & +c3_peb_in & c3_corner_bound
 
 c3_centers = openmc.model.pack_spheres(triso_r[-1], region=-c3_peb_in, 
                                        num_spheres=19000, seed = 356657913)
-c3_trisos = [openmc.model.TRISO(triso_r[-1], triso_univ, center) 
+c3_trisos = [openmc.model.TRISO(triso_r[-1], uco12_univ, center) 
              for center in c3_centers]
 
 c3_wfuel = openmc.Cell(region=c3_wfuel_reg)
@@ -208,7 +397,7 @@ c3_cells = [c3_wfuel, c3_nofuel]
 
 
 
-#c4: -1, 1, 1
+#c4: -1, 1, 1 = uco23
 c4_peb_in = openmc.Sphere(x0 = -c_coord, 
                           y0 =c_coord,
                           z0 =c_coord, 
@@ -224,7 +413,7 @@ c4_nofuel_reg = -c4_peb_out & +c4_peb_in & c4_corner_bound
 
 c4_centers = openmc.model.pack_spheres(triso_r[-1], region=-c4_peb_in, 
                                        num_spheres=19000, seed = 353623684)
-c4_trisos = [openmc.model.TRISO(triso_r[-1], triso_univ, center) 
+c4_trisos = [openmc.model.TRISO(triso_r[-1], uco23_univ, center) 
              for center in c4_centers]
 
 c4_wfuel = openmc.Cell(region=c4_wfuel_reg)
@@ -241,7 +430,7 @@ c4_cells = [c4_wfuel, c4_nofuel]
 
 
 
-#c5: 1, -1, -1
+#c5: 1, -1, -1 = uco34
 c5_peb_in = openmc.Sphere(x0 = c_coord, 
                           y0 =-c_coord, 
                           z0 =-c_coord, 
@@ -256,7 +445,7 @@ c5_nofuel_reg = -c5_peb_out & +c5_peb_in & c5_corner_bound
 
 c5_centers = openmc.model.pack_spheres(triso_r[-1], region=-c5_peb_in, 
                                        num_spheres=19000, seed = 897578459)
-c5_trisos = [openmc.model.TRISO(triso_r[-1], triso_univ, center) 
+c5_trisos = [openmc.model.TRISO(triso_r[-1], uco34_univ, center) 
              for center in c5_centers]
 
 c5_wfuel = openmc.Cell(region=c5_wfuel_reg)
@@ -273,7 +462,7 @@ c5_cells = [c5_wfuel, c5_nofuel]
 
 
 
-#c6: 1, -1, 1
+#c6: 1, -1, 1 = uco45
 c6_peb_in = openmc.Sphere(x0 = c_coord, 
                           y0 =-c_coord, 
                           z0 =c_coord, 
@@ -288,7 +477,7 @@ c6_nofuel_reg = -c6_peb_out & +c6_peb_in & c6_corner_bound
 
 c6_centers = openmc.model.pack_spheres(triso_r[-1], region=-c6_peb_in, 
                                        num_spheres=19000, seed = 429875621)
-c6_trisos = [openmc.model.TRISO(triso_r[-1], triso_univ, center) 
+c6_trisos = [openmc.model.TRISO(triso_r[-1], uco45_univ, center) 
              for center in c6_centers]
 
 c6_wfuel = openmc.Cell(region=c6_wfuel_reg)
@@ -303,7 +492,7 @@ c6_nofuel = openmc.Cell(fill=graphite, region=c6_nofuel_reg)
 
 c6_cells = [c6_wfuel, c6_nofuel]
 
-#c7: 1, 1, -1
+#c7: 1, 1, -1 =uco23
 c7_peb_in = openmc.Sphere(x0 = c_coord, 
                           y0 =c_coord, 
                           z0 =-c_coord, 
@@ -318,7 +507,7 @@ c7_nofuel_reg = -c7_peb_out & +c7_peb_in & c7_corner_bound
 
 c7_centers = openmc.model.pack_spheres(triso_r[-1], region=-c7_peb_in, 
                                        num_spheres=19000, seed = 489638795)
-c7_trisos = [openmc.model.TRISO(triso_r[-1], triso_univ, center) 
+c7_trisos = [openmc.model.TRISO(triso_r[-1], uco23_univ, center) 
              for center in c7_centers]
 
 c7_wfuel = openmc.Cell(region=c7_wfuel_reg)
@@ -333,7 +522,7 @@ c7_nofuel = openmc.Cell(fill=graphite, region=c7_nofuel_reg)
 
 c7_cells = [c7_wfuel, c7_nofuel]
 
-#c8: 1, 1, 1
+#c8: 1, 1, 1 = uco01
 c8_peb_in = openmc.Sphere(x0 = c_coord, 
                           y0 =c_coord, 
                           z0 =c_coord, 
@@ -348,7 +537,7 @@ c8_nofuel_reg = -c8_peb_out & +c8_peb_in & c8_corner_bound
 
 c8_centers = openmc.model.pack_spheres(triso_r[-1], region=-c8_peb_in, 
                                        num_spheres=19000, seed = 658469875)
-c8_trisos = [openmc.model.TRISO(triso_r[-1], triso_univ, center) 
+c8_trisos = [openmc.model.TRISO(triso_r[-1], uco01_univ, center) 
              for center in c8_centers]
 
 c8_wfuel = openmc.Cell(region=c8_wfuel_reg)
@@ -387,7 +576,8 @@ geometry.export_to_xml()
 #materials = list(geometry.get_all_materials().values())
 #openmc.Materials(materials).export_to_xml()
 
-materials = openmc.Materials([uco, buffer, pyc, sic, graphite, he])
+materials = openmc.Materials([uco01, uco12, uco23, uco34, uco45, uco56, 
+                              ucot, buffer, pyc, sic, graphite, he])
 openmc.Materials(materials).export_to_xml()
 
 settings = openmc.Settings()
@@ -407,7 +597,7 @@ bcc_model = openmc.model.Model(geometry, materials, settings)
 
 #chain file set as environment variable
 uco_volume = 1.5209
-uco.volume = uco_volume
+ucot.volume = uco_volume
 
 #Here is the coupled operator version
 operator = openmc.deplete.CoupledOperator(bcc_model)
@@ -426,7 +616,7 @@ d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24
 
 reactor_power = 165.0*(10**6) #165 MWth, converted to W
 #220K pebs, 19k triso per peb, vol_kernel, uco density, wt percent of u in uco
-uco_weight = (223000*19000*(4/3)*np.pi*triso_r[0]**3)*uco.density*0.8945
+uco_weight = (223000*19000*(4/3)*np.pi*triso_r[0]**3)*ucot.density*0.8945
 specific_power = reactor_power/uco_weight #this is in W/gHM
 
 celi = openmc.deplete.CELIIntegrator(
