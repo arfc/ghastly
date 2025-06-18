@@ -27,94 +27,69 @@ step_comps = [res.export_to_materials(i,
 #skew the results towards fresh, bc fresh doesn't exist the whole time (just
 #like how the last step of pass 5 -> 6, the most burnt, doesn't always exist, 
 # "fresh" is just the first step of pass 0->1
-temp_comp = {}
-for step in step_comps[0:19]:
-    for k, v in step.items():
-        if k in temp_comp:
-            temp_comp[k]['iso'] += v[1]
-            temp_comp[k]['count'] += 1
-        else:
-            temp_comp[k] = {}
-            temp_comp[k]['iso'] = v[1]
-            temp_comp[k]['count'] = 1
 
+#also, each step is not the same in terms of residence time, so for early
+#steps, the compositons need to be weighted by their dep_t
 pass01 = {}
-for k, v in temp_comp.items():
-    pass01[k] = v['iso']/v['count']
-
-temp_comp ={}
-for step in step_comps[19:26]:
+tot_time01 = sum(dep_t[0:19])
+for i, step in enumerate(step_comps[0:19]):
     for k, v in step.items():
-        if k in temp_comp:
-            temp_comp[k]['iso'] += v[1]
-            temp_comp[k]['count'] += 1
+        if k in pass01:
+            pass01[k] += v[1]*(dep_t[i]/tot_time01)
         else:
-            temp_comp[k] = {}
-            temp_comp[k]['iso'] = v[1]
-            temp_comp[k]['count'] = 1      
+            pass01[k] = {}
+            pass01[k] = v[1]*(dep_t[i]/tot_time01)
+
 pass12 = {}
-for k, v in temp_comp.items():
-    pass12[k] = v['iso']/v['count']
-
-temp_comp ={}
-for step in step_comps[26:31]:
+tot_time12 = sum(dep_t[19:26])
+for i, step in enumerate(step_comps[0:19]):
     for k, v in step.items():
-        if k in temp_comp:
-            temp_comp[k]['iso'] += v[1]
-            temp_comp[k]['count'] += 1
+        if k in pass12:
+            pass12[k] += v[1]*(dep_t[i+19]/tot_time12)
         else:
-            temp_comp[k] = {}
-            temp_comp[k]['iso'] = v[1]
-            temp_comp[k]['count'] = 1
+            pass12[k] = {}
+            pass12[k] = v[1]*(dep_t[i+19]/tot_time12)
 
 pass23 = {}
-for k, v in temp_comp.items():
-    pass23[k] = v['iso']/v['count']
-
-temp_comp ={}
-for step in step_comps[31:36]:
+tot_time23 = sum(dep_t[26:31])
+for i, step in enumerate(step_comps[26:31]):
     for k, v in step.items():
-        if k in temp_comp:
-            temp_comp[k]['iso'] += v[1]
-            temp_comp[k]['count'] += 1
+        if k in pass23:
+            pass23[k] += v[1]*(dep_t[i+26]/tot_time23)
         else:
-            temp_comp[k] = {}
-            temp_comp[k]['iso'] = v[1]
-            temp_comp[k]['count'] = 1
+            pass23[k] = {}
+            pass23[k] = v[1]*(dep_t[i+26]/tot_time23)
 
 pass34 = {}
-for k, v in temp_comp.items():
-    pass34[k] = v['iso']/v['count']
-
-temp_comp ={}
-for step in step_comps[36:41]:
+tot_time34 = sum(dep_t[31:36])
+for i, step in enumerate(step_comps[31:36]):
     for k, v in step.items():
-        if k in temp_comp:
-            temp_comp[k]['iso'] += v[1]
-            temp_comp[k]['count'] += 1
+        if k in pass34:
+            pass34[k] += v[1]*(dep_t[i+31]/tot_time34)
         else:
-            temp_comp[k] = {}
-            temp_comp[k]['iso'] = v[1]
-            temp_comp[k]['count'] = 1
+            pass34[k] = {}
+            pass34[k] = v[1]*(dep_t[i+31]/tot_time34)
 
 pass45 = {}
-for k, v in temp_comp.items():
-    pass45[k] = v['iso']/v['count']
-
-temp_comp ={}
-for step in step_comps[41:]:
+tot_time45 = sum(dep_t[36:41])
+for i, step in enumerate(step_comps[36:41]):
     for k, v in step.items():
-        if k in temp_comp:
-            temp_comp[k]['iso'] += v[1]
-            temp_comp[k]['count'] += 1
+        if k in pass45:
+            pass45[k] += v[1]*(dep_t[i+36]/tot_time45)
         else:
-            temp_comp[k] = {}
-            temp_comp[k]['iso'] = v[1]
-            temp_comp[k]['count'] = 1
+            pass45[k] = {}
+            pass45[k] = v[1]*(dep_t[i+36]/tot_time45)
 
 pass56 = {}
-for k, v in temp_comp.items():
-    pass56[k] = v['iso']/v['count']
+tot_time56 = sum(dep_t[41:])
+for i, step in enumerate(step_comps[41:]):
+    for k, v in step.items():
+        if k in pass56:
+            pass56[k] += v[1]*(dep_t[i+41]/tot_time56)
+        else:
+            pass56[k] = {}
+            pass56[k] = v[1]*(dep_t[i+41]/tot_time56)
+
 
 uco01= openmc.Material(name='UCO_01')
 uco01.set_density('g/cm3', 10.4)
