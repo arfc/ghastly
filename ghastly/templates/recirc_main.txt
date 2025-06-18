@@ -78,7 +78,7 @@ dump		peb_coords all custom ${interval} coords_*.txt id type x y z
 dump		peb_gif all movie 5000 pour.gif type diameter & 
 		view 90 0 box no 0.0 size ${pix_width} ${pix_height}
 
-dump_modify	peb_gif acolor * powderblue
+dump_modify	peb_gif acolor * indigo backcolor whitesmoke
 
 thermo_style	custom step cpu time atoms ke
 thermo_modify	flush yes lost warn
@@ -91,9 +91,31 @@ read_dump	starting-bed.txt 0 x y z add yes timestep no
 
 set		type 1 diameter ${d_pebble}$
 
-include		{{recirc_reg_file}}
+#if you include the extra velocity step, also add commented out lines below
 
-group 		recirc dynamic all region {{recirc_reg_name}}
+include		{{recirc_reg_file}}
+#try it this way, if the atoms aren't recirculating again it might be because
+#the recirc group definition needs to be inside the loop to update properly
+group 		outlet dynamic all region {{recirc_out_name}}
+#group		inlet dynamic all region {{recirc_in_name}}
+#displace_distance is the center-to-center difference in the z coords of the
+#out discharge region and the target inlet region
+variable	displace equal {{displace_distance}}
+#variable	freefall equal ${gravity}*sqrt(2*({{freefall_z}}/${gravity}))
+
+label		recirculate
+variable	iter_tot equal int({{t_final}}/{{discharge_rate}})
+variable	recirc_run equal int(({{t_final}}/${dt})/${iter_tot})
+variable	i loop ${iter_tot} 
+displace_atoms	recirc_reg move 0.0 0.0 ${displace} units box
+#consider also adding:
+#velocity	inlet set 0.0 0.0 -${freefall}
+print		"Recirculation Step $i/${iter_tot}"
+run		recirc_run
+if		"$i == ${iter_tot} then "jump SELF break"
+next		i
+jump		SELF recirculate
+label		break
 
 
 

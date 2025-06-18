@@ -289,6 +289,15 @@ def write_region_blocks(core_zones):
         List of the element names for each region block generated, which is
         used as the region's name in LAMMPS.
     '''
+
+    #you need to do one of two things with this function - either make
+    # this into a function to create a single region file for a specific
+    # region you pass it, OR, make this a function specifically for
+    #generating the physical bounds of the whole core,
+    # and write a completely separate function for filling in an arbitrary
+    # region template.  Option one requires rewriting some parts of the pour
+    #main and fill core functions, but you won't be repeating code snippets
+    #between functions.
     reg_files = []
     reg_names = []
     for element_name, element in core_zones.items():
@@ -440,3 +449,15 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
     pour_filename = "pour_main_input.txt"
     with open(pour_filename, mode='w') as f:
         f.write(main_text)
+
+
+def recirculate_pebbles(input_file, recirc_temp="recirc_main.txt"):
+    '''
+    recirculates pebbles in the core, using a lammps sim and the
+    parameters in the input file
+    reminder that ghastly assumes by default lammps uses the si unit set,
+    so distances are in m, and openmc can only use cm
+    '''
+    input_block = read_input.InputBlock(input_file)
+    sim_block = input_block.create_obj()
+
