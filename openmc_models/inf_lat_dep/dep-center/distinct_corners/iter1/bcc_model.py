@@ -30,7 +30,7 @@ step_comps = [res.export_to_materials(i,
 #also, each step is not the same in terms of residence time, so for early
 #steps, the compositons need to be weighted by their dep_t
 pass01 = {}
-tot_time_01 = sum(dep_t[0:19])
+tot_time01 = sum(dep_t[0:19])
 for i, step in enumerate(step_comps[0:19]):
     for k, v in step.items():
         if k in pass01:
@@ -40,7 +40,7 @@ for i, step in enumerate(step_comps[0:19]):
             pass01[k] = v[1]*(dep_t[i]/tot_time01)
 
 pass12 = {}
-tot_time_12 = sum(dep_t[19:26])
+tot_time12 = sum(dep_t[19:26])
 for i, step in enumerate(step_comps[0:19]):
     for k, v in step.items():
         if k in pass12:
@@ -50,7 +50,7 @@ for i, step in enumerate(step_comps[0:19]):
             pass12[k] = v[1]*(dep_t[i+19]/tot_time12)
 
 pass23 = {}
-tot_time_23 = sum(dep_t[26:31])
+tot_time23 = sum(dep_t[26:31])
 for i, step in enumerate(step_comps[26:31]):
     for k, v in step.items():
         if k in pass23:
@@ -60,7 +60,7 @@ for i, step in enumerate(step_comps[26:31]):
             pass23[k] = v[1]*(dep_t[i+26]/tot_time23)
 
 pass34 = {}
-tot_time_34 = sum(dep_t[31:36])
+tot_time34 = sum(dep_t[31:36])
 for i, step in enumerate(step_comps[31:36]):
     for k, v in step.items():
         if k in pass34:
@@ -70,7 +70,7 @@ for i, step in enumerate(step_comps[31:36]):
             pass34[k] = v[1]*(dep_t[i+31]/tot_time34)
 
 pass45 = {}
-tot_time_45 = sum(dep_t[36:41])
+tot_time45 = sum(dep_t[36:41])
 for i, step in enumerate(step_comps[36:41]):
     for k, v in step.items():
         if k in pass45:
@@ -80,7 +80,7 @@ for i, step in enumerate(step_comps[36:41]):
             pass45[k] = v[1]*(dep_t[i+36]/tot_time45)
 
 pass56 = {}
-tot_time_56 = sum(dep_t[41:])
+tot_time56 = sum(dep_t[41:])
 for i, step in enumerate(step_comps[41:]):
     for k, v in step.items():
         if k in pass56:
@@ -217,7 +217,7 @@ uco01_cells = [openmc.Cell(fill=uco01, region=-triso_reg[0]),
                openmc.Cell(fill=pyc, region=+triso_reg[3])]
 uco01_univ = openmc.Universe(cells=uco01_cells)
 
-uco12_cells = [openmc.Cell(fill=uc012, region=-triso_reg[0]),
+uco12_cells = [openmc.Cell(fill=uco12, region=-triso_reg[0]),
                openmc.Cell(fill=buffer,
                            region=+triso_reg[0] & -triso_reg[1]),
                openmc.Cell(fill=pyc, 
@@ -257,7 +257,7 @@ uco45_cells = [openmc.Cell(fill=uco45, region=-triso_reg[0]),
                openmc.Cell(fill=pyc, region=+triso_reg[3])]
 uco45_univ = openmc.Universe(cells=uco45_cells)
 
-uco56_cells = [openmc.Cell(fill=ucoavg, region=-triso_reg[0]),
+uco56_cells = [openmc.Cell(fill=uco56, region=-triso_reg[0]),
                openmc.Cell(fill=buffer,
                            region=+triso_reg[0] & -triso_reg[1]),
                openmc.Cell(fill=pyc, 
