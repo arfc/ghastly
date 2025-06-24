@@ -1,6 +1,6 @@
 suffix		omp
 units		si
-package		omp 4
+package		omp 3
 
 ##############################################################################
 #variables
@@ -9,7 +9,7 @@ variable	pi equal 3.1415927
 
 include		{{variable_filename}}
 
-variable	skin equal ${r_pebble}/4
+variable	skin equal ${r_pebble}/12
 
 variable	d_pebble equal 2*${r_pebble}
 variable	mass equal ${density_rho}*(4/3)*${pi}*(${r_pebble}^3)
@@ -23,7 +23,6 @@ variable	gamma_t equal 0.5*${gamma_n}
 
 variable	t_col equal ${pi}/sqrt(2*(${k_n}/${mass})-(${gamma_n}^2)/4)
 variable	dt equal ${t_col}/50
-variable	tot_run equal ${run_factor}*${interval}
 
 ##############################################################################
 #simulation parameters
@@ -41,7 +40,7 @@ pair_style	gran/hertz/history/omp &
 pair_coeff	* *
 
 neighbor	${skin} multi
-neigh_modify	delay 0 every 1 check yes
+neigh_modify	delay 0 every 10000 check yes
 thermo		1000
 timestep	${dt}
 
@@ -75,46 +74,41 @@ variable	pix_width equal round((abs({{x_b.low}})+abs({{x_b.up}}))*250)
 variable	pix_height equal round((abs({{z_b.low}})+abs({{z_b.up}}))*250)
 
 dump		peb_coords all custom ${interval} coords_*.txt id type x y z
-dump		peb_gif all movie 5000 pour.gif type diameter & 
+dump		recirc_gif all movie 5000 recirc.gif type diameter & 
 		view 90 0 box no 0.0 size ${pix_width} ${pix_height}
 
-dump_modify	peb_gif acolor * indigo backcolor whitesmoke
+dump_modify	recirc_gif acolor * indigo backcolor whitesmoke
 
-thermo_style	custom step cpu time atoms ke
+
+thermo_style	custom step cpu tpcpu spcpu cpuremain time atoms ke
 thermo_modify	flush yes lost warn
 
 ##############################################################################
 #filling core
 ##############################################################################
 
-read_dump	starting-bed.txt 0 x y z add yes timestep no
+read_dump	{{starting_bed}} 0 x y z add yes timestep no
 
-set		type 1 diameter ${d_pebble}$
+set		type 1 diameter ${d_pebble}
 
-#if you include the extra velocity step, also add commented out lines below
-
-include		{{recirc_reg_file}}
-#try it this way, if the atoms aren't recirculating again it might be because
-#the recirc group definition needs to be inside the loop to update properly
-group 		outlet dynamic all region {{recirc_out_name}}
-#group		inlet dynamic all region {{recirc_in_name}}
-#displace_distance is the center-to-center difference in the z coords of the
-#out discharge region and the target inlet region
+include		{{recirc_out_fname[0]}}
 variable	displace equal {{displace_distance}}
-#variable	freefall equal ${gravity}*sqrt(2*({{freefall_z}}/${gravity}))
+print		"${displace}"
+variable	iter_tot equal round({{t_final}}/{{out_rate}})
+variable	recirc_run equal round(({{t_final}}/${dt})/${iter_tot})
+variable	i loop ${iter_tot}
+group		outlet region {{recirc_out_name[0]}} 
 
 label		recirculate
-variable	iter_tot equal int({{t_final}}/{{discharge_rate}})
-variable	recirc_run equal int(({{t_final}}/${dt})/${iter_tot})
-variable	i loop ${iter_tot} 
-displace_atoms	recirc_reg move 0.0 0.0 ${displace} units box
-#consider also adding:
-#velocity	inlet set 0.0 0.0 -${freefall}
 print		"Recirculation Step $i/${iter_tot}"
-run		recirc_run
-if		"$i == ${iter_tot} then "jump SELF break"
+displace_atoms	outlet move 0.0 0.0 ${displace} units box 
+run		${recirc_run}
+if		"$i == ${iter_tot}" then "jump SELF break"
 next		i
+group		outlet delete
+group		outlet region {{recirc_out_name[0]}}
 jump		SELF recirculate
+
 label		break
 
 

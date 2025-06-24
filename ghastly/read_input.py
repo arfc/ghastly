@@ -32,6 +32,10 @@ class InputBlock:
         self.core_intake_var = params["core_intake"]
         self.core_main_var = params["core_main"]
         self.core_outtake_var = params["core_outtake"]
+        if "recirc" in params:
+            self.recirc_var = params["recirc"]
+        else:
+            self.recirc_var = {}
         self.lammps_var = params["lammps_var"]
 
     def create_obj(self):
@@ -148,12 +152,20 @@ class InputBlock:
             case _:
                 seed = self.sim_var["seed"]
 
+        match len(self.recirc_var):
+            case 0:
+                recirc = {}
+            case _:
+                recirc = self.create_core_zone(self.recirc_var)
+
         sim_block = simulation.Sim(r_pebble=self.sim_var["r_pebble"],
                                    t_final=self.sim_var["t_final"],
                                    pf=self.sim_var["pf"],
+                                   out_rate=self.sim_var["out_rate"],
                                    core_intake=core_intake,
                                    core_main=core_main,
                                    core_outtake=core_outtake,
+                                   recirc=recirc,
                                    k_rate=k_rate,
                                    down_flow=down_flow,
                                    seed=seed)

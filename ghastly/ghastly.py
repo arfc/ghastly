@@ -290,14 +290,6 @@ def write_region_blocks(core_zones):
         used as the region's name in LAMMPS.
     '''
 
-    #you need to do one of two things with this function - either make
-    # this into a function to create a single region file for a specific
-    # region you pass it, OR, make this a function specifically for
-    #generating the physical bounds of the whole core,
-    # and write a completely separate function for filling in an arbitrary
-    # region template.  Option one requires rewriting some parts of the pour
-    #main and fill core functions, but you won't be repeating code snippets
-    #between functions.
     reg_files = []
     reg_names = []
     for element_name, element in core_zones.items():
@@ -334,7 +326,6 @@ def write_region_blocks(core_zones):
 
         else:
             raise TypeError(str(element_name)+" is not a CylCore or ConeCore.")
-
     return reg_files, reg_names
 
 
@@ -451,7 +442,10 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
         f.write(main_text)
 
 
-def recirculate_pebbles(input_file, recirc_temp="recirc_main.txt"):
+def recirculate_pebbles(input_file, recirc_fname="recirc_input.txt",
+                        recirc_temp="recirc_main.txt", 
+                        var_fname="recirc_var.txt",
+                        init_bed_fname="starting_bed.txt"):
     '''
     recirculates pebbles in the core, using a lammps sim and the
     parameters in the input file
@@ -460,4 +454,59 @@ def recirculate_pebbles(input_file, recirc_temp="recirc_main.txt"):
     '''
     input_block = read_input.InputBlock(input_file)
     sim_block = input_block.create_obj()
+
+    x_b, y_b, z_b = find_box_bounds(sim_block)
+
+    write_variable_block(var_fname, input_block, sim_block)
+
+    active_core = (sim_block.core_intake | 
+                         sim_block.core_main | 
+                         sim_block.core_outtake)
+
+    act_reg_fnames, act_reg_names = write_region_blocks(active_core)
+
+    recirc_outlet = {k: v for k, v in sim_block.recirc.items() if "out" in k}
+    recirc_out_fname, recirc_out_name = write_region_blocks(recirc_outlet)
+
+    write_recirc_main(recirc_fname, recirc_temp, var_fname, act_reg_fnames,
+                      act_reg_names, recirc_out_fname, recirc_out_name, 
+                      init_bed_fname, sim_block, x_b, y_b, z_b)
+
+def write_recirc_main(recirc_fname, recirc_temp, var_fname, act_reg_fnames,
+                      act_reg_names, recirc_out_fname, recirc_out_name, 
+                      init_bed_fname, sim_block, x_b, y_b, z_b):
+    '''
+    write recirc main file for LAMMPS
+    '''
+    #determine displacement distance in meters
+    if sim_block.down_flow: 
+        displacement = abs(list(sim_block.recirc.values())[0].z_max - 
+                           list(sim_block.recirc.values())[1].z_max)
+    else:
+        displacement = -abs(list(sim_block.recirc.values())[0].z_max - 
+                           list(sim_block.recirc.values())[1].z_max)
+
+
+
+    main_template = env.get_template(recirc_temp)
+    main_text = main_template.render(variable_filename=var_fname,
+                                     x_b = x_b, y_b = y_b, z_b = z_b,
+                                     region_files = act_reg_fnames,
+                                     n_regions = len(act_reg_fnames),
+                                     region_names = act_reg_names,
+                                     starting_bed = init_bed_fname,
+                                     recirc_out_fname = recirc_out_fname,
+                                     recirc_out_name = recirc_out_name,
+                                     displace_distance = displacement,
+                                     t_final = sim_block.t_final,
+                                     out_rate = sim_block.out_rate)
+
+    with open(recirc_fname, mode='w') as f:
+        f.write(main_text)
+
+
+
+
+
+    
 
