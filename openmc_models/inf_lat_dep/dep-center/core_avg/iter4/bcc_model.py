@@ -2,8 +2,8 @@ import openmc
 import openmc.deplete
 import numpy as np
 
-dep_file = 'i2-dep-res.h5'
-mat_file = 'i2-mats.xml'
+dep_file = 'i3-dep-res.h5'
+mat_file = 'i3-mats.xml'
 res = openmc.deplete.Results(dep_file)
 dep_t = res.get_times()
 step_comps = [res.export_to_materials(i, 
