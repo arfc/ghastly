@@ -82,14 +82,15 @@ def compare_isos(title, xlabel, fig_fname,
     plt.xlabel(xlabel + '['+t_units+']')
     plt.xlim(t[0], t[-1])
     plt.savefig(fname=fig_fname+'-abs', dpi=dpi)
+    plt.close()
 
     for k, v in list(diff.items()):
-        plt.plot(t, v['rel'] , label = k, color = v['color'])
+        plt.plot(t, 100*v['rel'] , label = k, color = v['color'])
     plt.legend()
     plt.suptitle(title)
     plt.title('Relative Difference: (' +name1+ '-' +name2+')/('+name1+')')
-    plt.ylabel('Relative Difference ' + '[-]')
-    plt.xlabel(xlabel + '[-]')
+    plt.ylabel('Relative Difference ' + '[%]')
+    plt.xlabel(xlabel + '['+t_units+']')
     plt.xlim(t[0], t[-1])
     plt.savefig(fname=fig_fname+'-rel', dpi=dpi)
     plt.close()
@@ -98,13 +99,10 @@ def compare_isos(title, xlabel, fig_fname,
     
 
 def check_converge(title, ylabel, xlabel, fig_fname, dep_fnames, mat_ids,
-                   linestyles,
+                   step_colors,
               nuc_list=['U235', 'U236', 
                         'Pu238', 'Pu239', 'Pu240', 'Pu241', 
-                        'Cs134', 'Cs137'], 
-              nuc_colors = ['turquoise', 'teal',
-                            'plum', 'orchid', 'mediumorchid', 'purple',
-                            'lightcoral', 'firebrick'],
+                        'Cs134', 'Cs137'],
               t_units='d', m_units='g/cm3', dpi=600):
     '''
     given a list of depletion results in order
@@ -121,7 +119,6 @@ def check_converge(title, ylabel, xlabel, fig_fname, dep_fnames, mat_ids,
     isos = {}
     for i, n in enumerate(nuc_list):
         isos[n] = {}
-        isos[n]['color'] = nuc_colors[i]
         for j, dep_file in enumerate(dep_fnames):
             res = openmc.deplete.Results(dep_file)
             _, conc = res.get_mass(mat=mat_ids[j], nuc=n, 
@@ -131,8 +128,7 @@ def check_converge(title, ylabel, xlabel, fig_fname, dep_fnames, mat_ids,
 
     for nuc in nuc_list:
         for k in range(len(dep_fnames)):
-            plt.plot(t, isos[nuc][k], label = k, 
-                     color = isos[nuc]['color'], marker = linestyles[k])
+            plt.plot(t, isos[nuc][k], label = k, color = step_colors[k])
         plt.legend()
         plt.suptitle(title)
         plt.title(nuc)
@@ -210,27 +206,27 @@ compare_isos("Passwise vs Core-Averaged Corners: i1",'Time', 'i1-compare',
           'inf_lat_dep/dep-center/distinct_corners/iter1/depletion_results.h5',
           '13', 'Passwise',
              'inf_lat_dep/dep-center/core_avg/iter1/depletion_results.h5',
-             '14', 'Core-Averaged')
+             '14', 'Core_Averaged')
 
 #passwise vs avg: i2
 compare_isos("Passwise vs Core-Averaged Corners: i2",'Time', 'i2-compare', 
           'inf_lat_dep/dep-center/distinct_corners/iter2/depletion_results.h5',
           '13', 'Passwise',
              'inf_lat_dep/dep-center/core_avg/iter2/depletion_results.h5',
-             '14', 'Core-Averaged')
+             '14', 'Core_Averaged')
 #i3
 compare_isos("Passwise vs Core-Averaged Corners: i3",'Time', 'i3-compare', 
           'inf_lat_dep/dep-center/distinct_corners/iter3/depletion_results.h5',
           '13', 'Passwise',
              'inf_lat_dep/dep-center/core_avg/iter3/depletion_results.h5',
-             '14', 'Core-Averaged')
+             '14', 'Core_Averaged')
 #i4
 
 compare_isos("Passwise vs Core-Averaged Corners: i4",'Time', 'i4-compare', 
           'inf_lat_dep/dep-center/distinct_corners/iter4/depletion_results.h5',
           '13', 'Passwise',
              'inf_lat_dep/dep-center/core_avg/iter4/depletion_results.h5',
-             '14', 'Core-Averaged')
+             '14', 'Core-_Averaged')
 
 #check convergence
 
@@ -242,11 +238,11 @@ fnames1 = ['inf_lat_dep/iter0/depletion_results.h5',
           'inf_lat_dep/dep-center/distinct_corners/iter3/depletion_results.h5',
           'inf_lat_dep/dep-center/distinct_corners/iter4/depletion_results.h5']
 mat_ids1 = ['1', '13', '13', '13', '13']
-linestyles = ['o', 'v', 's', '*', 'D' ]
+stepcolors= ['turquoise', 'teal', 'orchid', 'purple', 'firebrick']
 
 check_converge("Convergence Check: Passwise Corners",
                'Concentration', 'Time', 'passwise-converge', fnames1, mat_ids1,
-                   linestyles)
+                   stepcolors)
 
 fnames2 = ['inf_lat_dep/iter0/depletion_results.h5', 
           'inf_lat_dep/dep-center/core_avg/iter1/depletion_results.h5',
@@ -257,6 +253,6 @@ mat_ids2 = ['1', '14', '14', '14', '14']
 
 check_converge("Convergence Check: Core-Averaged Corners",
                'Concentration', 'Time', 'avg-converge', fnames2, mat_ids2,
-                   linestyles)
+                   stepcolors)
 
 
