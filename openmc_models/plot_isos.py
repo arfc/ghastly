@@ -93,7 +93,7 @@ def compare_isos(title, xlabel, fig_fname,
     plt.legend()
     plt.suptitle(title)
     plt.title('Relative Difference: (' +name1+ '-' +name2+')/('+name1+')')
-    plt.ylabel('Relative Difference ' + '[%]')
+    plt.ylabel('Relative Difference [%]')
     plt.xlabel(xlabel + '['+t_units+']')
     plt.xlim(t[0], t[-1])
     plt.savefig(fname=fig_fname+'-rel', dpi=dpi)
@@ -168,7 +168,7 @@ def check_converge(title, ylabel, xlabel, fig_fname, dep_fnames, mat_ids,
         plt.suptitle(title)
         plt.title(nuc)
         plt.ylabel(ylabel + ' ['+m_units+']')
-        plt.xlabel(xlabel + ' ['+t_units+']')
+        plt.xlabel('Relative Difference [%]')
         plt.xlim(t[0], t[-1])
         plt.savefig(fname=fig_fname + nuc +'_rel', dpi=dpi)
         plt.close()
@@ -236,27 +236,31 @@ plot_isos("Depleting Pebble Isotopics: Corewise-BCC Model, i4",
 #comparisons:
 
 # passwise vs avg: i1
-compare_isos("Passwise vs Corewise BCC Depleting Pebble Isotopics: i1",'Time', 'i1-compare', 
+compare_isos("Passwise vs Corewise BCC Depleting Pebble Isotopics: i1",'Time', 
+             'i1-compare', 
           'inf_lat_dep/dep-center/distinct_corners/iter1/depletion_results.h5',
           '13', 'Passwise',
              'inf_lat_dep/dep-center/core_avg/iter1/depletion_results.h5',
              '14', 'Core_Averaged')
 
 #passwise vs avg: i2
-compare_isos("Passwise vs Corewise BCC Depleting Pebble Isotopics: i2",'Time', 'i2-compare', 
+compare_isos("Passwise vs Corewise BCC Depleting Pebble Isotopics: i2",'Time', 
+             'i2-compare', 
           'inf_lat_dep/dep-center/distinct_corners/iter2/depletion_results.h5',
           '13', 'Passwise',
              'inf_lat_dep/dep-center/core_avg/iter2/depletion_results.h5',
              '14', 'Core_Averaged')
 #i3
-compare_isos("Passwise vs Corewise BCC Depleting Pebble Isotopics: i3",'Time', 'i3-compare', 
+compare_isos("Passwise vs Corewise BCC Depleting Pebble Isotopics: i3",'Time', 
+             'i3-compare', 
           'inf_lat_dep/dep-center/distinct_corners/iter3/depletion_results.h5',
           '13', 'Passwise',
              'inf_lat_dep/dep-center/core_avg/iter3/depletion_results.h5',
              '14', 'Core_Averaged')
 #i4
 
-compare_isos("Passwise vs Corewise BCC Depleting Pebble Isotopics: i4",'Time', 'i4-compare', 
+compare_isos("Passwise vs Corewise BCC Depleting Pebble Isotopics: i4",'Time', 
+             'i4-compare', 
           'inf_lat_dep/dep-center/distinct_corners/iter4/depletion_results.h5',
           '13', 'Passwise',
              'inf_lat_dep/dep-center/core_avg/iter4/depletion_results.h5',
