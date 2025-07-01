@@ -2,8 +2,8 @@ import openmc
 import openmc.deplete
 import numpy as np
 
-dep_file = 'i3-dep-res.h5'
-mat_file = 'i3-mats.xml'
+dep_file = 'i4-dep-res.h5'
+mat_file = 'i4-mats.xml'
 res = openmc.deplete.Results(dep_file)
 dep_t = res.get_times()
 step_comps = [res.export_to_materials(i, 
@@ -21,12 +21,6 @@ step_comps = [res.export_to_materials(i,
 #steps of [25] days : 
 #d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24
 
-
-#realized something - discuss most logical option with Luke??
-# if I have "fresh" as a pass, and weight it like the other passes, it will
-#skew the results towards fresh, bc fresh doesn't exist the whole time (just
-#like how the last step of pass 5 -> 6, the most burnt, doesn't always exist, 
-# "fresh" is just the first step of pass 0->1
 
 pass01 = {}
 tot_time01 = sum(dep_t[0:19])
@@ -122,7 +116,10 @@ ucoavg.add_s_alpha_beta('c_Graphite')
 ucoavg.depletable = False
 ucoavg.temperature = 1159.15 #K
 
-
+#you'll need to make multiple models, and what changes each time is the
+#comp of the center pebble (ucot) for the first step, it's fresh, but then
+#after that, you need to replace this comp w/ a comp from a timestep after 
+#x days (which you'll want to record for plots later)
 ucot = openmc.Material(name='UCO_TRACKED', material_id=14)
 ucot.set_density('g/cm3', 10.4)
 ucot.add_nuclide("U235", 0.1386, percent_type='wo')
@@ -176,48 +173,16 @@ openmc.Materials(materials).export_to_xml()
 geometry = openmc.Geometry.from_xml("geometry.xml", materials)
 
 settings = openmc.Settings()
-#settings.run_mode = 'eigenvalue'
+settings.run_mode = 'eigenvalue'
 settings.verbosity = 6
-settings.particles = 5000
+settings.particles = 10000
 settings.generations_per_batch = 5
-settings.batches = 60
+settings.batches = 100
 settings.inactive = 20
-settings.seed = 987654321
+settings.seed = 463913357
 settings.temperature = {'method' : 'interpolation', 'tolerance' : 10.0}
 settings.output = {'tallies': False}
 #settings.volume_calculations = [vol_calc]
 settings.export_to_xml()
 
-bcc_model = openmc.model.Model(geometry, materials, settings)
-
-#chain file set as environment variable
-uco_volume = 1.5209
-ucot.volume = uco_volume
-
-#Here is the coupled operator version
-operator = openmc.deplete.CoupledOperator(bcc_model)
-
-#but getting the micro xs and running with an independent operator might
-#be faster:
-
-#fluxes, micros = openmc.deplete.get_microxs_and_flux(bcc_model, materials)
-#operator = openmc.deplete.IndependentOperator(materials, fluxes, micros)
-
-# 1549 effective full power days over 6 passes = 6 258 day passes (~8.6 months)
-# dt steps based on table 1 in adaptive burnup..., Walter and Manera
-# 165/1549 gives that 1 EFPD is approximately 0.1 MWd/kgHM
-d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24
-#d_steps = [1] #test to get to a good pcm
-
-reactor_power = 165.0*(10**6) #165 MWth, converted to W
-#220K pebs, 19k triso per peb, vol_kernel, uco density, wt percent of u in uco
-uco_weight = (223000*19000*(4/3)*np.pi*triso_r[0]**3)*ucot.density*0.8945
-specific_power = reactor_power/uco_weight #this is in W/gHM
-
-celi = openmc.deplete.CELIIntegrator(
-
-    operator, d_steps, power_density=specific_power, timestep_units = 'd')
-
-celi.integrate()
-
-
+openmc.run(threads=24)
