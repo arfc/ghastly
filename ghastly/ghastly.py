@@ -442,7 +442,7 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
         f.write(main_text)
 
 
-def recirculate_pebbles(input_file, recirc_fname="recirc_input.txt",
+def recircf2_pebbles(input_file, recirc_fname="recirc_input.txt",
                         recirc_temp="recirc_main.txt", 
                         var_fname="recirc_var.txt",
                         init_bed_fname="starting_bed.txt"):
@@ -451,6 +451,10 @@ def recirculate_pebbles(input_file, recirc_fname="recirc_input.txt",
     parameters in the input file
     reminder that ghastly assumes by default lammps uses the si unit set,
     so distances are in m, and openmc can only use cm
+
+    'f2' stands for fidelity level 2 - the pebbles recirculate at a
+    higher rate than in reality, by using progressively larger cylindrical
+    regions at the bottom of the cylinder
     '''
     input_block = read_input.InputBlock(input_file)
     sim_block = input_block.create_obj()
@@ -464,16 +468,36 @@ def recirculate_pebbles(input_file, recirc_fname="recirc_input.txt",
                          sim_block.core_outtake)
 
     act_reg_fnames, act_reg_names = write_region_blocks(active_core)
+    
+    outlet_zone = {key: value for key, value in sim_block.recirc.items() if
+                'out' in key}
+    outlet_fname = 'outlet_regs.txt'
+    outlet_name = list(outlet_zone.keys())[0]
+    write_recircf2_regs(outlet_zone, outlet_fname)
 
-    recirc_outlet = {k: v for k, v in sim_block.recirc.items() if "out" in k}
-    recirc_out_fname, recirc_out_name = write_region_blocks(recirc_outlet)
-
-    write_recirc_main(recirc_fname, recirc_temp, var_fname, act_reg_fnames,
-                      act_reg_names, recirc_out_fname, recirc_out_name, 
+    write_recircf2_main(recirc_fname, recirc_temp, var_fname, act_reg_fnames,
+                      act_reg_names, outlet_fname, outlet_name, 
                       init_bed_fname, sim_block, x_b, y_b, z_b)
 
-def write_recirc_main(recirc_fname, recirc_temp, var_fname, act_reg_fnames,
-                      act_reg_names, recirc_out_fname, recirc_out_name, 
+def write_recircf2_regs(outlet_zone, outlet_fname):
+    '''
+    write file for the three recirc regions used to handle discharge in the
+    core when using an increased removal rate assumption.
+    '''
+
+    outlet_template = env.get_template("recirc_outlet_template.txt")
+    name, param = outlet_zone.popitem()
+    outlet_text = outlet_template.render(outlet_name=name,
+                                         x_c=param.x_c,
+                                         y_c=param.y_c,
+                                         r=param.r,
+                                         z_min=param.z_min,
+                                         z_max=param.z_max)
+    with open(outlet_fname, mode='w') as f:
+        f.write(outlet_text)
+
+def write_recircf2_main(recirc_fname, recirc_temp, var_fname, act_reg_fnames,
+                      act_reg_names, outlet_fname, outlet_name, 
                       init_bed_fname, sim_block, x_b, y_b, z_b):
     '''
     write recirc main file for LAMMPS
@@ -495,15 +519,35 @@ def write_recirc_main(recirc_fname, recirc_temp, var_fname, act_reg_fnames,
                                      n_regions = len(act_reg_fnames),
                                      region_names = act_reg_names,
                                      starting_bed = init_bed_fname,
-                                     recirc_out_fname = recirc_out_fname,
-                                     recirc_out_name = recirc_out_name,
+                                     outlet_fname = outlet_fname,
+                                     outlet_name = outlet_name,
                                      displace_distance = displacement,
-                                     t_final = sim_block.t_final,
-                                     out_rate = sim_block.out_rate)
+                                     t_final = sim_block.t_final)
 
     with open(recirc_fname, mode='w') as f:
         f.write(main_text)
 
+
+#the functions above could be great for recirculating pebbles - but for 
+#fidelity level 2 (DEM with a sped up removal rate).  Finish that version since
+#you're close, then edit what you've done to get a higher fidelity level
+#by trying to select fewer pebbles (ideally one) each discharge
+#current idea: if you always pick the middle pebble, then the pebbles on the
+#outer ring will never recirculate.  instead, select a pebble at random.
+#either select over the entire pebble-diam height discharge cylinder with
+#equal weight, OR split the discharge cylinder into smaller cylinders 
+#like above, and weight them by velocity, with higher velocity = more pulls.
+#if you can get the random selection done *in* LAMMPS, you might be able to
+#have that weight update itself in real-time.  Otherwise, you'll want to
+#pre-generate the pebbles you will be selecting as part of the python function
+#to do this, worst-case, you should be able to randomly generate a bunch of
+#random points in the bottom of the cylinder, around which you make a small
+#cylindrical region.  define group with it, displace, delete group, delete
+#region, make next random region and repeat.
+
+#variables can use math functions, including the random function.  is label
+#or some of the region functions might also be useful - look through lammps
+#variables docs page.
 
 
 

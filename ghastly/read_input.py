@@ -107,6 +107,44 @@ class InputBlock:
 
         return core_block
 
+    def create_recirc_zone(self, recirc_zone):
+        '''
+        Given teh recirc block from a ghastly input file, create
+        a dictionary with key:value pairs where each key is the name of a
+        recirc element, and each value is the corresponding ghastly Core class
+        object.
+
+        Parameters
+        ----------
+        recirc_zone : dict
+            Dictionary where each key:value pair corresponds to a single
+            recirc element within the core_zone, generally corresponding to an
+            inlet and outlet.  Values are also dictionaries with
+            each key:value pair containing the name of a region parameter 
+            and its value.
+
+        Returns
+        -------
+        recirc_block : dict
+            Dicitonary with key:value pairs where the key is the recirc element
+            name, and the value is the corresponding ghastly Core object.
+
+        '''
+
+        recirc_block = {}
+        for key, val in recirc_zone.items():
+            if val["type"].casefold() == "cylinder":
+                recirc_block[key] = core.CylCore(x_c=val["x_c"],
+                                               y_c=val["y_c"],
+                                               z_max=val["z_max"],
+                                               z_min=val["z_min"],
+                                               r=val["r"])
+            else:
+                raise NameError("Type must be cylinder.")
+
+        return recirc_block
+
+
     def create_sim_block(self, core_intake, core_main, core_outtake):
         '''
         Creates a Sim object, using the intake, main, and outtake core zone
@@ -120,6 +158,21 @@ class InputBlock:
             Ghastly sim object containing simulation parameters and core
             objects.
         '''
+        
+        target_case = self.sim_var.get("recirc_target")
+        match target_case:
+            case None:
+                recirc_target = 1
+            case _:
+                recirc_target = self.sim_var["recirc_target"]
+
+        rate_case = self.sim_var.get("recirc_rate")
+        match rate_case:
+            case None:
+                recirc_rate = 1
+            case _:
+                recirc_rate = self.sim_var["recirc_rate"]
+
         k_case = self.sim_var.get("k_rate")
         if type(k_case) != float and k_case != None:
             raise TypeError('''The contraction rate should be a value between 0
@@ -156,12 +209,13 @@ class InputBlock:
             case 0:
                 recirc = {}
             case _:
-                recirc = self.create_core_zone(self.recirc_var)
+                recirc = self.create_recirc_zone(self.recirc_var)
 
         sim_block = simulation.Sim(r_pebble=self.sim_var["r_pebble"],
                                    t_final=self.sim_var["t_final"],
                                    pf=self.sim_var["pf"],
-                                   out_rate=self.sim_var["out_rate"],
+                                   recirc_target=recirc_target,
+                                   recirc_rate=recirc_rate,
                                    core_intake=core_intake,
                                    core_main=core_main,
                                    core_outtake=core_outtake,

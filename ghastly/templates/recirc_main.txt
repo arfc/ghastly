@@ -1,6 +1,6 @@
 suffix		omp
 units		si
-package		omp 3
+package		omp 4
 
 ##############################################################################
 #variables
@@ -40,14 +40,14 @@ pair_style	gran/hertz/history/omp &
 pair_coeff	* *
 
 neighbor	${skin} multi
-neigh_modify	delay 0 every 10000 check yes
-thermo		1000
+neigh_modify	delay 0 every 50 check yes
+thermo		${interval}
 timestep	${dt}
 
 comm_style	brick
 comm_modify	mode multi group all vel yes
 balance		1.1 shift xyz 20 1.1
-fix		bal all balance 10000 1.1 shift xyz 20 1.01
+fix		bal all balance ${interval} 1.1 shift xyz 20 1.01
 
 ##############################################################################
 #geometry
@@ -72,12 +72,28 @@ fix		wall_gran all wall/gran/region hertz/history &
 
 variable	pix_width equal round((abs({{x_b.low}})+abs({{x_b.up}}))*250)
 variable	pix_height equal round((abs({{z_b.low}})+abs({{z_b.up}}))*250)
+variable	movie_freq equal round(1/(24*${dt}))
+variable	dump_freq equal round(1/(50*${dt}))
 
-dump		peb_coords all custom ${interval} coords_*.txt id type x y z
-dump		recirc_gif all movie 5000 recirc.gif type diameter & 
+include		{{velreg_fname}}
+group		mainvel_wall dynamic all region {{velreg_name}}_wall
+group		mainvel_mid dynamic all region {{velreg_name}}_mid
+group		mainvel_center dynamic all region {{velreg_name}}_center
+
+fix		velwall mainvel_wall ave/atom 50 100 ${dump_freq} vz
+fix		velmid mainvel_mid ave/atom 50 100 ${dump_freq} vz
+fix		velcenter mainvel_center ave/atom 50 100 ${dump_freq} vz
+
+dump		velwalldump mainvel_wall custom ${dump_freq} wallvel.txt f_velwall
+dump		velmiddump mainvel_mid custom ${dump_freq} midvel.txt f_velwall
+dump		velcenterdump mainvel_center custom ${dump_freq} centervel.txt f_velcenter
+
+
+dump		peb_coords all custom ${dump_freq} coords_*.gz x y z vx vy vz
+dump		recirc_movie all movie ${movie_freq} recirc.mp4 type diameter & 
 		view 90 0 box no 0.0 size ${pix_width} ${pix_height}
 
-dump_modify	recirc_gif acolor * indigo backcolor whitesmoke
+dump_modify	recirc_movie acolor * indigo backcolor whitesmoke
 
 
 thermo_style	custom step cpu tpcpu spcpu cpuremain time atoms ke
@@ -91,22 +107,107 @@ read_dump	{{starting_bed}} 0 x y z add yes timestep no
 
 set		type 1 diameter ${d_pebble}
 
-include		{{recirc_out_fname[0]}}
-variable	displace equal {{displace_distance}}
-print		"${displace}"
-variable	iter_tot equal round({{t_final}}/{{out_rate}})
-variable	recirc_run equal round(({{t_final}}/${dt})/${iter_tot})
-variable	i loop ${iter_tot}
-group		outlet region {{recirc_out_name[0]}} 
+include		{{outlet_fname}}
 
+variable	displace equal {{displace_distance}}
+variable	freefall equal round(2*sqrt(2*(${d_pebble})/${gravity})/${dt})
+variable	recirc_steps equal round(${recirc_rate}/${dt})
+variable	recirculated equal 0
+
+variable	vel_sum equal ${v_wall}+${v_mid}+${v_center}
+variable	v_mid_bound equal ${v_center}+${v_mid}
+variable	i loop ${vel_sum}
+
+variable	plusequals equal 1
+print		"plusequals is ${plusequals}"
+variable	plusequals equal ${plusequals}+${plusequals}
+print		"plusequals + plusequals is ${plusequals}"
+variable	plusequals equal ${plusequals}+5
+print		"plusquals + plusequals + 5 is ${plusequals}"
+
+########## Start Mainloop ##########
 label		recirculate
-print		"Recirculation Step $i/${iter_tot}"
-displace_atoms	outlet move 0.0 0.0 ${displace} units box 
-run		${recirc_run}
-if		"$i == ${iter_tot}" then "jump SELF break"
+print		"
+if		"$i <= ${v_center}" then "jump SELF subloop1"
+if		"(${v_center} < $i) && ($i <= ${vel_mid_bound})" &
+		then "jump SELF subloop2"
+if		"$i > ${vel_mid_bound}" then "jump SELF subloop3"
+
+
+
+
+########## Subloop 1 ##########
+label		subloop1
+group		outlet_1 region {{outlet_name}}_1
+displace_atoms	outlet_1 move 0.0 0.0 ${displace} units box
+compute		n outlet_1 count/type atom
+variable	N equal c_n[0]
+variable	recirc_run equal ${N}*${recirc_steps}
+
+if		"${recirc_run} < ${freefall}" then &
+		"print "Requested recirculation time is less than anticipated freefall time - pebbles will fall for at least ${freefall} steps."", &
+		"run ${freefall}" &
+		else "run ${recirc_run}"
+
 next		i
-group		outlet delete
-group		outlet region {{recirc_out_name[0]}}
+variable	recirculated equal ${recirculated}+${N}
+variable	recirc_run delete
+variable	N delete
+uncompute	n
+group		outlet_1 delete
+jump		SELF exitsubloop
+
+
+########## Subloop 2 ##########
+label		subloop2
+group		outlet_2 region {{outlet_name}}_2
+displace_atoms	outlet_2 move 0.0 0.0 ${displace} units box
+compute		n outlet_2 count/type atom
+variable	N equal c_n[0]
+variable	recirc_run equal ${N}*${recirc_steps}
+
+if		"${recirc_run} < ${freefall}" then &
+		"print "Requested recirculation time is less than anticipated freefall time - pebbles will fall for at least ${freefall} steps."", &
+		"run ${freefall}" &
+		else "run ${recirc_run}"
+
+next		i
+variable	recirculated equal ${recirculated}+${N}
+variable	recirc_run delete
+variable	N delete
+uncompute	n
+group		outlet_2 delete
+jump		SELF exitsubloop
+
+
+########## Subloop 3 ##########
+label		subloop3
+group		outlet_3 region {{outlet_name}}_3
+displace_atoms	outlet_3 move 0.0 0.0 ${displace} units box
+compute		n outlet_3 count/type atom
+variable	N equal c_n[0]
+variable	recirc_run equal ${N}*${recirc_steps}
+
+if		"${recirc_run} < ${freefall}" then &
+		"print "Requested recirculation time is less than anticipated freefall time - pebbles will fall for at least ${freefall} steps."", &
+		"run ${freefall}" &
+		else "run ${recirc_run}"
+
+variable	recirculated equal ${recirculated}+${N}
+variable	recirc_run delete
+variable	N delete
+variable	i delete
+uncompute	n
+group		outlet_3 delete
+variable	i loop ${vel_sum}
+jump		SELF exitsubloop
+
+
+
+
+########## Return to Mainloop ##########
+label		exitsubloop
+if		"${recirculated} >= ${recirc_target}" then "jump SELF break"
 jump		SELF recirculate
 
 label		break

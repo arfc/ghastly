@@ -1,0 +1,13 @@
+variable	r1 equal 0.33*{{r}}
+variable	r2 equal 0.66*{{r}}
+variable	r3 equal {{r}}
+
+
+region		{{outlet_name}}_1 cylinder z {{x_c}} {{y_c}} ${r1} &
+		{{z_min}} {{z_max}} side in units box
+
+region		{{outlet_name}}_2 cylinder z {{x_c}} {{y_c}} ${r2} &
+		{{z_min}} {{z_max}} side in units box
+
+region		{{outlet_name}}_3 cylinder z {{x_c}} {{y_c}} ${r3} &
+		{{z_min}} {{z_max}} side in units box

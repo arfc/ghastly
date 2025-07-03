@@ -1,10 +1,11 @@
 {
 	"simulation" : {
 		"r_pebble" : 0.03,
-		"t_final" : 300,
+		"t_final" : 6000,
 		"pf" : 0.60,
+		"recirc_target" : 100,
+		"recirc_rate" : 60,
 		"down_flow" : true,
-		"out_rate" : 60,
 		"seed" : 4345343431384
 	},
 	"core_intake" : {
@@ -16,7 +17,7 @@
 			"z_min" : 10.1,
 			"r": 0.24,
 			"open_bottom" : "open 1",
-			"open_top" : "open 2"
+			"open_top" : ""
 		},
 		"intake_cone" : {
 			"type" : "cone",
@@ -70,7 +71,7 @@
 			"type" : "cylinder",
 			"x_c" : 0.0,
 			"y_c" : 0.0,
-			"z_max" : -1.24,
+			"z_max" : -1.28,
 			"z_min" : -1.34,
 			"r" : 0.24,
 			"open_bottom" : "",
@@ -81,7 +82,7 @@
 			"x_c" : 0.0,
 			"y_c" :0.0, 
 			"z_max" : 10.15,
-			"z_min" : 10.05,
+			"z_min" : 10.09,
 			"r" : 0.24,
 			"open_bottom" : "",
 			"open_top" : ""
