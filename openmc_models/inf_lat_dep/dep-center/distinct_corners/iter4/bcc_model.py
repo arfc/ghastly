@@ -41,7 +41,7 @@ for i, step in enumerate(step_comps[0:19]):
 
 pass12 = {}
 tot_time12 = sum(dep_t[19:26])
-for i, step in enumerate(step_comps[0:19]):
+for i, step in enumerate(step_comps[19:26]):
     for k, v in step.items():
         if k in pass12:
             pass12[k] += v[1]*(dep_t[i+19]/tot_time12)
