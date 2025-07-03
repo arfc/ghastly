@@ -124,7 +124,9 @@ uco56.add_s_alpha_beta('c_Graphite')
 uco56.depletable = False
 uco56.temperature = 1159.15 
 
-comp249days = step_comp[18]
+comp249days = {}
+for k, v in step_comps[18].items():
+        comp249days[k] = v[1]
 
 ucot = openmc.Material(name='UCO_TRACKED', material_id=13)
 ucot.set_density('g/cm3', 10.4)
