@@ -6,8 +6,15 @@ variable	r3 equal {{r}}
 region		{{outlet_name}}_1 cylinder z {{x_c}} {{y_c}} ${r1} &
 		{{z_min}} {{z_max}} side in units box
 
-region		{{outlet_name}}_2 cylinder z {{x_c}} {{y_c}} ${r2} &
+region		sub2_in cylinder z {{x_c}} {{y_c}} ${r1} &
+		{{z_min}} {{z_max}} side out units box
+region		sub2_out cylinder z {{x_c}} {{y_c}} ${r2} &
 		{{z_min}} {{z_max}} side in units box
+region		{{outlet_name}}_2 intersect 2 sub2_in sub2_out
 
-region		{{outlet_name}}_3 cylinder z {{x_c}} {{y_c}} ${r3} &
-		{{z_min}} {{z_max}} side in units box
+
+region		sub3_in cylinder z {{x_c}} {{y_c}} ${r2} &
+		{{z_min}} {{z_max}} side out units box
+region		sub3_out cylinder z {{x_c}} {{y_c}} ${r3} &
+		{{z_min}} {{z_min}} side in units box
+region 		{{outlet_name}}_3 intersect 2 sub3_in sub3_out

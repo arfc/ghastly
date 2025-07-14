@@ -9,7 +9,8 @@ class Sim:
     '''
 
     def __init__(self, r_pebble, t_final, pf,
-                 recirc_target = 1, recirc_rate = 1, 
+                 recirc_target=1, recirc_rate=1, 
+                 v_center=1, v_mid=1, v_wall=1, 
                  core_intake={},core_main={}, core_outtake={}, recirc = {},
                  k_rate=0.001, down_flow=True, 
                  seed=rng.integers(1000000, 100000000)):
@@ -52,6 +53,9 @@ class Sim:
         self.pf = pf
         self.recirc_target = recirc_target
         self.recirc_rate = recirc_rate
+        self.v_center = v_center
+        self.v_mid = v_mid
+        self.v_wall = v_wall
         self.core_intake = core_intake
         self.core_main = core_main
         self.core_outtake = core_outtake

@@ -260,8 +260,14 @@ def write_variable_block(variable_filename, input_block, sim_block):
     '''
 
     variables = input_block.lammps_var
+    variables["t_final"] = sim_block.t_final
     variables["r_pebble"] = sim_block.r_pebble
     variables["seed"] = sim_block.seed
+    variables["recirc_target"] = sim_block.recirc_target
+    variables["recirc_rate"] = sim_block.recirc_rate
+    variables["v_center"] = sim_block.v_center
+    variables["v_mid"] = sim_block.v_mid
+    variables["v_wall"] = sim_block.v_wall
 
     variables_template = env.get_template("variable_template.txt")
     variable_text = variables_template.render(variables=variables)
@@ -474,9 +480,21 @@ def recircf2_pebbles(input_file, recirc_fname="recirc_input.txt",
     outlet_fname = 'outlet_regs.txt'
     outlet_name = list(outlet_zone.keys())[0]
     write_recircf2_regs(outlet_zone, outlet_fname)
+    
+    main_cyl = {key:value for key, value in sim_block.core_main.items() if
+                'cyl' in key}
+    out_cyl = {key:value for key, value in sim_block.core_outtake.items() if
+               'cyl' in key}
+    _, out_params = out_cyl.popitem()
+    r_chute = out_params.r
+    v_reg_fname = "v_regs.txt"
+    v_reg_name = "v_reg"
+    write_v_regs(main_cyl, r_chute, v_reg_fname, v_reg_name)
 
-    write_recircf2_main(recirc_fname, recirc_temp, var_fname, act_reg_fnames,
-                      act_reg_names, outlet_fname, outlet_name, 
+    write_recircf2_main(recirc_fname, recirc_temp, var_fname, 
+                        act_reg_fnames, act_reg_names, 
+                        v_reg_fname, v_reg_name,
+                        outlet_fname, outlet_name, 
                       init_bed_fname, sim_block, x_b, y_b, z_b)
 
 def write_recircf2_regs(outlet_zone, outlet_fname):
@@ -496,8 +514,26 @@ def write_recircf2_regs(outlet_zone, outlet_fname):
     with open(outlet_fname, mode='w') as f:
         f.write(outlet_text)
 
-def write_recircf2_main(recirc_fname, recirc_temp, var_fname, act_reg_fnames,
-                      act_reg_names, outlet_fname, outlet_name, 
+def write_v_regs(main_cyl, r_chute, v_reg_fname, v_reg_name):
+    '''
+    write region blocks to define groups for velocity profile averaging
+    '''
+    v_reg_template = env.get_template("velreg_template.txt")
+    _, param = main_cyl.popitem()
+    v_reg_text = v_reg_template.render(r_wall=param.r,
+                                         v_reg_name=v_reg_name,
+                                         x_c=param.x_c,
+                                         y_c=param.y_c,
+                                         r_chute=r_chute,
+                                         z_min=param.z_min,
+                                         z_max=param.z_max)
+    with open(v_reg_fname, mode='w') as f:
+        f.write(v_reg_text)
+
+def write_recircf2_main(recirc_fname, recirc_temp, var_fname, 
+                        act_reg_fnames, act_reg_names,
+                        v_reg_fname, v_reg_name,
+                        outlet_fname, outlet_name, 
                       init_bed_fname, sim_block, x_b, y_b, z_b):
     '''
     write recirc main file for LAMMPS
@@ -518,11 +554,12 @@ def write_recircf2_main(recirc_fname, recirc_temp, var_fname, act_reg_fnames,
                                      region_files = act_reg_fnames,
                                      n_regions = len(act_reg_fnames),
                                      region_names = act_reg_names,
+                                     v_reg_fname = v_reg_fname,
+                                     v_reg_name = v_reg_name,
                                      starting_bed = init_bed_fname,
                                      outlet_fname = outlet_fname,
                                      outlet_name = outlet_name,
-                                     displace_distance = displacement,
-                                     t_final = sim_block.t_final)
+                                     displace_distance = displacement)
 
     with open(recirc_fname, mode='w') as f:
         f.write(main_text)

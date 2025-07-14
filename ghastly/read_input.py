@@ -160,6 +160,9 @@ class InputBlock:
         '''
         
         target_case = self.sim_var.get("recirc_target")
+        if type(target_case) != int and target_case != None:
+            raise TypeError('''The target number of pebbles to recirculate
+                            should be an integer''')
         match target_case:
             case None:
                 recirc_target = 1
@@ -167,11 +170,44 @@ class InputBlock:
                 recirc_target = self.sim_var["recirc_target"]
 
         rate_case = self.sim_var.get("recirc_rate")
+        if type(rate_case) != int and rate_case != None:
+            raise TypeError('''The average length in seconds between pebble
+                            discharges should be an integer''')
         match rate_case:
             case None:
                 recirc_rate = 1
             case _:
                 recirc_rate = self.sim_var["recirc_rate"]
+
+        center_case = self.sim_var.get("v_center")
+        if type(center_case) != int and center_case != None:
+            raise TypeError('''The center velocity profile value should be
+                            an integer''')
+        match center_case:
+            case None:
+                v_center = 1
+            case _:
+                v_center = self.sim_var["v_center"]
+
+        mid_case = self.sim_var.get("v_mid")
+        if type(mid_case) != int and mid_case != None:
+            raise TypeError('''The middle velocity profile value should be
+                            an integer''')
+        match mid_case:
+            case None:
+                v_mid = 1
+            case _:
+                v_mid = self.sim_var["v_mid"]
+
+        wall_case = self.sim_var.get("v_wall")
+        if type(wall_case) != int and wall_case != None:
+            raise TypeError('''The wall velocity profile value should be
+                            an integer''')
+        match wall_case:
+            case None:
+                v_wall = 1
+            case _:
+                v_wall = self.sim_var["v_wall"]
 
         k_case = self.sim_var.get("k_rate")
         if type(k_case) != float and k_case != None:
@@ -216,6 +252,9 @@ class InputBlock:
                                    pf=self.sim_var["pf"],
                                    recirc_target=recirc_target,
                                    recirc_rate=recirc_rate,
+                                   v_center=v_center,
+                                   v_mid=v_mid,
+                                   v_wall=v_wall,
                                    core_intake=core_intake,
                                    core_main=core_main,
                                    core_outtake=core_outtake,
