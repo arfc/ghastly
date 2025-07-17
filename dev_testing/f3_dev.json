@@ -1,0 +1,40 @@
+{
+	"simulation" : {
+		"r_pebble" : 0.03,
+		"t_final" : 300,
+		"pf" : 0.60,
+		"recirc_hz" : 1,
+		"v_center" : 1,
+		"v_mid" : 1,
+		"v_wall" : 1,
+		"down_flow" : true,
+		"seed" : 4345343
+
+	},
+	"core_intake" : {
+	},
+	"core_main" : {
+		"main_cyl" : {
+			"type" : "cylinder",
+			"x_c" : 0.0,
+			"y_c" : 0.0,
+			"z_max" : 10.0,
+			"z_min" : 0.54,
+			"r" : 1.2,
+			"open_bottom" : "",
+			"open_top" : "open 2"
+		}
+	},
+	"core_outtake" : {
+	},
+	"lammps_var" : {
+		"gravity" : 9.81,
+		"density_rho" : 1700,
+		"young_mod_E" : 1.0055e+10,
+		"poisson" : 0.12,
+		"co_fric" : 0.035,
+		"co_rest" : 0.02,
+		"run_factor" : 20,
+		"interval" : 500000
+	}
+}

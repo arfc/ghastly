@@ -9,7 +9,7 @@ class Sim:
     '''
 
     def __init__(self, r_pebble, t_final, pf,
-                 recirc_target=1, recirc_rate=1, 
+                 recirc_target=1, recirc_rate=1, recirc_hz = 1,
                  v_center=1, v_mid=1, v_wall=1, 
                  core_intake={},core_main={}, core_outtake={}, recirc = {},
                  k_rate=0.001, down_flow=True, 
@@ -53,6 +53,7 @@ class Sim:
         self.pf = pf
         self.recirc_target = recirc_target
         self.recirc_rate = recirc_rate
+        self.recirc_hz = recirc_hz
         self.v_center = v_center
         self.v_mid = v_mid
         self.v_wall = v_wall

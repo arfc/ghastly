@@ -176,18 +176,18 @@ def find_box_bounds(sim_block, pour=False):
                        (element.y_c + element.r_upper),
                        (element.y_c - element.r_lower),
                        (element.y_c + element.r_lower)]
-    f = 1.05
+    f = 5.0
     match pour:
         case True:
-            f_zup = 1.2
+            f_zup = 10.0
         case _:
-            f_zup = 1.05
-    x_b = {"low": ((1-f)*element.x_c + f*min(x_list)),
-           "up": ((1-f)*element.x_c + f*max(x_list))}
-    y_b = {"low": ((1-f)*element.y_c + f*min(y_list)),
-           "up": ((1-f)*element.y_c + f*max(y_list))}
-    z_b = {"low": ((1-f)*0.5*(max(z_list)+min(z_list)) + f*min(z_list)),
-           "up": ((1-f_zup)*0.5*(max(z_list)+min(z_list)) + f_zup*max(z_list))}
+            f_zup = 5.0
+    x_b = {"low": (min(x_list) - f*sim_block.r_pebble),
+           "up": (max(x_list) + f*sim_block.r_pebble)}
+    y_b = {"low": (min(y_list) - f*sim_block.r_pebble),
+           "up": (max(y_list) + f*sim_block.r_pebble)}
+    z_b = {"low": (min(z_list) - f*sim_block.r_pebble),
+           "up": (max(z_list) - f_zup*sim_block.r_pebble)}
 
     return x_b, y_b, z_b
 
@@ -265,6 +265,7 @@ def write_variable_block(variable_filename, input_block, sim_block):
     variables["seed"] = sim_block.seed
     variables["recirc_target"] = sim_block.recirc_target
     variables["recirc_rate"] = sim_block.recirc_rate
+    variables["recirc_hz"] = sim_block.recirc_hz
     variables["v_center"] = sim_block.v_center
     variables["v_mid"] = sim_block.v_mid
     variables["v_wall"] = sim_block.v_wall
@@ -448,9 +449,9 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
         f.write(main_text)
 
 
-def recircf2_pebbles(input_file, recirc_fname="recirc_input.txt",
-                        recirc_temp="recirc_main.txt", 
-                        var_fname="recirc_var.txt",
+def recircf2_pebbles(input_file, recirc_fname="recircf2_input.txt",
+                        recirc_temp="recircf2_main.txt", 
+                        var_fname="recircf2_var.txt",
                         init_bed_fname="starting_bed.txt"):
     '''
     recirculates pebbles in the core, using a lammps sim and the
@@ -477,7 +478,7 @@ def recircf2_pebbles(input_file, recirc_fname="recirc_input.txt",
     
     outlet_zone = {key: value for key, value in sim_block.recirc.items() if
                 'out' in key}
-    outlet_fname = 'outlet_regs.txt'
+    outlet_fname = 'outlet_regsf2.txt'
     outlet_name = list(outlet_zone.keys())[0]
     write_recircf2_regs(outlet_zone, outlet_fname)
     
@@ -487,7 +488,7 @@ def recircf2_pebbles(input_file, recirc_fname="recirc_input.txt",
                'cyl' in key}
     _, out_params = out_cyl.popitem()
     r_chute = out_params.r
-    v_reg_fname = "v_regs.txt"
+    v_reg_fname = "v_regsf2.txt"
     v_reg_name = "v_reg"
     write_v_regs(main_cyl, r_chute, v_reg_fname, v_reg_name)
 
@@ -503,7 +504,7 @@ def write_recircf2_regs(outlet_zone, outlet_fname):
     core when using an increased removal rate assumption.
     '''
 
-    outlet_template = env.get_template("recirc_outlet_template.txt")
+    outlet_template = env.get_template("recircf2_outlet_template.txt")
     name, param = outlet_zone.popitem()
     outlet_text = outlet_template.render(outlet_name=name,
                                          x_c=param.x_c,
@@ -565,26 +566,116 @@ def write_recircf2_main(recirc_fname, recirc_temp, var_fname,
         f.write(main_text)
 
 
-#the functions above could be great for recirculating pebbles - but for 
-#fidelity level 2 (DEM with a sped up removal rate).  Finish that version since
-#you're close, then edit what you've done to get a higher fidelity level
-#by trying to select fewer pebbles (ideally one) each discharge
-#current idea: if you always pick the middle pebble, then the pebbles on the
-#outer ring will never recirculate.  instead, select a pebble at random.
-#either select over the entire pebble-diam height discharge cylinder with
-#equal weight, OR split the discharge cylinder into smaller cylinders 
-#like above, and weight them by velocity, with higher velocity = more pulls.
-#if you can get the random selection done *in* LAMMPS, you might be able to
-#have that weight update itself in real-time.  Otherwise, you'll want to
-#pre-generate the pebbles you will be selecting as part of the python function
-#to do this, worst-case, you should be able to randomly generate a bunch of
-#random points in the bottom of the cylinder, around which you make a small
-#cylindrical region.  define group with it, displace, delete group, delete
-#region, make next random region and repeat.
+def recircf1_pebbles(input_file, recirc_fname="recircf1_input.txt",
+                        recirc_temp="recircf1_main.txt", 
+                        var_fname="recircf1_var.txt",
+                        init_bed_fname="starting_bed.txt"):
+    '''
+    recirculate pebbles with maximum movement fidelity
+    '''
 
-#variables can use math functions, including the random function.  is label
-#or some of the region functions might also be useful - look through lammps
-#variables docs page.
+    input_block = read_input.InputBlock(input_file)
+    sim_block = input_block.create_obj()
+
+    x_b, y_b, z_b = find_box_bounds(sim_block)
+
+    write_variable_block(var_fname, input_block, sim_block)
+
+    active_core = (sim_block.core_intake | 
+                         sim_block.core_main | 
+                         sim_block.core_outtake)
+
+    act_reg_fnames, act_reg_names = write_region_blocks(active_core)
+
+    outlet_zone = {key: value for key, value in sim_block.recirc.items() if
+                'out' in key}
+    outlet_fname = "outlet_regsf1.txt"
+    outlet_name = "recirc_reg"
+    write_recircf1_regs(outlet_zone, outlet_name, outlet_fname)
+
+    main_cyl = {key:value for key, value in sim_block.core_main.items() if
+                'cyl' in key}
+    out_cyl = {key:value for key, value in sim_block.core_outtake.items() if
+               'cyl' in key}
+    _, out_params = out_cyl.popitem()
+    r_chute = out_params.r
+    v_reg_fname = "v_regsf1.txt"
+    v_reg_name = "v_reg"
+    write_v_regs(main_cyl, r_chute, v_reg_fname, v_reg_name)
+
+    write_recircf1_main(recirc_fname, recirc_temp, var_fname, 
+                        act_reg_fnames, act_reg_names, 
+                        v_reg_fname, v_reg_name,
+                        outlet_fname, outlet_name, 
+                      init_bed_fname, sim_block, x_b, y_b, z_b)
+
+
+
+
+
+def write_recircf1_regs(outlet_zone, outlet_name, outlet_fname):
+    '''
+    write recirc fidelity 1 outlet zone regs
+    '''
+    outlet_template = env.get_template("recircf1_outlet_template.txt")
+    keys = list(outlet_zone.keys())
+    x_c = outlet_zone[keys[0]].x_c
+    y_c = outlet_zone[keys[0]].y_c
+    for k in keys:
+        if type(outlet_zone[k]) == ghastly.core.CylCore:
+            r1 = outlet_zone[k].r
+            z_min_1 = outlet_zone[k].z_min
+            z_max = outlet_zone[k].z_max
+
+        else:
+            r2 = outlet_zone[k].r_lower
+            z_min_2 = outlet_zone[k].z_min
+
+    outlet_text = outlet_template.render(outlet_name=outlet_name,
+                                         x_c=x_c,
+                                         y_c=y_c,
+                                         r1=r1,
+                                         r2=r2,
+                                         z_min_1=z_min_1,
+                                         z_min_2=z_min_2,
+                                         z_max=z_max)
+    with open(outlet_fname, mode='w') as f:
+        f.write(outlet_text)
+
+def write_recircf1_main(recirc_fname, recirc_temp, var_fname, 
+                        act_reg_fnames, act_reg_names,
+                        v_reg_fname, v_reg_name,
+                        outlet_fname, outlet_name, 
+                      init_bed_fname, sim_block, x_b, y_b, z_b):
+    '''
+    write recirc main file for LAMMPS
+    '''
+
+    main_template = env.get_template(recirc_temp)
+    main_text = main_template.render(variable_filename=var_fname,
+                                     x_b = x_b, y_b = y_b, z_b = z_b,
+                                     region_files = act_reg_fnames,
+                                     n_regions = len(act_reg_fnames),
+                                     region_names = act_reg_names,
+                                     v_reg_fname = v_reg_fname,
+                                     v_reg_name = v_reg_name,
+                                     starting_bed = init_bed_fname,
+                                     outlet_fname = outlet_fname,
+                                     outlet_name = outlet_name)
+
+    with open(recirc_fname, mode='w') as f:
+        f.write(main_text)
+
+
+
+
+
+
+
+
+
+
+
 
 
 

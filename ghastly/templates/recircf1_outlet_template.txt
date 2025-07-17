@@ -1,0 +1,8 @@
+
+region		{{outlet_name}}_1 cylinder z {{x_c}} {{y_c}} {{r1}} &
+		{{z_min_1}} {{z_max}} side in units box
+
+region		{{outlet_name}}_2 cone z {{x_c}} {{y_c}} {{r2}} {{r1}} &
+		{{z_min_2}} {{z_min_1}} side in units box
+
+region		{{outlet_name}} union 2 {{outlet_name}}_1 {{outlet_name}}_2

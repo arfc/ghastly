@@ -72,8 +72,8 @@ fix		wall_gran all wall/gran/region hertz/history &
 
 variable	pix_width equal round((abs({{x_b.low}})+abs({{x_b.up}}))*250)
 variable	pix_height equal round((abs({{z_b.low}})+abs({{z_b.up}}))*250)
-variable	movie_freq equal round(1/(24*${dt}))
-variable	dump_freq equal round(1/(50*${dt}))
+variable	frame_freq equal round(1/(24*${dt}))
+variable	dump_freq equal round(1/(24*${dt}))
 
 include		{{v_reg_fname}}
 group		wallgroup dynamic all region {{v_reg_name}}_wall
@@ -84,16 +84,17 @@ group		centergroup dynamic all region {{v_reg_name}}_center
 #fix		v_mid midgroup ave/atom 1 100 ${dump_freq} vz
 #fix		v_center centergroup ave/atom 1 100 ${dump_freq} vz
 
-dump		vwalldump wallgroup custom ${dump_freq} v-wall_*.gz id vz
-dump		vmiddump midgroup custom ${dump_freq} v-mid_*.gz id vz
-dump		vcenterdump centergroup custom ${dump_freq} v-center_*.gz id vz
+dump		vwalldump wallgroup custom ${dump_freq} velocity/v-wall/step_*.txt id vz
+dump		vmiddump midgroup custom ${dump_freq} velocity/v-mid/step_*.txt id vz
+dump		vcenterdump centergroup custom ${dump_freq} velocity/v-center/step_*.txt id vz
 
 
-dump		peb_coords all custom ${dump_freq} coords_*.gz x y z vx vy vz
-dump		recirc_movie all movie ${movie_freq} recirc.mp4 type diameter & 
+dump		peb_coords all custom ${dump_freq} coords/step_*.txt id x y z vx vy vz
+
+dump		recirc_frames all image ${frame_freq} img/step_*.jpg type diameter & 
 		view 90 0 box no 0.0 size ${pix_width} ${pix_height}
 
-dump_modify	recirc_movie acolor * indigo backcolor whitesmoke
+#dump_modify	recirc_frames acolor * whitesmoke backcolor indigo
 
 
 thermo_style	custom step cpu tpcpu spcpu cpuremain time atoms ke

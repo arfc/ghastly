@@ -109,7 +109,7 @@ class InputBlock:
 
     def create_recirc_zone(self, recirc_zone):
         '''
-        Given teh recirc block from a ghastly input file, create
+        Given the recirc block from a ghastly input file, create
         a dictionary with key:value pairs where each key is the name of a
         recirc element, and each value is the corresponding ghastly Core class
         object.
@@ -139,8 +139,16 @@ class InputBlock:
                                                z_max=val["z_max"],
                                                z_min=val["z_min"],
                                                r=val["r"])
+
+            elif val["type"].casefold() == "cone":
+                recirc_block[key] = core.ConeCore(x_c=val["x_c"],
+                                               y_c=val["y_c"],
+                                               z_max=val["z_max"],
+                                               z_min=val["z_min"],
+                                               r_upper=val["r_upper"],
+                                                 r_lower=val["r_lower"])
             else:
-                raise NameError("Type must be cylinder.")
+                raise NameError("Type must be cylinder or cone.")
 
         return recirc_block
 
@@ -158,6 +166,13 @@ class InputBlock:
             Ghastly sim object containing simulation parameters and core
             objects.
         '''
+
+        hz_case = self.sim_var.get("recirc_hz")
+        match hz_case:
+            case None:
+                recirc_hz = 1
+            case _:
+                recirc_hz = self.sim_var["recirc_hz"]
         
         target_case = self.sim_var.get("recirc_target")
         if type(target_case) != int and target_case != None:
@@ -252,6 +267,7 @@ class InputBlock:
                                    pf=self.sim_var["pf"],
                                    recirc_target=recirc_target,
                                    recirc_rate=recirc_rate,
+                                   recirc_hz=recirc_hz,
                                    v_center=v_center,
                                    v_mid=v_mid,
                                    v_wall=v_wall,
