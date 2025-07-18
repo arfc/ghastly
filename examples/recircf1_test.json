@@ -1,14 +1,14 @@
 {
 	"simulation" : {
 		"r_pebble" : 0.03,
-		"t_final" : 300,
+		"t_final" : 86400,
 		"pf" : 0.60,
-		"recirc_hz" : 1,
+		"recirc_hz" : 0.014,
 		"v_center" : 1,
 		"v_mid" : 1,
 		"v_wall" : 1,
 		"down_flow" : true,
-		"seed" : 4345343431384
+		"seed" : 4345343
 	},
 	"core_intake" : {
 		"intake_cyl" : {
