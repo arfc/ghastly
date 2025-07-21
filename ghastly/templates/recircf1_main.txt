@@ -126,12 +126,16 @@ displace_atoms	recirc move 0.0 0.0 ${displace}
 
 run		${recirc_steps_adj}
 
-reset_timestep	${i}*${recirc_steps} time ${i}*${recirc_steps}*${dt}
+variable	new_timestep equal ${i}*${recirc_steps}
+variable	new_time equal ${new_timestep}*${dt}
+reset_timestep	${new_timestep} time ${new_time}
 next		i
 
 if		"$(time) >= ${t_final}" then "jump SELF break"
 variable	z_recirc delete
 variable	displace delete
+variable	new_timestep delete
+variable	new_time delete
 group		recirc delete
 jump		SELF recirculate
 
