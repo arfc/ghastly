@@ -185,4 +185,4 @@ settings.output = {'tallies': False}
 #settings.volume_calculations = [vol_calc]
 settings.export_to_xml()
 
-openmc.run(threads=24)
+openmc.run(threads=10)
