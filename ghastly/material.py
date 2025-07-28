@@ -1,6 +1,4 @@
 import numpy as np
-import openmc
-import openmc.deplete
 
 
 class Mat():
@@ -31,34 +29,3 @@ class Mat():
         self.pass_num = pass_num
         self.reg_id = reg_id
         self.l_type = l_type
-
-def avg_comp(dep_file, mat_file):
-    '''
-    given a depletion results h5 file and mat file path, returns
-    a dict containing the burnup-step-wise average compositions for
-    depleted fuel material, in the same units as the dep results file.
-    currently assumes first mat is the fuel - look for fix so function
-    can find which one is the fuel on its own later
-    '''
-
-    res = openmc.deplete.Results(dep_file)
-    n = len(res.get_times())
-    comps = [res.export_to_materials(i,
-                                     path=mat_file)[0].get_nuclide_densities() 
-             for i in range(n)]
-    avg_comp = {}
-    for comp in comps:
-        for k, v in comp.items():
-            if k in avg_comp:
-                avg_comp[k]['iso'] += v[1]
-                avg_comp[k]['count'] += 1
-
-            else:
-                avg_comp[k] = {}
-                avg_comp[k]['iso'] = v[1]
-                avg_comp[k]['count'] = 1
-    core_avg = {}
-    for k, v in avg_comp.items():
-        core_avg[k] = v['iso']/v['count']
-
-    return core_avg
