@@ -1,6 +1,6 @@
 suffix		omp
 units		si
-package		omp 4
+package		omp 20
 
 ##############################################################################
 #variables
@@ -72,29 +72,29 @@ fix		wall_gran all wall/gran/region hertz/history &
 
 variable	pix_width equal round((abs({{x_b.low}})+abs({{x_b.up}}))*250)
 variable	pix_height equal round((abs({{z_b.low}})+abs({{z_b.up}}))*250)
-variable	frame_freq equal round(1/(24*${dt}))
-variable	dump_freq equal round(1/(24*${dt}))
+variable	frame_freq equal round(1/(30*${dt}))
+variable	dump_freq equal round(1/(10*${dt}))
 
 include		{{v_reg_fname}}
 group		wallgroup dynamic all region {{v_reg_name}}_wall
 group		midgroup dynamic all region {{v_reg_name}}_mid
 group		centergroup dynamic all region {{v_reg_name}}_center
 
-#fix		v_wall wallgroup ave/atom 1 1000 ${dump_freq} vz
-#fix		v_mid midgroup ave/atom 1 100 ${dump_freq} vz
-#fix		v_center centergroup ave/atom 1 100 ${dump_freq} vz
+dump		vwalldump wallgroup custom ${dump_freq} velocity/v-wall/step_*.bin id vx vy vz
+dump_modify	vwalldump pad 15
+dump		vmiddump midgroup custom ${dump_freq} velocity/v-mid/step_*.bin id vx vy vz
+dump_modify	vmiddump pad 15
+dump		vcenterdump centergroup custom ${dump_freq} velocity/v-center/step_*.bin id vx vy vz
+dump_modify	vcenterdump pad 15
 
-dump		vwalldump wallgroup custom ${dump_freq} velocity/v-wall/step_*.txt id vz
-dump		vmiddump midgroup custom ${dump_freq} velocity/v-mid/step_*.txt id vz
-dump		vcenterdump centergroup custom ${dump_freq} velocity/v-center/step_*.txt id vz
 
-
-dump		peb_coords all custom ${dump_freq} coords/step_*.txt id x y z vx vy vz
+dump		peb_coords all custom ${dump_freq} coords/step_*.bin id x y z
+dump_modify	peb_coords pad 15
 
 dump		recirc_frames all image ${frame_freq} img/step_*.jpg type diameter & 
 		view 90 0 box no 0.0 size ${pix_width} ${pix_height}
 
-#dump_modify	recirc_frames acolor * whitesmoke backcolor indigo
+dump_modify	recirc_frames acolor * lavender backcolor midnightblue pad 15
 
 
 thermo_style	custom step cpu tpcpu spcpu cpuremain time atoms ke
@@ -110,90 +110,30 @@ set		type 1 diameter ${d_pebble}
 
 include		{{outlet_fname}}
 
-variable	displace equal {{displace_distance}}
-variable	freefall equal round(2*sqrt(2*(${d_pebble})/${gravity})/${dt})
-variable	recirc_steps equal round(${recirc_rate}/${dt})
 variable	recirculated equal 0
+variable	recirc_run equal 2500000
+dump		recirculated all custom ${recirc_run} recirculated.txt recirculated
 
-variable	vel_sum equal ${v_wall}+${v_mid}+${v_center}
-variable	v_mid_bound equal ${v_center}+${v_mid}
-variable	i loop ${vel_sum}
+
 
 ########## Start Mainloop ##########
 label		recirculate
-if		"$i <= ${v_center}" then "jump SELF subloop1"
-if		"(${v_center} < $i) && ($i <= ${vel_mid_bound})" &
-		then "jump SELF subloop2"
-if		"$i > ${vel_mid_bound}" then "jump SELF subloop3"
 
-
-
-
-########## Subloop 1 ##########
-label		subloop1
-group		outlet_1 region {{outlet_name}}_1
-displace_atoms	outlet_1 move 0.0 0.0 ${displace} units box
+variable	displace equal (({{z_b.up}}-0.12) - bound(all, zmin, {{outlet_name}})
+group		outlet region {{outlet_name}}
+displace_atoms	outlet move 0.0 0.0 ${displace} units box
 compute		n outlet_1 count/type atom
-run		1
+run		0
 variable	N equal c_n[1]
-variable	recirc_run equal ${N}*${recirc_steps}
 
 run 		${recirc_run}	
 
-next		i
 variable	recirculated equal ${recirculated}+${N}
-variable	recirc_run delete
+variable	displace delete
 variable	N delete
 uncompute	n
-group		outlet_1 delete
-jump		SELF exitsubloop
+group		outlet delete
 
-
-########## Subloop 2 ##########
-label		subloop2
-group		outlet_2 region {{outlet_name}}_2
-displace_atoms	outlet_2 move 0.0 0.0 ${displace} units box
-compute		n outlet_2 count/type atom
-run		1
-variable	N equal c_n[1]
-variable	recirc_run equal ${N}*${recirc_steps}
-
-run 		${recirc_run}
-
-next		i
-variable	recirculated equal ${recirculated}+${N}
-variable	recirc_run delete
-variable	N delete
-uncompute	n
-group		outlet_2 delete
-jump		SELF exitsubloop
-
-
-########## Subloop 3 ##########
-label		subloop3
-group		outlet_3 region {{outlet_name}}_3
-displace_atoms	outlet_3 move 0.0 0.0 ${displace} units box
-compute		n outlet_3 count/type atom
-run		1
-variable	N equal c_n[1]
-variable	recirc_run equal ${N}*${recirc_steps}
-
-run 		${recirc_run}	 
-
-variable	recirculated equal ${recirculated}+${N}
-variable	recirc_run delete
-variable	N delete
-variable	i delete
-uncompute	n
-group		outlet_3 delete
-variable	i loop ${vel_sum}
-jump		SELF exitsubloop
-
-
-
-
-########## Return to Mainloop ##########
-label		exitsubloop
 if		"${recirculated} >= ${recirc_target}" then "jump SELF break"
 jump		SELF recirculate
 

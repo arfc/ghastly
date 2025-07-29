@@ -540,14 +540,6 @@ def write_recircf2_main(recirc_fname, recirc_temp, var_fname,
     write recirc main file for LAMMPS
     '''
     #determine displacement distance in meters
-    if sim_block.down_flow: 
-        displacement = abs(list(sim_block.recirc.values())[0].z_max - 
-                           list(sim_block.recirc.values())[1].z_max)
-    else:
-        displacement = -abs(list(sim_block.recirc.values())[0].z_max - 
-                           list(sim_block.recirc.values())[1].z_max)
-
-
 
     main_template = env.get_template(recirc_temp)
     main_text = main_template.render(variable_filename=var_fname,
@@ -559,8 +551,7 @@ def write_recircf2_main(recirc_fname, recirc_temp, var_fname,
                                      v_reg_name = v_reg_name,
                                      starting_bed = init_bed_fname,
                                      outlet_fname = outlet_fname,
-                                     outlet_name = outlet_name,
-                                     displace_distance = displacement)
+                                     outlet_name = outlet_name)
 
     with open(recirc_fname, mode='w') as f:
         f.write(main_text)
