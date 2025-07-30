@@ -14,7 +14,7 @@ step_comps = [res.export_to_materials(i,
 #graphite based on a3-3, triso layers pulled from reported values in
 #Neutronics characteristics of a 165 MWth Xe-100 reactor, Mulder et al
 
-d_steps are as follows (in [days]):
+#d_steps are as follows (in [days]):
 #d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24
 
 
