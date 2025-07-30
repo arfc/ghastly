@@ -116,10 +116,6 @@ ucoavg.add_s_alpha_beta('c_Graphite')
 ucoavg.depletable = False
 ucoavg.temperature = 1159.15 #K
 
-#you'll need to make multiple models, and what changes each time is the
-#comp of the center pebble (ucot) for the first step, it's fresh, but then
-#after that, you need to replace this comp w/ a comp from a timestep after 
-#x days (which you'll want to record for plots later)
 ucot = openmc.Material(name='UCO_TRACKED', material_id=14)
 ucot.set_density('g/cm3', 10.4)
 ucot.add_nuclide("U235", 0.1386, percent_type='wo')
