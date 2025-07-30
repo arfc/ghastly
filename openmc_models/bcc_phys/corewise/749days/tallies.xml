@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<tallies>
+  <mesh id="1">
+    <dimension>2 2 2</dimension>
+    <lower_left>-3.592055367304999 -3.592055367304999 -3.592055367304999</lower_left>
+    <upper_right>3.592055367304999 3.592055367304999 3.592055367304999</upper_right>
+  </mesh>
+  <filter id="1" type="mesh">
+    <bins>1</bins>
+  </filter>
+  <tally id="1" name="flux">
+    <filters>1</filters>
+    <scores>flux fission</scores>
+  </tally>
+</tallies>

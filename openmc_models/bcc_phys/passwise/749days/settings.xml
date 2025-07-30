@@ -1,15 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <settings>
   <run_mode>eigenvalue</run_mode>
-  <particles>10000</particles>
+  <particles>5000</particles>
   <batches>100</batches>
-  <inactive>20</inactive>
-  <generations_per_batch>5</generations_per_batch>
-  <output>
-    <tallies>false</tallies>
-  </output>
+  <inactive>70</inactive>
+  <generations_per_batch>7</generations_per_batch>
   <seed>463913357</seed>
-  <verbosity>6</verbosity>
+  <verbosity>7</verbosity>
   <temperature_method>interpolation</temperature_method>
   <temperature_tolerance>10.0</temperature_tolerance>
 </settings>

@@ -180,16 +180,27 @@ openmc.Materials(materials).export_to_xml()
 geometry = openmc.Geometry.from_xml("geometry.xml", materials)
 
 settings = openmc.Settings()
-#settings.run_mode = 'eigenvalue'
-settings.verbosity = 6
-settings.particles = 10000
-settings.generations_per_batch = 5
+settings.run_mode = 'eigenvalue'
+settings.verbosity = 7
+settings.particles = 5000
+settings.generations_per_batch = 7
 settings.batches = 100
-settings.inactive = 20
+settings.inactive = 70
 settings.seed = 463913357
 settings.temperature = {'method' : 'interpolation', 'tolerance' : 10.0}
-settings.output = {'tallies': False}
 #settings.volume_calculations = [vol_calc]
 settings.export_to_xml()
 
-openmc.run(threads=24)
+tallies = openmc.Tallies()
+mesh = openmc.RegularMesh()
+mesh.dimension = [2,2,2]
+mesh.lower_left = [-0.5*bcc_l, -0.5*bcc_l, -0.5*bcc_l]
+mesh.upper_right = [0.5*bcc_l, 0.5*bcc_l, 0.5*bcc_l]
+mesh_filter = openmc.MeshFilter(mesh)
+tally = openmc.Tally(name='flux')
+tally.filters = [mesh_filter]
+tally.scores = ['flux', 'fission']
+tallies.append(tally)
+tallies.export_to_xml()
+
+openmc.run()

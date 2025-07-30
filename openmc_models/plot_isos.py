@@ -173,6 +173,14 @@ def check_converge(title, ylabel, xlabel, fig_fname, dep_fnames, mat_ids,
         plt.savefig(fname=fig_fname + nuc +'_rel', dpi=dpi)
         plt.close()
 
+def plot_flux(title, xlabel, ylabel, fig_fname, sp_fname):
+    '''
+    plot flux, given an OpenMC statepoint file
+    '''
+    sp = openmc.StatePoint(sp_fname)
+
+
+
 
 
 

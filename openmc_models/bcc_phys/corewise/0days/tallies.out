@@ -1,0 +1,34 @@
+ =========================>     TALLY 1: FLUX     <=========================
+
+ Mesh Index (1, 1, 1)
+   Total Material
+     Flux                                 64.4752 +/- 0.0261415
+     Fission Rate                         0.0700066 +/- 0.000115669
+ Mesh Index (2, 1, 1)
+   Total Material
+     Flux                                 64.4217 +/- 0.0208966
+     Fission Rate                         0.0691098 +/- 0.000118247
+ Mesh Index (1, 2, 1)
+   Total Material
+     Flux                                 64.4441 +/- 0.02518
+     Fission Rate                         0.0691016 +/- 0.000105671
+ Mesh Index (2, 2, 1)
+   Total Material
+     Flux                                 64.4433 +/- 0.0271401
+     Fission Rate                         0.0693783 +/- 0.000109057
+ Mesh Index (1, 1, 2)
+   Total Material
+     Flux                                 64.4568 +/- 0.0288861
+     Fission Rate                         0.0691406 +/- 0.000110545
+ Mesh Index (2, 1, 2)
+   Total Material
+     Flux                                 64.3864 +/- 0.0221781
+     Fission Rate                         0.0691603 +/- 8.92881e-05
+ Mesh Index (1, 2, 2)
+   Total Material
+     Flux                                 64.4626 +/- 0.0237426
+     Fission Rate                         0.0689675 +/- 9.11991e-05
+ Mesh Index (2, 2, 2)
+   Total Material
+     Flux                                 64.4083 +/- 0.0265384
+     Fission Rate                         0.0691668 +/- 9.91154e-05

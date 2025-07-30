@@ -21,14 +21,6 @@ step_comps = [res.export_to_materials(i,
 #steps of [25] days : 
 #d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24
 
-
-#realized something - discuss most logical option with Luke??
-# if I have "fresh" as a pass, and weight it like the other passes, it will
-#skew the results towards fresh, bc fresh doesn't exist the whole time (just
-#like how the last step of pass 5 -> 6, the most burnt, doesn't always exist, 
-# "fresh" is just the first step of pass 0->1
-#also, each step is not the same in terms of residence time, so for early
-#steps, the compositons need to be weighted by their dep_t
 pass01 = {}
 tot_time01 = sum(dep_t[0:19])
 for i, step in enumerate(step_comps[0:19]):
@@ -188,16 +180,27 @@ openmc.Materials(materials).export_to_xml()
 geometry = openmc.Geometry.from_xml("geometry.xml", materials)
 
 settings = openmc.Settings()
-#settings.run_mode = 'eigenvalue'
-settings.verbosity = 6
-settings.particles = 10000
-settings.generations_per_batch = 5
+settings.run_mode = 'eigenvalue'
+settings.verbosity = 7
+settings.particles = 5000
+settings.generations_per_batch = 7
 settings.batches = 100
-settings.inactive = 20
+settings.inactive = 70
 settings.seed = 463913357
 settings.temperature = {'method' : 'interpolation', 'tolerance' : 10.0}
-settings.output = {'tallies': False}
 #settings.volume_calculations = [vol_calc]
 settings.export_to_xml()
 
-openmc.run(threads=10)
+tallies = openmc.Tallies()
+mesh = openmc.RegularMesh()
+mesh.dimension = [2,2,2]
+mesh.lower_left = [-0.5*bcc_l, -0.5*bcc_l, -0.5*bcc_l]
+mesh.upper_right = [0.5*bcc_l, 0.5*bcc_l, 0.5*bcc_l]
+mesh_filter = openmc.MeshFilter(mesh)
+tally = openmc.Tally(name='flux')
+tally.filters = [mesh_filter]
+tally.scores = ['flux', 'fission']
+tallies.append(tally)
+tallies.export_to_xml()
+
+openmc.run()
