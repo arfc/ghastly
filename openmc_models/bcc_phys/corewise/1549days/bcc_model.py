@@ -11,14 +11,10 @@ step_comps = [res.export_to_materials(i,
               for i in range(len(dep_t))]
 
 #materials
-#also doublecheck isotopic compostions conventions in mats
 #graphite based on a3-3, triso layers pulled from reported values in
 #Neutronics characteristics of a 165 MWth Xe-100 reactor, Mulder et al
 
-#from below, d_steps are as follows (in [days]), so the pass-wise
-#indices would be (remember open on end, each pass ~= 258 days
-#pass1 : 0, then everything from 1 to 10 days, inclusive, then the first 6
-#steps of [25] days : 
+#d_steps are as follows (in [days]):
 #d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24
 
 
