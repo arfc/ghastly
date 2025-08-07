@@ -1,3 +1,0 @@
-region		whole_core cylinder z 0.0 0.0 1.2 &
-		0.54 10.0 side in units box &
-		 open 2
