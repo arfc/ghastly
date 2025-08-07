@@ -445,19 +445,24 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
         f.write(main_text)
 
 
-def recircf2_pebbles(input_file, recirc_fname="recircf2_input.txt",
+def recirc_pebbles(input_file, recirc_fname="recircf2_input.txt",
                         recirc_temp="recircf2_main.txt", 
                         var_fname="recircf2_var.txt",
                         init_bed_fname="starting_bed.txt"):
     '''
-    recirculates pebbles in the core, using a lammps sim and the
-    parameters in the input file
-    reminder that ghastly assumes by default lammps uses the si unit set,
-    so distances are in m, and openmc can only use cm
+    Reads input_file in order to generate a LAMMPS input file that will
+    recirculate pebbles at the desired level of fidelity
 
-    'f2' stands for fidelity level 2 - the pebbles recirculate at a
-    higher rate than in reality, by using progressively larger cylindrical
-    regions at the bottom of the cylinder
+    Parameters
+    ----------
+
+    X : int
+        X is an integer
+
+    Returns
+    ----------
+    Y : int
+        Y is an integer
     '''
     input_block = read_input.InputBlock(input_file)
     sim_block = input_block.create_obj()
@@ -472,32 +477,48 @@ def recircf2_pebbles(input_file, recirc_fname="recircf2_input.txt",
 
     act_reg_fnames, act_reg_names = write_region_blocks(active_core)
     
-    outlet_zone = {key: value for key, value in sim_block.recirc.items() if
-                'out' in key}
-    outlet_fname = 'outlet_regsf2.txt'
-    outlet_name = list(outlet_zone.keys())[0]
-    write_recircf2_regs(outlet_zone, outlet_fname)
-    
     main_cyl = {key:value for key, value in sim_block.core_main.items() if
                 'cyl' in key}
     out_cyl = {key:value for key, value in sim_block.core_outtake.items() if
                'cyl' in key}
     _, out_params = out_cyl.popitem()
     r_chute = out_params.r
-    v_reg_fname = "v_regsf2.txt"
+    v_reg_fname = "v_regs.txt"
     v_reg_name = "v_reg"
     write_v_regs(main_cyl, r_chute, v_reg_fname, v_reg_name)
 
-    write_recircf2_main(recirc_fname, recirc_temp, var_fname, 
-                        act_reg_fnames, act_reg_names, 
-                        v_reg_fname, v_reg_name,
-                        outlet_fname, outlet_name, 
-                      init_bed_fname, sim_block, x_b, y_b, z_b)
+    if sim_block.fidelity == 1:
+        write_recircf1_main(recirc_fname, recirc_temp, var_fname, 
+                        act_reg_fnames, act_reg_names,
+                        v_reg_fname, v_reg_name, 
+                        init_bed_fname, sim_block, x_b, y_b, z_b)
+    elif sim_block.fidelity == 2:
+        outlet_zone = {key: value for key, value in sim_block.recirc.items() if
+                    'out' in key}
+        outlet_fname = 'f2-recirc-zone.txt'
+        outlet_name = list(outlet_zone.keys())[0]
+        write_recircf2_regs(outlet_zone, outlet_fname)
+
+        write_recircf2_main(recirc_fname, recirc_temp, var_fname, 
+                            act_reg_fnames, act_reg_names, 
+                            v_reg_fname, v_reg_name,
+                            outlet_fname, outlet_name, 
+                            init_bed_fname, sim_block, x_b, y_b, z_b)
 
 def write_recircf2_regs(outlet_zone, outlet_fname):
     '''
-    write file for the three recirc regions used to handle discharge in the
-    core when using an increased removal rate assumption.
+    Writes file for the recirculation region used to select which pebbles
+    should be recirculated each loop in LAMMPS.  This region is non-physical.
+
+    Parameters
+    ----------
+    X : int
+        X is an integer
+
+    Returns
+    ----------
+    Y : int
+        Y is an integer
     '''
 
     outlet_template = env.get_template("recircf2_outlet_template.txt")
@@ -513,7 +534,18 @@ def write_recircf2_regs(outlet_zone, outlet_fname):
 
 def write_v_regs(main_cyl, r_chute, v_reg_fname, v_reg_name):
     '''
-    write region blocks to define groups for velocity profile averaging
+    Writes a file containing region blocks used for dumping velocity
+    information by-region in the main core.  These are non-physical regions.
+
+    Parameters
+    ----------
+    X : int
+        X is an integer
+
+    Returns
+    ----------
+    Y : int
+        Y is an integer
     '''
     v_reg_template = env.get_template("velreg_template.txt")
     _, param = main_cyl.popitem()
@@ -533,9 +565,19 @@ def write_recircf2_main(recirc_fname, recirc_temp, var_fname,
                         outlet_fname, outlet_name, 
                       init_bed_fname, sim_block, x_b, y_b, z_b):
     '''
-    write recirc main file for LAMMPS
+    Uses the main F2 template and the files containing smaller blocks of the
+    LAMMPS model to create the main F2 recirculation file.
+
+    Parameters
+    ----------
+    X : int
+        X is an integer
+
+    Returns
+    ----------
+    Y : int
+        Y is an integer
     '''
-    #determine displacement distance in meters
 
     main_template = env.get_template(recirc_temp)
     main_text = main_template.render(variable_filename=var_fname,
@@ -553,89 +595,22 @@ def write_recircf2_main(recirc_fname, recirc_temp, var_fname,
         f.write(main_text)
 
 
-def recircf1_pebbles(input_file, recirc_fname="recircf1_input.txt",
-                        recirc_temp="recircf1_main.txt", 
-                        var_fname="recircf1_var.txt",
-                        init_bed_fname="starting_bed.txt"):
-    '''
-    recirculate pebbles with maximum movement fidelity
-    '''
-
-    input_block = read_input.InputBlock(input_file)
-    sim_block = input_block.create_obj()
-
-    x_b, y_b, z_b = find_box_bounds(sim_block)
-
-    write_variable_block(var_fname, input_block, sim_block)
-
-    active_core = (sim_block.core_intake | 
-                         sim_block.core_main | 
-                         sim_block.core_outtake)
-
-    act_reg_fnames, act_reg_names = write_region_blocks(active_core)
-
-    outlet_zone = {key: value for key, value in sim_block.recirc.items() if
-                'out' in key}
-    outlet_fname = "outlet_regsf1.txt"
-    outlet_name = "recirc_reg"
-    write_recircf1_regs(outlet_zone, outlet_name, outlet_fname)
-
-    main_cyl = {key:value for key, value in sim_block.core_main.items() if
-                'cyl' in key}
-    out_cyl = {key:value for key, value in sim_block.core_outtake.items() if
-               'cyl' in key}
-    _, out_params = out_cyl.popitem()
-    r_chute = out_params.r
-    v_reg_fname = "v_regsf1.txt"
-    v_reg_name = "v_reg"
-    write_v_regs(main_cyl, r_chute, v_reg_fname, v_reg_name)
-
-    write_recircf1_main(recirc_fname, recirc_temp, var_fname, 
-                        act_reg_fnames, act_reg_names, 
-                        v_reg_fname, v_reg_name,
-                        outlet_fname, outlet_name, 
-                      init_bed_fname, sim_block, x_b, y_b, z_b)
-
-
-
-
-
-def write_recircf1_regs(outlet_zone, outlet_name, outlet_fname):
-    '''
-    write recirc fidelity 1 outlet zone regs
-    '''
-    outlet_template = env.get_template("recircf1_outlet_template.txt")
-    keys = list(outlet_zone.keys())
-    x_c = outlet_zone[keys[0]].x_c
-    y_c = outlet_zone[keys[0]].y_c
-    for k in keys:
-        if type(outlet_zone[k]) == ghastly.core.CylCore:
-            r1 = outlet_zone[k].r
-            z_min_1 = outlet_zone[k].z_min
-            z_max = outlet_zone[k].z_max
-
-        else:
-            r2 = outlet_zone[k].r_lower
-            z_min_2 = outlet_zone[k].z_min
-
-    outlet_text = outlet_template.render(outlet_name=outlet_name,
-                                         x_c=x_c,
-                                         y_c=y_c,
-                                         r1=r1,
-                                         r2=r2,
-                                         z_min_1=z_min_1,
-                                         z_min_2=z_min_2,
-                                         z_max=z_max)
-    with open(outlet_fname, mode='w') as f:
-        f.write(outlet_text)
-
 def write_recircf1_main(recirc_fname, recirc_temp, var_fname, 
                         act_reg_fnames, act_reg_names,
-                        v_reg_fname, v_reg_name,
-                        outlet_fname, outlet_name, 
-                      init_bed_fname, sim_block, x_b, y_b, z_b):
+                        v_reg_fname, v_reg_name, 
+                        init_bed_fname, sim_block, x_b, y_b, z_b):
     '''
     write recirc main file for LAMMPS
+
+    Parameters
+    ----------
+    X : int
+        X is an integer
+
+    Returns
+    ----------
+    Y : int
+        Y is an integer
     '''
 
     main_template = env.get_template(recirc_temp)
@@ -646,9 +621,7 @@ def write_recircf1_main(recirc_fname, recirc_temp, var_fname,
                                      region_names = act_reg_names,
                                      v_reg_fname = v_reg_fname,
                                      v_reg_name = v_reg_name,
-                                     starting_bed = init_bed_fname,
-                                     outlet_fname = outlet_fname,
-                                     outlet_name = outlet_name)
+                                     starting_bed = init_bed_fname)
 
     with open(recirc_fname, mode='w') as f:
         f.write(main_text)

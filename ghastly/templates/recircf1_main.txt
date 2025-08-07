@@ -108,7 +108,6 @@ read_dump	{{starting_bed}} 0 x y z add keep timestep yes
 
 set		type 1 diameter ${d_pebble}
 
-include		{{outlet_fname}}
 
 # it does not take the full time for the pebbles to fall
 # instead, run for adjusted time, and then manually reset timestep to
@@ -123,13 +122,13 @@ variable	i loop ${index}
 ########## Start recirc loop ##########
 label		recirculate
 
-variable	z_recirc atom "z == bound(all, zmin, {{outlet_name}})"
+variable	z_recirc atom "z == bound(all, zmin)"
 group		recirc variable z_recirc
 dump		recirc_ids recirc custom 1 recirc/step_*.bin id
 dump_modify	recirc_ids pad 15
 run		0
 undump		recirc_ids
-variable	displace equal (({{z_b.up}}-0.12) - bound(all, zmin, {{outlet_name}}))
+variable	displace equal (({{z_b.up}}-0.12) - bound(all, zmin))
 displace_atoms	recirc move 0.0 0.0 ${displace}
 
 run		${recirc_steps_adj}
