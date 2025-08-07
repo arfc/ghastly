@@ -85,7 +85,7 @@ dump_modify	vwalldump pad 15
 dump		vmiddump midgroup custom ${dump_freq} velocity/v-mid/step_*.bin id vx vy vz
 dump_modify	vmiddump pad 15
 dump		vcenterdump centergroup custom ${dump_freq} velocity/v-center/step_*.bin id vx vy vz
-dump_modif	vcenterdump pad 15
+dump_modify	vcenterdump pad 15
 
 
 dump		peb_coords all custom ${dump_freq} coords/step_*.bin id type x y z
@@ -127,6 +127,7 @@ variable	z_recirc atom "z == bound(all, zmin, {{outlet_name}})"
 group		recirc variable z_recirc
 dump		recirc_ids recirc custom 1 recirc/step_*.bin id
 dump_modify	recirc_ids pad 15
+run		0
 undump		recirc_ids
 variable	displace equal (({{z_b.up}}-0.12) - bound(all, zmin, {{outlet_name}}))
 displace_atoms	recirc move 0.0 0.0 ${displace}

@@ -118,13 +118,14 @@ variable	recirc_run equal 2500000
 ########## Start Mainloop ##########
 label		recirculate
 
-variable	displace equal (({{z_b.up}}-0.12) - bound(all, zmin, {{outlet_name}})
+variable	displace equal (({{z_b.up}}-0.12) - bound(all, zmin, {{outlet_name}}))
 group		outlet region {{outlet_name}}
 dump		recirc_ids outlet custom 1 recirc/step_*.bin id
 dump_modify	recirc_ids pad 15
+run		0
 undump		recirc_ids
 displace_atoms	outlet move 0.0 0.0 ${displace} units box
-compute		n outlet_1 count/type atom
+compute		n outlet count/type atom
 run		0
 variable	N equal c_n[1]
 
