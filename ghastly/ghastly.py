@@ -264,11 +264,7 @@ def write_variable_block(variable_filename, input_block, sim_block):
     variables["r_pebble"] = sim_block.r_pebble
     variables["seed"] = sim_block.seed
     variables["recirc_target"] = sim_block.recirc_target
-    variables["recirc_rate"] = sim_block.recirc_rate
     variables["recirc_hz"] = sim_block.recirc_hz
-    variables["v_center"] = sim_block.v_center
-    variables["v_mid"] = sim_block.v_mid
-    variables["v_wall"] = sim_block.v_wall
 
     variables_template = env.get_template("variable_template.txt")
     variable_text = variables_template.render(variables=variables)

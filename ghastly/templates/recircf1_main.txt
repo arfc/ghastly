@@ -9,7 +9,7 @@ variable	pi equal 3.1415927
 
 include		{{variable_filename}}
 
-variable	skin equal ${r_pebble}/30
+variable	skin equal ${r_pebble}/12
 
 variable	d_pebble equal 2*${r_pebble}
 variable	mass equal ${density_rho}*(4/3)*${pi}*(${r_pebble}^3)
@@ -81,16 +81,20 @@ group		midgroup dynamic all region {{v_reg_name}}_mid
 group		centergroup dynamic all region {{v_reg_name}}_center
 
 dump		vwalldump wallgroup custom ${dump_freq} velocity/v-wall/step_*.bin id vx vy vz
+dump_modify	vwalldump pad 15
 dump		vmiddump midgroup custom ${dump_freq} velocity/v-mid/step_*.bin id vx vy vz
+dump_modify	vmiddump pad 15
 dump		vcenterdump centergroup custom ${dump_freq} velocity/v-center/step_*.bin id vx vy vz
+dump_modif	vcenterdump pad 15
 
 
 dump		peb_coords all custom ${dump_freq} coords/step_*.bin id type x y z
+dump_modify	peb_coords pad 15
 
 dump		recirc_frames all image ${frame_freq} img/step_*.jpg type diameter & 
 		view 90 0 box no 0.0 zoom 1.5 size ${pix_width} ${pix_height}
 
-dump_modify	recirc_frames acolor * lavender backcolor midnightblue
+dump_modify	recirc_frames acolor * lavender backcolor midnightblue pad 15
 
 
 thermo_style	custom step cpu tpcpu spcpu cpuremain time atoms ke
@@ -121,6 +125,9 @@ label		recirculate
 
 variable	z_recirc atom "z == bound(all, zmin, {{outlet_name}})"
 group		recirc variable z_recirc
+dump		recirc_ids recirc custom 1 recirc/step_*.bin id
+dump_modify	recirc_ids pad 15
+undump		recirc_ids
 variable	displace equal (({{z_b.up}}-0.12) - bound(all, zmin, {{outlet_name}}))
 displace_atoms	recirc move 0.0 0.0 ${displace}
 

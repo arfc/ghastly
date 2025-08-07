@@ -1,6 +1,6 @@
 suffix		omp
 units		si
-package		omp 20
+package		omp 1
 
 ##############################################################################
 #variables
@@ -92,7 +92,7 @@ dump		peb_coords all custom ${dump_freq} coords/step_*.bin id x y z
 dump_modify	peb_coords pad 15
 
 dump		recirc_frames all image ${frame_freq} img/step_*.jpg type diameter & 
-		view 90 0 box no 0.0 size ${pix_width} ${pix_height}
+		view 90 0 zoom 1.5 box no 0.0 size ${pix_width} ${pix_height}
 
 dump_modify	recirc_frames acolor * lavender backcolor midnightblue pad 15
 
@@ -112,7 +112,6 @@ include		{{outlet_fname}}
 
 variable	recirculated equal 0
 variable	recirc_run equal 2500000
-dump		recirculated all custom ${recirc_run} recirculated.txt recirculated
 
 
 
@@ -121,6 +120,9 @@ label		recirculate
 
 variable	displace equal (({{z_b.up}}-0.12) - bound(all, zmin, {{outlet_name}})
 group		outlet region {{outlet_name}}
+dump		recirc_ids outlet custom 1 recirc/step_*.bin id
+dump_modify	recirc_ids pad 15
+undump		recirc_ids
 displace_atoms	outlet move 0.0 0.0 ${displace} units box
 compute		n outlet_1 count/type atom
 run		0
