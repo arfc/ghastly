@@ -26,6 +26,23 @@ class Sim:
             Target packing fraction in core region.  Determines total number
             of pebbles, but packing fraction may not match this value in
             all areas due to settling.
+        fidelity : int
+            Integer from the following list: [1, 2], that defines the fidelity
+            level used when simulating recirculation.
+                1: Recirc 1 pebble per recirculation loop, at a frequency
+                defined by recirc_hz.  Simulation time and time step are
+                manually updated to match 'real' time.
+                2: Recirculate a group of pebbles each recirculation loop, 
+                until recirc_target pebbles have been recirculated.
+                This level also has an accelerated recirculation rate, and as
+                such, the time steps in the simulation will not match
+                'real' time.
+        recirc_target : int
+            For fidelity = 2 simulations, recirc_target is the minimum number
+            of pebbles that must be recirculated.
+        recirc_hz : float
+            For fidelity = 1 simulations.  The frequency of pebble
+            recirculation used, in units of [pebbles/second].
         core_intake : dict
             Dictionary containing key:value pairs where each key is the name
             of a core element within the core intake zone, and the value is a
