@@ -184,6 +184,16 @@ class InputBlock:
             case _:
                 recirc_target = self.sim_var["recirc_target"]
 
+        fidelity_case = self.sim_var.get("fidelity")
+        if type(fidelity_case) != int and fidelity_case != None:
+            raise TypeError('''The fidelity level must be one of the following
+                            integers: [1, 2]''')
+        match fidelity_case:
+            case None:
+                fidelity = 1
+            case _:
+                fidelity = self.sim_var["fidelity"]
+
 
         k_case = self.sim_var.get("k_rate")
         if type(k_case) != float and k_case != None:
@@ -226,6 +236,7 @@ class InputBlock:
         sim_block = simulation.Sim(r_pebble=self.sim_var["r_pebble"],
                                    t_final=self.sim_var["t_final"],
                                    pf=self.sim_var["pf"],
+                                   fidelity=fidelity,
                                    recirc_target=recirc_target,
                                    recirc_hz=recirc_hz,
                                    core_intake=core_intake,

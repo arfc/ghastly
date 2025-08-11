@@ -3,6 +3,7 @@
 		"r_pebble" : 0.03,
 		"t_final" : 300,
 		"pf" : 0.60,
+		"fidelity" : 2,
 		"recirc_target" : 500000,
 		"down_flow" : true,
 		"seed" : 4345343
