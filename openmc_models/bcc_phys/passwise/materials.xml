@@ -546,7 +546,7 @@
     <nuclide ao="2.1307702631052755e-93" name="Ca41"/>
     <nuclide ao="4.3660935388837465e-84" name="Ca42"/>
     <nuclide ao="6.314063851054351e-82" name="Ca43"/>
-    <nuclide ao="1.297391327949942e-73" name="Ca44"/>
+    <nuclide ao="1.2973913279499418e-73" name="Ca44"/>
     <nuclide ao="8.672745632814941e-75" name="Ca45"/>
     <nuclide ao="1.1809202523450718e-70" name="Ca46"/>
     <nuclide ao="1.8831086027456905e-67" name="Ca47"/>
@@ -603,7 +603,7 @@
     <nuclide ao="1.6233998635882791e-15" name="As74"/>
     <nuclide ao="2.1566329832760768e-08" name="As75"/>
     <nuclide ao="1.868212532152062e-15" name="Se74"/>
-    <nuclide ao="9.070530241823362e-17" name="Se75"/>
+    <nuclide ao="9.070530241823366e-17" name="Se75"/>
     <nuclide ao="7.592047343260645e-11" name="Se76"/>
     <nuclide ao="1.5457568410237408e-07" name="Se77"/>
     <nuclide ao="4.179389786626121e-07" name="Se78"/>
@@ -1029,7 +1029,7 @@
     <nuclide ao="7.761733953236183e-101" name="Ar37"/>
     <nuclide ao="2.1035468147185103e-91" name="Ar38"/>
     <nuclide ao="2.7869310369484744e-92" name="Ar39"/>
-    <nuclide ao="7.014929795709041e-90" name="Ar40"/>
+    <nuclide ao="7.014929795709039e-90" name="Ar40"/>
     <nuclide ao="7.666187747372667e-86" name="Ar41"/>
     <nuclide ao="3.2270587235228467e-96" name="K39"/>
     <nuclide ao="2.665803306420584e-93" name="K40"/>
@@ -1038,7 +1038,7 @@
     <nuclide ao="4.426798567608349e-94" name="Ca41"/>
     <nuclide ao="9.070812071408986e-85" name="Ca42"/>
     <nuclide ao="1.3117833159028872e-82" name="Ca43"/>
-    <nuclide ao="2.6954055871918914e-74" name="Ca44"/>
+    <nuclide ao="2.695405587191891e-74" name="Ca44"/>
     <nuclide ao="1.8018131099983286e-75" name="Ca45"/>
     <nuclide ao="2.453430185346343e-71" name="Ca46"/>
     <nuclide ao="3.912267131575656e-68" name="Ca47"/>
@@ -1095,7 +1095,7 @@
     <nuclide ao="3.3727071919593047e-16" name="As74"/>
     <nuclide ao="4.480529865904067e-09" name="As75"/>
     <nuclide ao="3.88131968261381e-16" name="Se74"/>
-    <nuclide ao="1.884455165214965e-17" name="Se75"/>
+    <nuclide ao="1.884455165214966e-17" name="Se75"/>
     <nuclide ao="1.577291784398274e-11" name="Se76"/>
     <nuclide ao="3.2113993179829826e-08" name="Se77"/>
     <nuclide ao="8.682924218188873e-08" name="Se78"/>
@@ -1453,7 +1453,7 @@
     <nuclide ao="2.6865989767615187e-25" name="Cm249"/>
     <nuclide ao="1.4207492318229496e-28" name="Cm250"/>
     <nuclide ao="1.6663317061104422e-25" name="Bk245"/>
-    <nuclide ao="3.9750703780200612e-28" name="Bk246"/>
+    <nuclide ao="3.9750703780200617e-28" name="Bk246"/>
     <nuclide ao="6.789416406243855e-31" name="Bk247"/>
     <nuclide ao="4.403363630355317e-37" name="Bk248"/>
     <nuclide ao="7.782823182778477e-23" name="Bk249"/>
@@ -1521,7 +1521,7 @@
     <nuclide ao="7.761733953236183e-101" name="Ar37"/>
     <nuclide ao="2.1035468147185103e-91" name="Ar38"/>
     <nuclide ao="2.786931036948474e-92" name="Ar39"/>
-    <nuclide ao="7.01492979570904e-90" name="Ar40"/>
+    <nuclide ao="7.014929795709039e-90" name="Ar40"/>
     <nuclide ao="7.666187747372667e-86" name="Ar41"/>
     <nuclide ao="3.2270587235228467e-96" name="K39"/>
     <nuclide ao="2.665803306420584e-93" name="K40"/>
@@ -1587,7 +1587,7 @@
     <nuclide ao="3.3727071919593037e-16" name="As74"/>
     <nuclide ao="4.480529865904068e-09" name="As75"/>
     <nuclide ao="3.88131968261381e-16" name="Se74"/>
-    <nuclide ao="1.8844551652149652e-17" name="Se75"/>
+    <nuclide ao="1.8844551652149655e-17" name="Se75"/>
     <nuclide ao="1.5772917843982736e-11" name="Se76"/>
     <nuclide ao="3.2113993179829826e-08" name="Se77"/>
     <nuclide ao="8.682924218188873e-08" name="Se78"/>
@@ -1945,7 +1945,7 @@
     <nuclide ao="2.6865989767615187e-25" name="Cm249"/>
     <nuclide ao="1.4207492318229498e-28" name="Cm250"/>
     <nuclide ao="1.6663317061104422e-25" name="Bk245"/>
-    <nuclide ao="3.9750703780200612e-28" name="Bk246"/>
+    <nuclide ao="3.975070378020062e-28" name="Bk246"/>
     <nuclide ao="6.789416406243855e-31" name="Bk247"/>
     <nuclide ao="4.403363630355317e-37" name="Bk248"/>
     <nuclide ao="7.782823182778477e-23" name="Bk249"/>
@@ -2013,7 +2013,7 @@
     <nuclide ao="7.761733953236183e-101" name="Ar37"/>
     <nuclide ao="2.10354681471851e-91" name="Ar38"/>
     <nuclide ao="2.786931036948474e-92" name="Ar39"/>
-    <nuclide ao="7.01492979570904e-90" name="Ar40"/>
+    <nuclide ao="7.014929795709039e-90" name="Ar40"/>
     <nuclide ao="7.666187747372667e-86" name="Ar41"/>
     <nuclide ao="3.2270587235228467e-96" name="K39"/>
     <nuclide ao="2.665803306420584e-93" name="K40"/>
@@ -2022,7 +2022,7 @@
     <nuclide ao="4.426798567608349e-94" name="Ca41"/>
     <nuclide ao="9.070812071408987e-85" name="Ca42"/>
     <nuclide ao="1.3117833159028872e-82" name="Ca43"/>
-    <nuclide ao="2.6954055871918914e-74" name="Ca44"/>
+    <nuclide ao="2.695405587191891e-74" name="Ca44"/>
     <nuclide ao="1.8018131099983288e-75" name="Ca45"/>
     <nuclide ao="2.453430185346343e-71" name="Ca46"/>
     <nuclide ao="3.912267131575656e-68" name="Ca47"/>
@@ -2079,7 +2079,7 @@
     <nuclide ao="3.372707191959304e-16" name="As74"/>
     <nuclide ao="4.480529865904067e-09" name="As75"/>
     <nuclide ao="3.88131968261381e-16" name="Se74"/>
-    <nuclide ao="1.8844551652149652e-17" name="Se75"/>
+    <nuclide ao="1.8844551652149655e-17" name="Se75"/>
     <nuclide ao="1.5772917843982736e-11" name="Se76"/>
     <nuclide ao="3.2113993179829826e-08" name="Se77"/>
     <nuclide ao="8.682924218188874e-08" name="Se78"/>
@@ -2437,7 +2437,7 @@
     <nuclide ao="2.6865989767615196e-25" name="Cm249"/>
     <nuclide ao="1.4207492318229494e-28" name="Cm250"/>
     <nuclide ao="1.6663317061104422e-25" name="Bk245"/>
-    <nuclide ao="3.9750703780200617e-28" name="Bk246"/>
+    <nuclide ao="3.975070378020062e-28" name="Bk246"/>
     <nuclide ao="6.789416406243855e-31" name="Bk247"/>
     <nuclide ao="4.403363630355317e-37" name="Bk248"/>
     <nuclide ao="7.782823182778477e-23" name="Bk249"/>
@@ -2505,7 +2505,7 @@
     <nuclide ao="7.761733953236182e-101" name="Ar37"/>
     <nuclide ao="2.10354681471851e-91" name="Ar38"/>
     <nuclide ao="2.7869310369484737e-92" name="Ar39"/>
-    <nuclide ao="7.01492979570904e-90" name="Ar40"/>
+    <nuclide ao="7.014929795709037e-90" name="Ar40"/>
     <nuclide ao="7.666187747372667e-86" name="Ar41"/>
     <nuclide ao="3.2270587235228467e-96" name="K39"/>
     <nuclide ao="2.6658033064205837e-93" name="K40"/>
@@ -2514,7 +2514,7 @@
     <nuclide ao="4.4267985676083485e-94" name="Ca41"/>
     <nuclide ao="9.070812071408986e-85" name="Ca42"/>
     <nuclide ao="1.3117833159028871e-82" name="Ca43"/>
-    <nuclide ao="2.6954055871918914e-74" name="Ca44"/>
+    <nuclide ao="2.695405587191891e-74" name="Ca44"/>
     <nuclide ao="1.8018131099983288e-75" name="Ca45"/>
     <nuclide ao="2.453430185346343e-71" name="Ca46"/>
     <nuclide ao="3.912267131575656e-68" name="Ca47"/>
@@ -2571,7 +2571,7 @@
     <nuclide ao="3.372707191959304e-16" name="As74"/>
     <nuclide ao="4.480529865904067e-09" name="As75"/>
     <nuclide ao="3.8813196826138093e-16" name="Se74"/>
-    <nuclide ao="1.884455165214965e-17" name="Se75"/>
+    <nuclide ao="1.8844551652149652e-17" name="Se75"/>
     <nuclide ao="1.5772917843982736e-11" name="Se76"/>
     <nuclide ao="3.211399317982982e-08" name="Se77"/>
     <nuclide ao="8.682924218188873e-08" name="Se78"/>
@@ -2952,20 +2952,6 @@
     <nuclide ao="2.651346822178451e-37" name="Fm255"/>
     <sab name="c_Graphite"/>
   </material>
-<<<<<<< HEAD
-  <material depletable="true" id="13" name="UCO_TRACKED" temperature="1159.15" volume="1.5209">
-    <density units="g/cm3" value="10.4"/>
-    <nuclide name="C12" wo="0.0446875496032256"/>
-    <nuclide name="C13" wo="0.0005424503967743985"/>
-    <nuclide name="O16" wo="0.0600901490867683"/>
-    <nuclide name="O17" wo="2.4261737354897877e-05"/>
-    <nuclide name="O18" wo="0.0001355891758767935"/>
-    <nuclide name="U235" wo="0.1386"/>
-    <nuclide name="U238" wo="0.7559"/>
-    <sab name="c_Graphite"/>
-  </material>
-=======
->>>>>>> 8fb1376 (commit current before move and cherrypick)
   <material id="14" name="buffer" temperature="1159.15">
     <density units="g/cm3" value="1.05"/>
     <nuclide ao="0.988922" name="C12"/>

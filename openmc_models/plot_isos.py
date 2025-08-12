@@ -173,8 +173,7 @@ def check_converge(title, ylabel, xlabel, fig_fname, dep_fnames, mat_ids,
         plt.savefig(fname=fig_fname + nuc +'_rel', dpi=dpi)
         plt.close()
 
-<<<<<<< HEAD
-=======
+
 def flux_fission(sp_fname, shape, out_fname):
     '''
     plot flux, given an OpenMC statepoint file
@@ -199,12 +198,6 @@ def flux_fission(sp_fname, shape, out_fname):
     fission_zip.shape = (8, 2) 
     np.savetxt(out_fname+'_flux.csv', flux_zip)
     np.savetxt(out_fname+'_fission.csv', fission_zip)
-
-
-
->>>>>>> 8fb1376 (commit current before move and cherrypick)
-
-
 
 
 

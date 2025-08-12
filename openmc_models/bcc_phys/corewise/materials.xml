@@ -1,104 +1,104 @@
 <?xml version='1.0' encoding='utf-8'?>
 <materials>
   <material id="13" name="UCO_01(0.16)-UCO_12(0.17)-UCO_23(0.17)-UCO_34(0.17)-UCO_45(0.17)-UCO_56(0.16)" temperature="1159.15">
-    <density units="g/cm3" value="10.400000000000002"/>
+    <density units="g/cm3" value="10.4"/>
     <nuclide ao="5.79973603612858e-09" name="H1"/>
     <nuclide ao="2.0057597182837797e-12" name="H2"/>
-    <nuclide ao="8.204360290721829e-19" name="H3"/>
+    <nuclide ao="8.204360290721828e-19" name="H3"/>
     <nuclide ao="6.197023493102438e-21" name="He3"/>
-    <nuclide ao="1.4238884259381293e-05" name="He4"/>
+    <nuclide ao="1.4238884259381292e-05" name="He4"/>
     <nuclide ao="1.8174426756960505e-33" name="Li6"/>
     <nuclide ao="2.0916372083238276e-25" name="Li7"/>
-    <nuclide ao="7.222850960685978e-26" name="B10"/>
+    <nuclide ao="7.222850960685977e-26" name="B10"/>
     <nuclide ao="3.37658110950251e-16" name="B11"/>
     <nuclide ao="0.3207221806297167" name="C12"/>
     <nuclide ao="0.0035952264489232293" name="C13"/>
-    <nuclide ao="8.599577169195432e-12" name="N14"/>
+    <nuclide ao="8.59957716919543e-12" name="N14"/>
     <nuclide ao="6.238020759435514e-13" name="N15"/>
     <nuclide ao="0.3235501246549412" name="O16"/>
     <nuclide ao="0.00012299545300853318" name="O17"/>
-    <nuclide ao="0.0006487792109827041" name="O18"/>
-    <nuclide ao="5.093214945979692e-124" name="F19"/>
+    <nuclide ao="0.000648779210982704" name="O18"/>
+    <nuclide ao="5.0932149459796916e-124" name="F19"/>
     <nuclide ao="6.34550589003007e-119" name="Ne20"/>
     <nuclide ao="1.4095380913909087e-121" name="Ne21"/>
-    <nuclide ao="1.4579493360548897e-117" name="Ne22"/>
+    <nuclide ao="1.45794933605489e-117" name="Ne22"/>
     <nuclide ao="7.178655032590957e-122" name="Na22"/>
-    <nuclide ao="1.310641617045772e-111" name="Na23"/>
+    <nuclide ao="1.3106416170457717e-111" name="Na23"/>
     <nuclide ao="3.6886561912318375e-115" name="Mg24"/>
-    <nuclide ao="1.0873656463482966e-111" name="Mg25"/>
+    <nuclide ao="1.0873656463482964e-111" name="Mg25"/>
     <nuclide ao="9.283729698759783e-104" name="Mg26"/>
-    <nuclide ao="3.888350583565116e-108" name="Al27"/>
+    <nuclide ao="3.888350583565115e-108" name="Al27"/>
     <nuclide ao="1.9219855568994706e-105" name="Si28"/>
-    <nuclide ao="1.6764390967942526e-97" name="Si29"/>
-    <nuclide ao="3.129990155026794e-100" name="Si30"/>
-    <nuclide ao="1.6442305442969377e-102" name="Si31"/>
+    <nuclide ao="1.676439096794252e-97" name="Si29"/>
+    <nuclide ao="3.1299901550267937e-100" name="Si30"/>
+    <nuclide ao="1.6442305442969375e-102" name="Si31"/>
     <nuclide ao="7.86975157743719e-100" name="P31"/>
-    <nuclide ao="9.444445055216702e-93" name="S32"/>
+    <nuclide ao="9.4444450552167e-93" name="S32"/>
     <nuclide ao="1.4341398024518461e-96" name="S33"/>
-    <nuclide ao="2.45986186288715e-93" name="S34"/>
-    <nuclide ao="8.041198834014562e-87" name="S35"/>
+    <nuclide ao="2.4598618628871504e-93" name="S34"/>
+    <nuclide ao="8.041198834014561e-87" name="S35"/>
     <nuclide ao="2.937223795894671e-96" name="S36"/>
-    <nuclide ao="5.513698697891766e-87" name="Cl35"/>
-    <nuclide ao="3.275603946041624e-88" name="Cl36"/>
+    <nuclide ao="5.513698697891765e-87" name="Cl35"/>
+    <nuclide ao="3.2756039460416233e-88" name="Cl36"/>
     <nuclide ao="6.245032509425181e-86" name="Cl37"/>
     <nuclide ao="1.514500231623912e-94" name="Ar36"/>
     <nuclide ao="3.4666190860995725e-89" name="Ar37"/>
-    <nuclide ao="1.900062508643743e-80" name="Ar38"/>
-    <nuclide ao="7.359964176483275e-80" name="Ar39"/>
+    <nuclide ao="1.9000625086437428e-80" name="Ar38"/>
+    <nuclide ao="7.35996417648327e-80" name="Ar39"/>
     <nuclide ao="3.3507020971610645e-79" name="Ar40"/>
-    <nuclide ao="1.701812012673665e-76" name="Ar41"/>
-    <nuclide ao="4.391594135317243e-83" name="K39"/>
+    <nuclide ao="1.7018120126736648e-76" name="Ar41"/>
+    <nuclide ao="4.391594135317242e-83" name="K39"/>
     <nuclide ao="2.659236372075577e-82" name="K40"/>
     <nuclide ao="1.6473455421668623e-73" name="K41"/>
-    <nuclide ao="3.336174233203336e-92" name="Ca40"/>
+    <nuclide ao="3.336174233203335e-92" name="Ca40"/>
     <nuclide ao="1.360379446405723e-81" name="Ca41"/>
-    <nuclide ao="2.7122506640233833e-73" name="Ca42"/>
+    <nuclide ao="2.712250664023383e-73" name="Ca42"/>
     <nuclide ao="7.559753832021169e-73" name="Ca43"/>
     <nuclide ao="3.1867619811802782e-65" name="Ca44"/>
     <nuclide ao="1.1407035493649963e-65" name="Ca45"/>
-    <nuclide ao="4.0344659501868724e-63" name="Ca46"/>
+    <nuclide ao="4.034465950186872e-63" name="Ca46"/>
     <nuclide ao="1.0627228879536602e-60" name="Ca47"/>
     <nuclide ao="5.08553102402168e-66" name="Sc45"/>
-    <nuclide ao="1.0397587154779915e-66" name="Ti46"/>
+    <nuclide ao="1.0397587154779916e-66" name="Ti46"/>
     <nuclide ao="2.0448425428176846e-59" name="Ti47"/>
     <nuclide ao="2.0187072765702982e-57" name="Ti48"/>
-    <nuclide ao="1.8468447776759426e-55" name="Ti49"/>
-    <nuclide ao="1.4845156086338956e-50" name="Ti50"/>
+    <nuclide ao="1.8468447776759422e-55" name="Ti49"/>
+    <nuclide ao="1.4845156086338953e-50" name="Ti50"/>
     <nuclide ao="3.1174419521833634e-64" name="V49"/>
     <nuclide ao="9.33350411551352e-57" name="V50"/>
-    <nuclide ao="5.602755356587894e-49" name="V51"/>
+    <nuclide ao="5.602755356587893e-49" name="V51"/>
     <nuclide ao="2.467004741409605e-75" name="Cr50"/>
     <nuclide ao="1.5333352712123038e-56" name="Cr51"/>
-    <nuclide ao="8.750939888414743e-48" name="Cr52"/>
+    <nuclide ao="8.750939888414744e-48" name="Cr52"/>
     <nuclide ao="9.136859395886166e-44" name="Cr53"/>
-    <nuclide ao="7.180467350503349e-41" name="Cr54"/>
-    <nuclide ao="3.6624188358908233e-47" name="Mn54"/>
-    <nuclide ao="1.0687588207854497e-39" name="Mn55"/>
-    <nuclide ao="2.7621170574279023e-44" name="Fe55"/>
+    <nuclide ao="7.180467350503348e-41" name="Cr54"/>
+    <nuclide ao="3.662418835890823e-47" name="Mn54"/>
+    <nuclide ao="1.0687588207854495e-39" name="Mn55"/>
+    <nuclide ao="2.762117057427902e-44" name="Fe55"/>
     <nuclide ao="1.822012008373512e-36" name="Fe56"/>
     <nuclide ao="4.4537968039692345e-34" name="Fe57"/>
     <nuclide ao="1.7062818247145594e-31" name="Fe58"/>
-    <nuclide ao="4.195329616943536e-37" name="Co58"/>
+    <nuclide ao="4.195329616943537e-37" name="Co58"/>
     <nuclide ao="4.223649299359299e-29" name="Co59"/>
-    <nuclide ao="1.4263918871501113e-42" name="Ni58"/>
+    <nuclide ao="1.426391887150111e-42" name="Ni58"/>
     <nuclide ao="3.107764740500881e-35" name="Ni59"/>
-    <nuclide ao="2.1795832726172138e-27" name="Ni60"/>
-    <nuclide ao="3.4920381744340226e-25" name="Ni61"/>
-    <nuclide ao="3.970814930168308e-21" name="Ni62"/>
-    <nuclide ao="1.9392583414472065e-17" name="Ni63"/>
+    <nuclide ao="2.1795832726172134e-27" name="Ni60"/>
+    <nuclide ao="3.492038174434022e-25" name="Ni61"/>
+    <nuclide ao="3.9708149301683075e-21" name="Ni62"/>
+    <nuclide ao="1.9392583414472062e-17" name="Ni63"/>
     <nuclide ao="5.0578810276673e-16" name="Ni64"/>
-    <nuclide ao="1.260508949383284e-19" name="Cu63"/>
-    <nuclide ao="9.898522800095397e-24" name="Cu64"/>
+    <nuclide ao="1.2605089493832837e-19" name="Cu63"/>
+    <nuclide ao="9.898522800095395e-24" name="Cu64"/>
     <nuclide ao="3.484239807131848e-14" name="Cu65"/>
-    <nuclide ao="2.1079296055289624e-21" name="Zn64"/>
+    <nuclide ao="2.107929605528962e-21" name="Zn64"/>
     <nuclide ao="8.961606860675947e-19" name="Zn65"/>
     <nuclide ao="3.1115682949158656e-11" name="Zn66"/>
     <nuclide ao="1.171709649297518e-10" name="Zn67"/>
     <nuclide ao="2.710264657958948e-10" name="Zn68"/>
     <nuclide ao="5.997127537615175e-14" name="Zn69"/>
-    <nuclide ao="1.98991467052175e-09" name="Zn70"/>
+    <nuclide ao="1.9899146705217497e-09" name="Zn70"/>
     <nuclide ao="7.007957558548101e-10" name="Ga69"/>
-    <nuclide ao="2.4003628587277503e-16" name="Ga70"/>
+    <nuclide ao="2.40036285872775e-16" name="Ga70"/>
     <nuclide ao="4.195195482677625e-09" name="Ga71"/>
     <nuclide ao="4.8768737481605e-12" name="Ge70"/>
     <nuclide ao="1.1459671939653473e-15" name="Ge71"/>
@@ -107,298 +107,298 @@
     <nuclide ao="1.0749751300020795e-07" name="Ge74"/>
     <nuclide ao="3.307272207087735e-11" name="Ge75"/>
     <nuclide ao="8.102278650605804e-07" name="Ge76"/>
-    <nuclide ao="1.3512214342680574e-15" name="As73"/>
+    <nuclide ao="1.3512214342680576e-15" name="As73"/>
     <nuclide ao="1.798822379323592e-14" name="As74"/>
-    <nuclide ao="2.910429084127603e-07" name="As75"/>
+    <nuclide ao="2.9104290841276027e-07" name="As75"/>
     <nuclide ao="1.1253153500871918e-13" name="Se74"/>
     <nuclide ao="8.348752653089362e-15" name="Se75"/>
-    <nuclide ao="6.869504176953725e-09" name="Se76"/>
-    <nuclide ao="1.949517839259534e-06" name="Se77"/>
-    <nuclide ao="5.557825065995626e-06" name="Se78"/>
-    <nuclide ao="1.1013166577925203e-05" name="Se79"/>
+    <nuclide ao="6.8695041769537245e-09" name="Se76"/>
+    <nuclide ao="1.9495178392595336e-06" name="Se77"/>
+    <nuclide ao="5.5578250659956255e-06" name="Se78"/>
+    <nuclide ao="1.10131665779252e-05" name="Se79"/>
     <nuclide ao="3.274546180537333e-05" name="Se80"/>
-    <nuclide ao="1.2705288824763481e-09" name="Se81"/>
+    <nuclide ao="1.270528882476348e-09" name="Se81"/>
     <nuclide ao="8.10289185126259e-05" name="Se82"/>
-    <nuclide ao="6.172665301913661e-09" name="Br79"/>
-    <nuclide ao="1.5392033255094915e-14" name="Br80"/>
-    <nuclide ao="5.162784914363567e-05" name="Br81"/>
-    <nuclide ao="1.554404795864465e-20" name="Kr78"/>
+    <nuclide ao="6.172665301913659e-09" name="Br79"/>
+    <nuclide ao="1.539203325509491e-14" name="Br80"/>
+    <nuclide ao="5.162784914363568e-05" name="Br81"/>
+    <nuclide ao="1.5544047958644646e-20" name="Kr78"/>
     <nuclide ao="3.91049572847741e-18" name="Kr79"/>
-    <nuclide ao="3.935131747271515e-10" name="Kr80"/>
-    <nuclide ao="2.2564891355768866e-11" name="Kr81"/>
+    <nuclide ao="3.9351317472715147e-10" name="Kr80"/>
+    <nuclide ao="2.2564891355768873e-11" name="Kr81"/>
     <nuclide ao="9.688401327784007e-07" name="Kr82"/>
-    <nuclide ao="0.00010226689424050094" name="Kr83"/>
+    <nuclide ao="0.00010226689424050096" name="Kr83"/>
     <nuclide ao="0.00026030455110516584" name="Kr84"/>
     <nuclide ao="6.35940015689201e-05" name="Kr85"/>
-    <nuclide ao="0.0004613396714049913" name="Kr86"/>
+    <nuclide ao="0.00046133967140499124" name="Kr86"/>
     <nuclide ao="0.0002401972193696786" name="Rb85"/>
     <nuclide ao="3.989276983502294e-08" name="Rb86"/>
     <nuclide ao="0.0006018739104619883" name="Rb87"/>
     <nuclide ao="1.3984570475225302e-12" name="Sr84"/>
     <nuclide ao="9.425673244988473e-14" name="Sr85"/>
     <nuclide ao="7.054206638301832e-07" name="Sr86"/>
-    <nuclide ao="3.257477672263916e-09" name="Sr87"/>
+    <nuclide ao="3.2574776722639155e-09" name="Sr87"/>
     <nuclide ao="0.0008108332532986328" name="Sr88"/>
-    <nuclide ao="9.18939148887659e-05" name="Sr89"/>
-    <nuclide ao="0.0012791683674301393" name="Sr90"/>
-    <nuclide ao="0.0009928350830120253" name="Y89"/>
-    <nuclide ao="3.3665900143907766e-07" name="Y90"/>
+    <nuclide ao="9.189391488876591e-05" name="Sr89"/>
+    <nuclide ao="0.0012791683674301388" name="Sr90"/>
+    <nuclide ao="0.000992835083012025" name="Y89"/>
+    <nuclide ao="3.3665900143907756e-07" name="Y90"/>
     <nuclide ao="0.00013205819635408067" name="Y91"/>
     <nuclide ao="4.827729123139495e-05" name="Zr90"/>
-    <nuclide ao="0.0012200682091412385" name="Zr91"/>
+    <nuclide ao="0.0012200682091412388" name="Zr91"/>
     <nuclide ao="0.0014372239592353806" name="Zr92"/>
     <nuclide ao="0.0015393197985227687" name="Zr93"/>
-    <nuclide ao="0.001615388541585345" name="Zr94"/>
+    <nuclide ao="0.0016153885415853447" name="Zr94"/>
     <nuclide ao="0.0001794536226916077" name="Zr95"/>
-    <nuclide ao="0.0016188350628454015" name="Zr96"/>
-    <nuclide ao="9.557140901351539e-11" name="Nb93"/>
-    <nuclide ao="9.930345395472501e-10" name="Nb94"/>
-    <nuclide ao="9.184134220302041e-05" name="Nb95"/>
+    <nuclide ao="0.0016188350628454013" name="Zr96"/>
+    <nuclide ao="9.557140901351537e-11" name="Nb93"/>
+    <nuclide ao="9.9303453954725e-10" name="Nb94"/>
+    <nuclide ao="9.18413422030204e-05" name="Nb95"/>
     <nuclide ao="1.0923989109807312e-19" name="Mo92"/>
     <nuclide ao="4.2440149208829315e-14" name="Mo93"/>
     <nuclide ao="1.422641228124279e-09" name="Mo94"/>
-    <nuclide ao="0.0013145401701243965" name="Mo95"/>
-    <nuclide ao="5.8988197230982196e-05" name="Mo96"/>
-    <nuclide ao="0.0015722007749656187" name="Mo97"/>
+    <nuclide ao="0.0013145401701243962" name="Mo95"/>
+    <nuclide ao="5.8988197230982175e-05" name="Mo96"/>
+    <nuclide ao="0.0015722007749656183" name="Mo97"/>
     <nuclide ao="0.0015690446792421026" name="Mo98"/>
-    <nuclide ao="8.869072273344316e-06" name="Mo99"/>
-    <nuclide ao="0.001727319274218669" name="Mo100"/>
-    <nuclide ao="9.975468890690774e-10" name="Tc98"/>
-    <nuclide ao="0.001504507801286214" name="Tc99"/>
-    <nuclide ao="1.3137201305026304e-24" name="Ru96"/>
+    <nuclide ao="8.869072273344315e-06" name="Mo99"/>
+    <nuclide ao="0.0017273192742186692" name="Mo100"/>
+    <nuclide ao="9.975468890690772e-10" name="Tc98"/>
+    <nuclide ao="0.0015045078012862142" name="Tc99"/>
+    <nuclide ao="1.3137201305026302e-24" name="Ru96"/>
     <nuclide ao="2.9997827675731976e-20" name="Ru97"/>
     <nuclide ao="1.2918084249556754e-13" name="Ru98"/>
     <nuclide ao="5.8067927583088786e-08" name="Ru99"/>
     <nuclide ao="0.0001514456776855281" name="Ru100"/>
-    <nuclide ao="0.0014098062602327362" name="Ru101"/>
-    <nuclide ao="0.0013338550098885038" name="Ru102"/>
-    <nuclide ao="8.336869865789179e-05" name="Ru103"/>
-    <nuclide ao="0.0007898663314316123" name="Ru104"/>
+    <nuclide ao="0.0014098062602327364" name="Ru101"/>
+    <nuclide ao="0.0013338550098885035" name="Ru102"/>
+    <nuclide ao="8.336869865789177e-05" name="Ru103"/>
+    <nuclide ao="0.0007898663314316124" name="Ru104"/>
     <nuclide ao="2.4362960061298657e-07" name="Ru105"/>
-    <nuclide ao="0.00019632548018263054" name="Ru106"/>
-    <nuclide ao="0.0007050501965512346" name="Rh103"/>
-    <nuclide ao="4.371405327117566e-10" name="Rh104"/>
-    <nuclide ao="1.7744196752325336e-06" name="Rh105"/>
-    <nuclide ao="3.7953436791483764e-11" name="Pd102"/>
+    <nuclide ao="0.0001963254801826305" name="Ru106"/>
+    <nuclide ao="0.0007050501965512344" name="Rh103"/>
+    <nuclide ao="4.3714053271175653e-10" name="Rh104"/>
+    <nuclide ao="1.7744196752325334e-06" name="Rh105"/>
+    <nuclide ao="3.795343679148376e-11" name="Pd102"/>
     <nuclide ao="4.035954560980925e-12" name="Pd103"/>
-    <nuclide ao="0.00028405149622491067" name="Pd104"/>
+    <nuclide ao="0.0002840514962249106" name="Pd104"/>
     <nuclide ao="0.0005054483048633481" name="Pd105"/>
-    <nuclide ao="0.000242059233275196" name="Pd106"/>
-    <nuclide ao="0.00025052030084633846" name="Pd107"/>
+    <nuclide ao="0.00024205923327519596" name="Pd106"/>
+    <nuclide ao="0.0002505203008463384" name="Pd107"/>
     <nuclide ao="0.00016140718144610217" name="Pd108"/>
-    <nuclide ao="1.9266742987948461e-07" name="Pd109"/>
+    <nuclide ao="1.926674298794846e-07" name="Pd109"/>
     <nuclide ao="5.2965577897729215e-05" name="Pd110"/>
     <nuclide ao="2.936593958687922e-11" name="Ag107"/>
     <nuclide ao="2.3323874575242243e-16" name="Ag108"/>
-    <nuclide ao="8.829020060794785e-05" name="Ag109"/>
-    <nuclide ao="7.509080997947462e-07" name="Ag110_m1"/>
+    <nuclide ao="8.829020060794784e-05" name="Ag109"/>
+    <nuclide ao="7.509080997947463e-07" name="Ag110_m1"/>
     <nuclide ao="4.865078112884665e-07" name="Ag111"/>
-    <nuclide ao="3.846105359456112e-09" name="Ag112"/>
-    <nuclide ao="3.12126012514323e-09" name="Ag113"/>
-    <nuclide ao="7.868569162457064e-13" name="Ag114"/>
-    <nuclide ao="1.5396339076558273e-10" name="Ag115"/>
+    <nuclide ao="3.8461053594561135e-09" name="Ag112"/>
+    <nuclide ao="3.1212601251432293e-09" name="Ag113"/>
+    <nuclide ao="7.868569162457063e-13" name="Ag114"/>
+    <nuclide ao="1.539633907655827e-10" name="Ag115"/>
     <nuclide ao="3.21110583235009e-11" name="Ag116"/>
     <nuclide ao="7.708693717851834e-12" name="Ag117"/>
-    <nuclide ao="6.847970385320266e-14" name="Ag118_m1"/>
-    <nuclide ao="1.5911856354630103e-21" name="Cd106"/>
+    <nuclide ao="6.847970385320265e-14" name="Ag118_m1"/>
+    <nuclide ao="1.5911856354630107e-21" name="Cd106"/>
     <nuclide ao="5.072612103466437e-21" name="Cd107"/>
     <nuclide ao="3.549656412051662e-11" name="Cd108"/>
     <nuclide ao="3.882149855290992e-12" name="Cd109"/>
-    <nuclide ao="3.1634576987183234e-05" name="Cd110"/>
-    <nuclide ao="2.4836717824641664e-05" name="Cd111"/>
+    <nuclide ao="3.163457698718323e-05" name="Cd110"/>
+    <nuclide ao="2.483671782464166e-05" name="Cd111"/>
     <nuclide ao="1.2166034871093324e-05" name="Cd112"/>
     <nuclide ao="1.6315166967201415e-07" name="Cd113"/>
     <nuclide ao="1.4981584773822011e-05" name="Cd114"/>
-    <nuclide ao="2.7471017850493008e-08" name="Cd115_m1"/>
+    <nuclide ao="2.7471017850493e-08" name="Cd115_m1"/>
     <nuclide ao="5.765107718289816e-06" name="Cd116"/>
-    <nuclide ao="5.725911017897543e-09" name="In113"/>
+    <nuclide ao="5.725911017897542e-09" name="In113"/>
     <nuclide ao="1.4149153652785785e-15" name="In114"/>
     <nuclide ao="2.3723892066682276e-06" name="In115"/>
-    <nuclide ao="6.9074694823363935e-16" name="Sn112"/>
-    <nuclide ao="2.23035882797724e-17" name="Sn113"/>
+    <nuclide ao="6.907469482336394e-16" name="Sn112"/>
+    <nuclide ao="2.2303588279772403e-17" name="Sn113"/>
     <nuclide ao="3.6993795473522394e-10" name="Sn114"/>
-    <nuclide ao="2.371279410362281e-07" name="Sn115"/>
+    <nuclide ao="2.3712794103622805e-07" name="Sn115"/>
     <nuclide ao="2.6800255713682085e-06" name="Sn116"/>
-    <nuclide ao="5.2680424481487915e-06" name="Sn117"/>
+    <nuclide ao="5.26804244814879e-06" name="Sn117"/>
     <nuclide ao="4.377741739405095e-06" name="Sn118"/>
-    <nuclide ao="4.575767755428215e-06" name="Sn119"/>
-    <nuclide ao="4.546281783057098e-06" name="Sn120"/>
+    <nuclide ao="4.5757677554282144e-06" name="Sn119"/>
+    <nuclide ao="4.546281783057097e-06" name="Sn120"/>
     <nuclide ao="4.005463600673595e-07" name="Sn121_m1"/>
-    <nuclide ao="5.892178186200609e-06" name="Sn122"/>
-    <nuclide ao="2.009671134509498e-07" name="Sn123"/>
+    <nuclide ao="5.892178186200608e-06" name="Sn122"/>
+    <nuclide ao="2.0096711345094974e-07" name="Sn123"/>
     <nuclide ao="1.0097482158002734e-05" name="Sn124"/>
-    <nuclide ao="1.1242608835401119e-07" name="Sn125"/>
-    <nuclide ao="2.3094541497613194e-05" name="Sn126"/>
+    <nuclide ao="1.1242608835401117e-07" name="Sn125"/>
+    <nuclide ao="2.309454149761319e-05" name="Sn126"/>
     <nuclide ao="4.354491896079941e-06" name="Sb121"/>
     <nuclide ao="2.1847407822310238e-09" name="Sb122"/>
-    <nuclide ao="5.5105459106112595e-06" name="Sb123"/>
-    <nuclide ao="3.3936510619969914e-08" name="Sb124"/>
+    <nuclide ao="5.510545910611259e-06" name="Sb123"/>
+    <nuclide ao="3.393651061996991e-08" name="Sb124"/>
     <nuclide ao="9.699551446793282e-06" name="Sb125"/>
     <nuclide ao="1.4510806987860689e-08" name="Sb126"/>
-    <nuclide ao="1.96991441111718e-16" name="Te120"/>
-    <nuclide ao="4.920524309606991e-15" name="Te121"/>
-    <nuclide ao="3.468485709804742e-15" name="Te121_m1"/>
-    <nuclide ao="2.369615818230438e-07" name="Te122"/>
+    <nuclide ao="1.9699144111171797e-16" name="Te120"/>
+    <nuclide ao="4.920524309606989e-15" name="Te121"/>
+    <nuclide ao="3.4684857098047412e-15" name="Te121_m1"/>
+    <nuclide ao="2.3696158182304383e-07" name="Te122"/>
     <nuclide ao="1.9094661254962517e-09" name="Te123"/>
     <nuclide ao="1.7035087661320758e-07" name="Te124"/>
-    <nuclide ao="3.4125197449939715e-06" name="Te125"/>
-    <nuclide ao="9.067651738139776e-07" name="Te126"/>
-    <nuclide ao="9.979424636696378e-07" name="Te127_m1"/>
-    <nuclide ao="0.00012010934653740169" name="Te128"/>
-    <nuclide ao="1.8214767902523717e-06" name="Te129_m1"/>
+    <nuclide ao="3.412519744993971e-06" name="Te125"/>
+    <nuclide ao="9.067651738139775e-07" name="Te126"/>
+    <nuclide ao="9.979424636696376e-07" name="Te127_m1"/>
+    <nuclide ao="0.00012010934653740168" name="Te128"/>
+    <nuclide ao="1.821476790252372e-06" name="Te129_m1"/>
     <nuclide ao="0.0005250230645090292" name="Te130"/>
     <nuclide ao="2.490285438826021e-08" name="Te131"/>
-    <nuclide ao="3.9778027335801234e-07" name="Te131_m1"/>
-    <nuclide ao="7.592886955322025e-06" name="Te132"/>
-    <nuclide ao="5.3344094321134375e-05" name="I127"/>
-    <nuclide ao="1.538756445734404e-10" name="I128"/>
-    <nuclide ao="0.0001829896493082412" name="I129"/>
-    <nuclide ao="1.1697416396730055e-08" name="I130"/>
-    <nuclide ao="1.3120142909294782e-05" name="I131"/>
-    <nuclide ao="2.3086250286657406e-07" name="I132"/>
+    <nuclide ao="3.977802733580123e-07" name="Te131_m1"/>
+    <nuclide ao="7.592886955322024e-06" name="Te132"/>
+    <nuclide ao="5.334409432113439e-05" name="I127"/>
+    <nuclide ao="1.5387564457344036e-10" name="I128"/>
+    <nuclide ao="0.00018298964930824115" name="I129"/>
+    <nuclide ao="1.1697416396730058e-08" name="I130"/>
+    <nuclide ao="1.3120142909294785e-05" name="I131"/>
+    <nuclide ao="2.3086250286657404e-07" name="I132"/>
     <nuclide ao="1.2738466293370433e-09" name="I132_m1"/>
     <nuclide ao="3.0828382274789398e-06" name="I133"/>
-    <nuclide ao="1.478558725870821e-07" name="I134"/>
+    <nuclide ao="1.4785587258708207e-07" name="I134"/>
     <nuclide ao="9.189672716912216e-07" name="I135"/>
     <nuclide ao="1.3414450693795967e-32" name="Xe123"/>
     <nuclide ao="4.124788982802449e-22" name="Xe124"/>
-    <nuclide ao="6.3235468339072325e-21" name="Xe125"/>
+    <nuclide ao="6.323546833907232e-21" name="Xe125"/>
     <nuclide ao="1.2382758443464967e-11" name="Xe126"/>
     <nuclide ao="1.1879479834814072e-13" name="Xe127"/>
     <nuclide ao="2.5219934425549593e-06" name="Xe128"/>
     <nuclide ao="1.620631328067698e-08" name="Xe129"/>
     <nuclide ao="7.141833841405663e-06" name="Xe130"/>
-    <nuclide ao="0.0006104416748655468" name="Xe131"/>
+    <nuclide ao="0.0006104416748655467" name="Xe131"/>
     <nuclide ao="0.0014314675655155574" name="Xe132"/>
     <nuclide ao="1.859463068486702e-05" name="Xe133"/>
-    <nuclide ao="0.002125037323955992" name="Xe134"/>
+    <nuclide ao="0.0021250373239559924" name="Xe134"/>
     <nuclide ao="3.3895116099500984e-07" name="Xe135"/>
     <nuclide ao="0.0030921700704336966" name="Xe136"/>
     <nuclide ao="0.0015962803526397504" name="Cs133"/>
-    <nuclide ao="0.00014253327343463946" name="Cs134"/>
+    <nuclide ao="0.0001425332734346394" name="Cs134"/>
     <nuclide ao="0.0005195576961019519" name="Cs135"/>
     <nuclide ao="6.444148999804278e-07" name="Cs136"/>
-    <nuclide ao="0.0016366281783774348" name="Cs137"/>
-    <nuclide ao="1.926537087266447e-21" name="Ba130"/>
+    <nuclide ao="0.001636628178377435" name="Cs137"/>
+    <nuclide ao="1.9265370872664467e-21" name="Ba130"/>
     <nuclide ao="1.6023533010540912e-19" name="Ba131"/>
-    <nuclide ao="1.3469179621518714e-11" name="Ba132"/>
-    <nuclide ao="1.2818455886797476e-11" name="Ba133"/>
-    <nuclide ao="5.236471612459745e-05" name="Ba134"/>
-    <nuclide ao="2.92739850336619e-07" name="Ba135"/>
-    <nuclide ao="1.871175892266528e-05" name="Ba136"/>
-    <nuclide ao="5.511354331474255e-05" name="Ba137"/>
+    <nuclide ao="1.3469179621518712e-11" name="Ba132"/>
+    <nuclide ao="1.281845588679748e-11" name="Ba133"/>
+    <nuclide ao="5.2364716124597456e-05" name="Ba134"/>
+    <nuclide ao="2.9273985033661894e-07" name="Ba135"/>
+    <nuclide ao="1.8711758922665276e-05" name="Ba136"/>
+    <nuclide ao="5.511354331474254e-05" name="Ba137"/>
     <nuclide ao="0.0017962096662230084" name="Ba138"/>
     <nuclide ao="1.8811441595924886e-07" name="Ba139"/>
     <nuclide ao="3.940354977220195e-05" name="Ba140"/>
     <nuclide ao="9.484565203246105e-09" name="La138"/>
-    <nuclide ao="0.001673326871616077" name="La139"/>
-    <nuclide ao="5.297940503876375e-06" name="La140"/>
-    <nuclide ao="1.1000509254930868e-23" name="Ce136"/>
-    <nuclide ao="5.00733561254772e-18" name="Ce137"/>
-    <nuclide ao="2.038705363684604e-28" name="Ce137_m1"/>
+    <nuclide ao="0.0016733268716160766" name="La139"/>
+    <nuclide ao="5.297940503876374e-06" name="La140"/>
+    <nuclide ao="1.100050925493087e-23" name="Ce136"/>
+    <nuclide ao="5.0073356125477205e-18" name="Ce137"/>
+    <nuclide ao="2.0387053636846035e-28" name="Ce137_m1"/>
     <nuclide ao="1.1543296179708677e-12" name="Ce138"/>
-    <nuclide ao="2.3496818911213837e-10" name="Ce139"/>
-    <nuclide ao="0.0016088094750652741" name="Ce140"/>
-    <nuclide ao="9.129056035141391e-05" name="Ce141"/>
+    <nuclide ao="2.349681891121384e-10" name="Ce139"/>
+    <nuclide ao="0.0016088094750652737" name="Ce140"/>
+    <nuclide ao="9.12905603514139e-05" name="Ce141"/>
     <nuclide ao="0.0015295144781133992" name="Ce142"/>
-    <nuclide ao="3.959116863781417e-06" name="Ce143"/>
+    <nuclide ao="3.9591168637814165e-06" name="Ce143"/>
     <nuclide ao="0.0005227002966764486" name="Ce144"/>
-    <nuclide ao="0.0014204411544125296" name="Pr141"/>
-    <nuclide ao="6.415171182792175e-08" name="Pr142"/>
-    <nuclide ao="3.827707242431695e-05" name="Pr143"/>
+    <nuclide ao="0.0014204411544125291" name="Pr141"/>
+    <nuclide ao="6.415171182792174e-08" name="Pr142"/>
+    <nuclide ao="3.827707242431694e-05" name="Pr143"/>
     <nuclide ao="2.3480844868077533e-05" name="Nd142"/>
     <nuclide ao="0.0010604384158206703" name="Nd143"/>
     <nuclide ao="0.0012695507506459086" name="Nd144"/>
-    <nuclide ao="0.0009176470313152842" name="Nd145"/>
-    <nuclide ao="0.0008758068297752164" name="Nd146"/>
-    <nuclide ao="1.2340900163855302e-05" name="Nd147"/>
+    <nuclide ao="0.000917647031315284" name="Nd145"/>
+    <nuclide ao="0.0008758068297752166" name="Nd146"/>
+    <nuclide ao="1.23409001638553e-05" name="Nd147"/>
     <nuclide ao="0.0004594703281855828" name="Nd148"/>
-    <nuclide ao="4.404189539621712e-08" name="Nd149"/>
-    <nuclide ao="0.00019844452393858077" name="Nd150"/>
-    <nuclide ao="6.207374612145378e-19" name="Pm143"/>
+    <nuclide ao="4.4041895396217106e-08" name="Nd149"/>
+    <nuclide ao="0.0001984445239385807" name="Nd150"/>
+    <nuclide ao="6.207374612145379e-19" name="Pm143"/>
     <nuclide ao="6.482217922505781e-17" name="Pm144"/>
     <nuclide ao="2.2736819783002277e-12" name="Pm145"/>
     <nuclide ao="5.448714472558175e-10" name="Pm146"/>
-    <nuclide ao="0.0002528347454074464" name="Pm147"/>
-    <nuclide ao="1.3819665954739085e-06" name="Pm148"/>
+    <nuclide ao="0.00025283474540744645" name="Pm147"/>
+    <nuclide ao="1.3819665954739083e-06" name="Pm148"/>
     <nuclide ao="2.05642730688215e-06" name="Pm148_m1"/>
     <nuclide ao="1.7608512881846647e-06" name="Pm149"/>
-    <nuclide ao="1.0813866360294113e-09" name="Pm150"/>
-    <nuclide ao="3.342185944233294e-07" name="Pm151"/>
-    <nuclide ao="1.388819972644259e-21" name="Sm144"/>
-    <nuclide ao="4.5674515530737486e-14" name="Sm145"/>
+    <nuclide ao="1.081386636029411e-09" name="Pm150"/>
+    <nuclide ao="3.3421859442332935e-07" name="Pm151"/>
+    <nuclide ao="1.3888199726442588e-21" name="Sm144"/>
+    <nuclide ao="4.567451553073749e-14" name="Sm145"/>
     <nuclide ao="2.539291109054512e-10" name="Sm146"/>
     <nuclide ao="9.645089262239105e-05" name="Sm147"/>
     <nuclide ao="0.00014859564261400997" name="Sm148"/>
-    <nuclide ao="3.3748041178168835e-06" name="Sm149"/>
+    <nuclide ao="3.374804117816884e-06" name="Sm149"/>
     <nuclide ao="0.00032514726940839286" name="Sm150"/>
-    <nuclide ao="1.313004019791538e-05" name="Sm151"/>
+    <nuclide ao="1.3130040197915378e-05" name="Sm151"/>
     <nuclide ao="0.0001325345448267549" name="Sm152"/>
     <nuclide ao="1.0195518690194861e-06" name="Sm153"/>
     <nuclide ao="3.422680058643339e-05" name="Sm154"/>
-    <nuclide ao="1.4107200589238904e-08" name="Eu151"/>
+    <nuclide ao="1.4107200589238908e-08" name="Eu151"/>
     <nuclide ao="1.3103801439788293e-08" name="Eu152"/>
-    <nuclide ao="0.00011722259497309797" name="Eu153"/>
+    <nuclide ao="0.00011722259497309795" name="Eu153"/>
     <nuclide ao="2.0672747590278492e-05" name="Eu154"/>
     <nuclide ao="8.22215019687252e-06" name="Eu155"/>
     <nuclide ao="3.858603791814803e-06" name="Eu156"/>
     <nuclide ao="1.5111653762174455e-08" name="Eu157"/>
-    <nuclide ao="2.231960448529938e-10" name="Gd152"/>
-    <nuclide ao="1.3632587596235306e-11" name="Gd153"/>
-    <nuclide ao="1.7010613600906216e-06" name="Gd154"/>
+    <nuclide ao="2.2319604485299382e-10" name="Gd152"/>
+    <nuclide ao="1.3632587596235307e-11" name="Gd153"/>
+    <nuclide ao="1.7010613600906225e-06" name="Gd154"/>
     <nuclide ao="4.013973986460129e-08" name="Gd155"/>
-    <nuclide ao="6.821190635527896e-05" name="Gd156"/>
-    <nuclide ao="5.646797461567242e-08" name="Gd157"/>
-    <nuclide ao="1.3398264293167375e-05" name="Gd158"/>
+    <nuclide ao="6.821190635527894e-05" name="Gd156"/>
+    <nuclide ao="5.646797461567243e-08" name="Gd157"/>
+    <nuclide ao="1.3398264293167371e-05" name="Gd158"/>
     <nuclide ao="4.413908868418069e-09" name="Gd159"/>
-    <nuclide ao="7.85322340533038e-07" name="Gd160"/>
-    <nuclide ao="8.533195713399088e-12" name="Tb158"/>
-    <nuclide ao="1.8153830478701947e-06" name="Tb159"/>
+    <nuclide ao="7.853223405330379e-07" name="Gd160"/>
+    <nuclide ao="8.533195713399087e-12" name="Tb158"/>
+    <nuclide ao="1.8153830478701949e-06" name="Tb159"/>
     <nuclide ao="3.8439299120718464e-08" name="Tb160"/>
-    <nuclide ao="7.833376420368542e-09" name="Tb161"/>
-    <nuclide ao="6.572092720814612e-29" name="Dy154"/>
+    <nuclide ao="7.83337642036854e-09" name="Tb161"/>
+    <nuclide ao="6.572092720814611e-29" name="Dy154"/>
     <nuclide ao="4.5869819857498777e-23" name="Dy155"/>
-    <nuclide ao="6.23827160836423e-19" name="Dy156"/>
-    <nuclide ao="2.936906830876059e-20" name="Dy157"/>
-    <nuclide ao="6.079236953851936e-15" name="Dy158"/>
-    <nuclide ao="4.391290594323143e-14" name="Dy159"/>
-    <nuclide ao="1.0671781687605943e-07" name="Dy160"/>
+    <nuclide ao="6.238271608364229e-19" name="Dy156"/>
+    <nuclide ao="2.9369068308760584e-20" name="Dy157"/>
+    <nuclide ao="6.079236953851935e-15" name="Dy158"/>
+    <nuclide ao="4.391290594323144e-14" name="Dy159"/>
+    <nuclide ao="1.0671781687605944e-07" name="Dy160"/>
     <nuclide ao="2.3665074249851882e-07" name="Dy161"/>
-    <nuclide ao="1.8341364705834722e-07" name="Dy162"/>
+    <nuclide ao="1.8341364705834717e-07" name="Dy162"/>
     <nuclide ao="1.248342749057838e-07" name="Dy163"/>
     <nuclide ao="2.050565703509611e-08" name="Dy164"/>
-    <nuclide ao="4.485859836015815e-08" name="Ho165"/>
-    <nuclide ao="4.860735666431982e-11" name="Ho166_m1"/>
+    <nuclide ao="4.4858598360158154e-08" name="Ho165"/>
+    <nuclide ao="4.860735666431981e-11" name="Ho166_m1"/>
     <nuclide ao="4.616439661046103e-19" name="Er162"/>
     <nuclide ao="1.4473110664315418e-21" name="Er163"/>
-    <nuclide ao="1.767039892219643e-13" name="Er164"/>
+    <nuclide ao="1.7670398922196436e-13" name="Er164"/>
     <nuclide ao="3.7009212104532666e-17" name="Er165"/>
     <nuclide ao="1.0208891825967923e-08" name="Er166"/>
-    <nuclide ao="5.409552473072806e-10" name="Er167"/>
+    <nuclide ao="5.409552473072807e-10" name="Er167"/>
     <nuclide ao="1.365400719718877e-09" name="Er168"/>
     <nuclide ao="4.3430226836636075e-12" name="Er169"/>
-    <nuclide ao="4.323514093787967e-11" name="Er170"/>
-    <nuclide ao="8.256997536189908e-17" name="Tm168"/>
+    <nuclide ao="4.3235140937879664e-11" name="Er170"/>
+    <nuclide ao="8.256997536189907e-17" name="Tm168"/>
     <nuclide ao="1.0516249176894487e-10" name="Tm169"/>
-    <nuclide ao="1.5126262124159223e-11" name="Tm170"/>
+    <nuclide ao="1.512626212415922e-11" name="Tm170"/>
     <nuclide ao="1.3569689458439438e-11" name="Tm171"/>
     <nuclide ao="5.678291021386024e-20" name="Yb168"/>
-    <nuclide ao="7.533955265402525e-20" name="Yb169"/>
-    <nuclide ao="2.7760730165494004e-11" name="Yb170"/>
+    <nuclide ao="7.533955265402523e-20" name="Yb169"/>
+    <nuclide ao="2.7760730165494e-11" name="Yb170"/>
     <nuclide ao="5.553745909469479e-12" name="Yb171"/>
     <nuclide ao="1.1801804242448705e-11" name="Yb172"/>
-    <nuclide ao="2.3506210713076153e-86" name="Os188"/>
-    <nuclide ao="1.8934783997068713e-85" name="Os189"/>
+    <nuclide ao="2.3506210713076157e-86" name="Os188"/>
+    <nuclide ao="1.893478399706871e-85" name="Os189"/>
     <nuclide ao="3.926616628911424e-76" name="Os190"/>
     <nuclide ao="2.609559998999422e-86" name="Os191"/>
     <nuclide ao="7.144322440448165e-75" name="Os192"/>
     <nuclide ao="5.418102455068554e-76" name="Ir191"/>
-    <nuclide ao="2.740643894428515e-73" name="Ir192"/>
+    <nuclide ao="2.7406438944285145e-73" name="Ir192"/>
     <nuclide ao="8.475785331122007e-67" name="Ir193"/>
     <nuclide ao="1.3955634361633614e-73" name="Pt192"/>
     <nuclide ao="2.1713781202695168e-64" name="Pt193"/>
     <nuclide ao="2.495312264146276e-64" name="Pt194"/>
-    <nuclide ao="3.6421086201570648e-62" name="Pt195"/>
+    <nuclide ao="3.6421086201570643e-62" name="Pt195"/>
     <nuclide ao="3.484871101306344e-55" name="Pt196"/>
     <nuclide ao="3.0507139013523494e-56" name="Pt197"/>
     <nuclide ao="3.705324686348869e-48" name="Pt198"/>
@@ -408,127 +408,113 @@
     <nuclide ao="6.144250312765342e-65" name="Hg197_m1"/>
     <nuclide ao="6.264382789143919e-52" name="Hg198"/>
     <nuclide ao="2.193333752550494e-46" name="Hg199"/>
-    <nuclide ao="3.664789248341938e-43" name="Hg200"/>
+    <nuclide ao="3.664789248341939e-43" name="Hg200"/>
     <nuclide ao="1.0157648910836264e-37" name="Hg201"/>
     <nuclide ao="5.049380555931991e-35" name="Hg202"/>
-    <nuclide ao="5.993394087430896e-30" name="Hg203"/>
-    <nuclide ao="1.0727173618022261e-26" name="Hg204"/>
-    <nuclide ao="2.2262678108244117e-29" name="Tl203"/>
-    <nuclide ao="1.6166092598699934e-29" name="Tl204"/>
-    <nuclide ao="1.9779509701784396e-23" name="Tl205"/>
+    <nuclide ao="5.9933940874308944e-30" name="Hg203"/>
+    <nuclide ao="1.072717361802226e-26" name="Hg204"/>
+    <nuclide ao="2.2262678108244114e-29" name="Tl203"/>
+    <nuclide ao="1.616609259869993e-29" name="Tl204"/>
+    <nuclide ao="1.9779509701784393e-23" name="Tl205"/>
     <nuclide ao="1.1097897207089115e-28" name="Pb204"/>
     <nuclide ao="1.650827439909644e-19" name="Pb206"/>
     <nuclide ao="3.076618364743314e-17" name="Pb207"/>
-    <nuclide ao="6.013040903563079e-14" name="Pb208"/>
+    <nuclide ao="6.013040903563078e-14" name="Pb208"/>
     <nuclide ao="1.4765935728927425e-17" name="Bi209"/>
     <nuclide ao="2.7564885800090273e-22" name="Bi210_m1"/>
-    <nuclide ao="9.249537558186689e-20" name="Po210"/>
+    <nuclide ao="9.249537558186686e-20" name="Po210"/>
     <nuclide ao="8.87564527198363e-19" name="Ra223"/>
     <nuclide ao="8.258707550894475e-16" name="Ra224"/>
-    <nuclide ao="1.0572971047896055e-18" name="Ra225"/>
+    <nuclide ao="1.0572971047896053e-18" name="Ra225"/>
     <nuclide ao="1.2005387945490794e-17" name="Ra226"/>
     <nuclide ao="6.774790413600092e-19" name="Ac225"/>
     <nuclide ao="1.0388646506618484e-21" name="Ac226"/>
     <nuclide ao="6.583521686953324e-16" name="Ac227"/>
     <nuclide ao="1.4568120073346863e-18" name="Th227"/>
-    <nuclide ao="1.590417425960713e-13" name="Th228"/>
+    <nuclide ao="1.5904174259607125e-13" name="Th228"/>
     <nuclide ao="3.8978246554987775e-14" name="Th229"/>
-    <nuclide ao="1.5251308278007385e-12" name="Th230"/>
-    <nuclide ao="1.0560088592976542e-13" name="Th231"/>
-    <nuclide ao="1.947268122452925e-10" name="Th232"/>
-    <nuclide ao="3.2019676930794145e-16" name="Th233"/>
-    <nuclide ao="3.70457899312625e-12" name="Th234"/>
-    <nuclide ao="7.629693486856019e-22" name="Pa229"/>
+    <nuclide ao="1.5251308278007387e-12" name="Th230"/>
+    <nuclide ao="1.0560088592976541e-13" name="Th231"/>
+    <nuclide ao="1.9472681224529248e-10" name="Th232"/>
+    <nuclide ao="3.201967693079414e-16" name="Th233"/>
+    <nuclide ao="3.704578993126249e-12" name="Th234"/>
+    <nuclide ao="7.629693486856017e-22" name="Pa229"/>
     <nuclide ao="3.094558321196275e-18" name="Pa230"/>
-    <nuclide ao="3.468411600465483e-11" name="Pa231"/>
-    <nuclide ao="7.874186728623608e-14" name="Pa232"/>
-    <nuclide ao="9.496945503641931e-12" name="Pa233"/>
-    <nuclide ao="2.7582461230601063e-19" name="U230"/>
+    <nuclide ao="3.4684116004654824e-11" name="Pa231"/>
+    <nuclide ao="7.874186728623607e-14" name="Pa232"/>
+    <nuclide ao="9.49694550364193e-12" name="Pa233"/>
+    <nuclide ao="2.758246123060106e-19" name="U230"/>
     <nuclide ao="9.661980729616164e-20" name="U231"/>
-    <nuclide ao="2.0934150924461137e-11" name="U232"/>
+    <nuclide ao="2.0934150924461134e-11" name="U232"/>
     <nuclide ao="1.3412612190713466e-10" name="U233"/>
-    <nuclide ao="6.553130553693926e-07" name="U234"/>
+    <nuclide ao="6.553130553693927e-07" name="U234"/>
     <nuclide ao="0.02553161891390605" name="U235"/>
     <nuclide ao="0.004184142448475041" name="U236"/>
-    <nuclide ao="6.984287100400748e-06" name="U237"/>
+    <nuclide ao="6.984287100400745e-06" name="U237"/>
     <nuclide ao="0.2617482955131105" name="U238"/>
     <nuclide ao="4.03971277706126e-07" name="U239"/>
     <nuclide ao="1.4424227619875334e-10" name="U240"/>
-    <nuclide ao="4.786797366692947e-16" name="U241"/>
-    <nuclide ao="2.051496088251312e-21" name="Np234"/>
-    <nuclide ao="2.574918215421212e-13" name="Np235"/>
-    <nuclide ao="6.798036659325599e-11" name="Np236"/>
-    <nuclide ao="2.4961662663109537e-16" name="Np236_m1"/>
-    <nuclide ao="0.0002830988053634316" name="Np237"/>
-    <nuclide ao="7.927707064402743e-07" name="Np238"/>
-    <nuclide ao="5.812569190936785e-05" name="Np239"/>
-    <nuclide ao="4.307117983763414e-14" name="Pu236"/>
+    <nuclide ao="4.786797366692948e-16" name="U241"/>
+    <nuclide ao="2.0514960882513117e-21" name="Np234"/>
+    <nuclide ao="2.5749182154212113e-13" name="Np235"/>
+    <nuclide ao="6.798036659325598e-11" name="Np236"/>
+    <nuclide ao="2.496166266310953e-16" name="Np236_m1"/>
+    <nuclide ao="0.00028309880536343156" name="Np237"/>
+    <nuclide ao="7.927707064402741e-07" name="Np238"/>
+    <nuclide ao="5.812569190936787e-05" name="Np239"/>
+    <nuclide ao="4.307117983763413e-14" name="Pu236"/>
     <nuclide ao="2.06852562366545e-12" name="Pu237"/>
     <nuclide ao="8.290631531208815e-05" name="Pu238"/>
     <nuclide ao="0.0033345025901699308" name="Pu239"/>
-    <nuclide ao="0.0008838386655682855" name="Pu240"/>
-    <nuclide ao="0.0006796923457863818" name="Pu241"/>
-    <nuclide ao="0.00028662399009723354" name="Pu242"/>
-    <nuclide ao="5.704536524760854e-08" name="Pu243"/>
-    <nuclide ao="1.1362184588079587e-08" name="Pu244"/>
+    <nuclide ao="0.0008838386655682853" name="Pu240"/>
+    <nuclide ao="0.0006796923457863816" name="Pu241"/>
+    <nuclide ao="0.0002866239900972335" name="Pu242"/>
+    <nuclide ao="5.704536524760855e-08" name="Pu243"/>
+    <nuclide ao="1.1362184588079585e-08" name="Pu244"/>
     <nuclide ao="2.7438127619979157e-13" name="Pu245"/>
-    <nuclide ao="1.4465528543713321e-24" name="Pu246"/>
-    <nuclide ao="6.717764853097344e-14" name="Am240"/>
-    <nuclide ao="1.9068642622695005e-05" name="Am241"/>
-    <nuclide ao="5.8243055899241525e-08" name="Am242"/>
-    <nuclide ao="1.9961391164533884e-07" name="Am242_m1"/>
-    <nuclide ao="4.2520610649705755e-05" name="Am243"/>
+    <nuclide ao="1.4465528543713325e-24" name="Pu246"/>
+    <nuclide ao="6.717764853097346e-14" name="Am240"/>
+    <nuclide ao="1.9068642622695e-05" name="Am241"/>
+    <nuclide ao="5.824305589924153e-08" name="Am242"/>
+    <nuclide ao="1.9961391164533892e-07" name="Am242_m1"/>
+    <nuclide ao="4.252061064970575e-05" name="Am243"/>
     <nuclide ao="2.298107243911493e-09" name="Am244"/>
-    <nuclide ao="1.4880276894664078e-09" name="Am244_m1"/>
-    <nuclide ao="3.62006396895729e-17" name="Cm240"/>
-    <nuclide ao="2.6157414276942265e-13" name="Cm241"/>
+    <nuclide ao="1.4880276894664076e-09" name="Am244_m1"/>
+    <nuclide ao="3.6200639689572896e-17" name="Cm240"/>
+    <nuclide ao="2.615741427694226e-13" name="Cm241"/>
     <nuclide ao="7.659361502544087e-06" name="Cm242"/>
     <nuclide ao="1.7410690711281994e-07" name="Cm243"/>
     <nuclide ao="1.3093290521472425e-05" name="Cm244"/>
     <nuclide ao="5.366363689143298e-07" name="Cm245"/>
-    <nuclide ao="8.349739349455299e-08" name="Cm246"/>
+    <nuclide ao="8.349739349455298e-08" name="Cm246"/>
     <nuclide ao="7.902341513109417e-10" name="Cm247"/>
-    <nuclide ao="4.9618364344572034e-11" name="Cm248"/>
-    <nuclide ao="6.099363496599943e-16" name="Cm249"/>
+    <nuclide ao="4.961836434457203e-11" name="Cm248"/>
+    <nuclide ao="6.099363496599942e-16" name="Cm249"/>
     <nuclide ao="2.590363979952604e-18" name="Cm250"/>
     <nuclide ao="4.1476086024620944e-23" name="Bk245"/>
     <nuclide ao="3.28368452710042e-26" name="Bk246"/>
     <nuclide ao="3.1908277653604286e-22" name="Bk247"/>
-    <nuclide ao="7.487330487922464e-20" name="Bk248"/>
+    <nuclide ao="7.487330487922462e-20" name="Bk248"/>
     <nuclide ao="4.593641885846872e-13" name="Bk249"/>
-    <nuclide ao="9.008807219884857e-16" name="Bk250"/>
+    <nuclide ao="9.008807219884855e-16" name="Bk250"/>
     <nuclide ao="8.928726994991474e-25" name="Cf246"/>
-    <nuclide ao="5.467200195050561e-28" name="Cf247"/>
-    <nuclide ao="2.6509872697363206e-20" name="Cf248"/>
+    <nuclide ao="5.46720019505056e-28" name="Cf247"/>
+    <nuclide ao="2.6509872697363215e-20" name="Cf248"/>
     <nuclide ao="5.868963799062319e-14" name="Cf249"/>
-    <nuclide ao="1.9742807786590647e-13" name="Cf250"/>
-    <nuclide ao="6.498028507104347e-14" name="Cf251"/>
+    <nuclide ao="1.974280778659065e-13" name="Cf250"/>
+    <nuclide ao="6.498028507104346e-14" name="Cf251"/>
     <nuclide ao="7.740289281529996e-14" name="Cf252"/>
     <nuclide ao="1.4159017521017233e-16" name="Cf253"/>
-    <nuclide ao="5.521101541234711e-18" name="Cf254"/>
-    <nuclide ao="6.0136482333844885e-27" name="Es251"/>
+    <nuclide ao="5.52110154123471e-18" name="Cf254"/>
+    <nuclide ao="6.013648233384489e-27" name="Es251"/>
     <nuclide ao="2.2982277027168185e-23" name="Es252"/>
-    <nuclide ao="1.1347461865889382e-16" name="Es253"/>
-    <nuclide ao="7.086738730317804e-19" name="Es254"/>
+    <nuclide ao="1.1347461865889384e-16" name="Es253"/>
+    <nuclide ao="7.086738730317803e-19" name="Es254"/>
     <nuclide ao="7.723826626784976e-19" name="Es254_m1"/>
     <nuclide ao="4.4816048873084413e-20" name="Es255"/>
-    <nuclide ao="8.387299324546361e-22" name="Fm255"/>
+    <nuclide ao="8.38729932454636e-22" name="Fm255"/>
     <sab name="c_Graphite"/>
   </material>
-<<<<<<< HEAD
-  <material depletable="true" id="14" name="UCO_TRACKED" temperature="1159.15" volume="1.5209">
-    <density units="g/cm3" value="10.4"/>
-    <nuclide name="C12" wo="0.0446875496032256"/>
-    <nuclide name="C13" wo="0.0005424503967743985"/>
-    <nuclide name="O16" wo="0.0600901490867683"/>
-    <nuclide name="O17" wo="2.4261737354897877e-05"/>
-    <nuclide name="O18" wo="0.0001355891758767935"/>
-    <nuclide name="U235" wo="0.1386"/>
-    <nuclide name="U238" wo="0.7559"/>
-    <sab name="c_Graphite"/>
-  </material>
-=======
->>>>>>> 8fb1376 (commit current before move and cherrypick)
   <material id="15" name="buffer" temperature="1159.15">
     <density units="g/cm3" value="1.05"/>
     <nuclide ao="0.988922" name="C12"/>
