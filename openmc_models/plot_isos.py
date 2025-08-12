@@ -173,108 +173,141 @@ def check_converge(title, ylabel, xlabel, fig_fname, dep_fnames, mat_ids,
         plt.savefig(fname=fig_fname + nuc +'_rel', dpi=dpi)
         plt.close()
 
+<<<<<<< HEAD
+=======
+def flux_fission(sp_fname, shape, out_fname):
+    '''
+    plot flux, given an OpenMC statepoint file
+    '''
+
+    sp = openmc.StatePoint(sp_fname)
+    tally = sp.get_tally(scores=['flux'])
+    flux = tally.get_slice(scores=['flux'])
+    flux.mean.shape = shape
+    flux.std_dev.shape = shape
+    fission = tally.get_slice(scores=['fission'])
+    fission.mean.shape = shape
+    fission.std_dev.shape = shape
+
+    flux_zip = np.array(list([[list(k) for k in zip(*j)] 
+                              for j in zip(*i)] 
+                             for i in zip(flux.mean, flux.std_dev)))
+    flux_zip.shape = (8, 2)
+    fission_zip = np.array(list([[list(k) for k in zip(*j)] 
+                                 for j in zip(*i)] 
+                                for i in zip(fission.mean, fission.std_dev)))
+    fission_zip.shape = (8, 2) 
+    np.savetxt(out_fname+'_flux.csv', flux_zip)
+    np.savetxt(out_fname+'_fission.csv', fission_zip)
 
 
 
+>>>>>>> 8fb1376 (commit current before move and cherrypick)
+
+
+
+
+
+'''
 # iteration 0 (other sims branch from here)
 plot_isos("Depleting Pebble Isotopics vs Time: Initial BCC Model (All Fresh), i0", 'Concentration', 
-          'Time', 'iter0-isos', 
+          'Time', 'iteration-0', 
           'inf_lat_dep/iter0/depletion_results.h5', '1')
 
 # distinct corners
 #i1 through i4:
 plot_isos("Depleting Pebble Isotopics: Passwise-BCC Model, i1", 
           'Concentration', 
-          'Time', 'iter1psw-isos', 
-          'inf_lat_dep/dep-center/distinct_corners/iter1/depletion_results.h5',
+          'Time', 'passwise-i1', 
+          'inf_lat_dep/dep-center/passwise/iter1/depletion_results.h5',
           '13')
 
 plot_isos("Depleting Pebble Isotopics: Passwise-BCC Model, i2", 
           'Concentration', 
-          'Time', 'iter2psw-isos', 
-          'inf_lat_dep/dep-center/distinct_corners/iter2/depletion_results.h5',
+          'Time', 'passwise-i2', 
+          'inf_lat_dep/dep-center/passwise/iter2/depletion_results.h5',
           '13')
 
 plot_isos("Depleting Pebble Isotopics: Passwise-BCC Model, i3", 
           'Concentration', 
-          'Time', 'iter3psw-isos', 
-          'inf_lat_dep/dep-center/distinct_corners/iter3/depletion_results.h5',
+          'Time', 'passwise-i3', 
+          'inf_lat_dep/dep-center/passwise/iter3/depletion_results.h5',
           '13')
 
 plot_isos("Depleting Pebble Isotopics: Passwise-BCC Model, i4", 
           'Concentration', 
-          'Time', 'iter4psw-isos', 
-          'inf_lat_dep/dep-center/distinct_corners/iter4/depletion_results.h5',
+          'Time', 'passwise-i4', 
+          'inf_lat_dep/dep-center/passwise/iter4/depletion_results.h5',
           '13')
 
 # avg corners
 #i1 through i4:
 plot_isos("Depleting Pebble Isotopics: Corewise-BCC Model, i1", 
           'Concentration', 
-          'Time', 'iter1avg-isos', 
-          'inf_lat_dep/dep-center/core_avg/iter1/depletion_results.h5',
+          'Time', 'corewise-i1', 
+          'inf_lat_dep/dep-center/corewise/iter1/depletion_results.h5',
           '14')
 
 plot_isos("Depleting Pebble Isotopics: Corewise-BCC Model, i2", 
           'Concentration', 
-          'Time', 'iter2avg-isos', 
-          'inf_lat_dep/dep-center/core_avg/iter2/depletion_results.h5',
+          'Time', 'corewise-i2', 
+          'inf_lat_dep/dep-center/corewise/iter2/depletion_results.h5',
           '14')
 
 plot_isos("Depleting Pebble Isotopics: Corewise-BCC Model, i3", 
           'Concentration', 
-          'Time', 'iter3avg-isos', 
-          'inf_lat_dep/dep-center/core_avg/iter3/depletion_results.h5',
+          'Time', 'corewise-i3', 
+          'inf_lat_dep/dep-center/corewise/iter3/depletion_results.h5',
           '14')
 
 plot_isos("Depleting Pebble Isotopics: Corewise-BCC Model, i4", 
           'Concentration', 
-          'Time', 'iter4avg-isos', 
-          'inf_lat_dep/dep-center/core_avg/iter4/depletion_results.h5',
+          'Time', 'corewise-i4', 
+          'inf_lat_dep/dep-center/corewise/iter4/depletion_results.h5',
           '14')
 
 #comparisons:
 
 # passwise vs avg: i1
 compare_isos("Passwise vs Corewise BCC Depleting Pebble Isotopics: i1",'Time', 
-             'i1-compare', 
-          'inf_lat_dep/dep-center/distinct_corners/iter1/depletion_results.h5',
+             'i1-passwise-vs-corewise', 
+          'inf_lat_dep/dep-center/passwise/iter1/depletion_results.h5',
           '13', 'Passwise',
-             'inf_lat_dep/dep-center/core_avg/iter1/depletion_results.h5',
-             '14', 'Core_Averaged')
+             'inf_lat_dep/dep-center/corewise/iter1/depletion_results.h5',
+             '14', 'Corewise')
 
 #passwise vs avg: i2
 compare_isos("Passwise vs Corewise BCC Depleting Pebble Isotopics: i2",'Time', 
-             'i2-compare', 
-          'inf_lat_dep/dep-center/distinct_corners/iter2/depletion_results.h5',
+             'i2-passwise-vs-corewise', 
+          'inf_lat_dep/dep-center/passwise/iter2/depletion_results.h5',
           '13', 'Passwise',
-             'inf_lat_dep/dep-center/core_avg/iter2/depletion_results.h5',
-             '14', 'Core_Averaged')
+             'inf_lat_dep/dep-center/corewise/iter2/depletion_results.h5',
+             '14', 'Corewise')
 #i3
 compare_isos("Passwise vs Corewise BCC Depleting Pebble Isotopics: i3",'Time', 
-             'i3-compare', 
-          'inf_lat_dep/dep-center/distinct_corners/iter3/depletion_results.h5',
+             'i3-passwise-vs-corewise', 
+          'inf_lat_dep/dep-center/passwise/iter3/depletion_results.h5',
           '13', 'Passwise',
-             'inf_lat_dep/dep-center/core_avg/iter3/depletion_results.h5',
-             '14', 'Core_Averaged')
+             'inf_lat_dep/dep-center/corewise/iter3/depletion_results.h5',
+             '14', 'Corewise')
 #i4
 
 compare_isos("Passwise vs Corewise BCC Depleting Pebble Isotopics: i4",'Time', 
-             'i4-compare', 
-          'inf_lat_dep/dep-center/distinct_corners/iter4/depletion_results.h5',
+             'i4-passwise-vs-corewise', 
+          'inf_lat_dep/dep-center/passwise/iter4/depletion_results.h5',
           '13', 'Passwise',
-             'inf_lat_dep/dep-center/core_avg/iter4/depletion_results.h5',
-             '14', 'Core-_Averaged')
+             'inf_lat_dep/dep-center/corewise/iter4/depletion_results.h5',
+             '14', 'Corewise')
 
 #check convergence
 
 #passwise:
 
 fnames1 = ['inf_lat_dep/iter0/depletion_results.h5', 
-          'inf_lat_dep/dep-center/distinct_corners/iter1/depletion_results.h5',
-          'inf_lat_dep/dep-center/distinct_corners/iter2/depletion_results.h5',
-          'inf_lat_dep/dep-center/distinct_corners/iter3/depletion_results.h5',
-          'inf_lat_dep/dep-center/distinct_corners/iter4/depletion_results.h5']
+          'inf_lat_dep/dep-center/passwise/iter1/depletion_results.h5',
+          'inf_lat_dep/dep-center/passwise/iter2/depletion_results.h5',
+          'inf_lat_dep/dep-center/passwise/iter3/depletion_results.h5',
+          'inf_lat_dep/dep-center/passwise/iter4/depletion_results.h5']
 mat_ids1 = ['1', '13', '13', '13', '13']
 stepcolors= ['turquoise', 'teal', 'orchid', 'purple', 'firebrick']
 
@@ -283,14 +316,39 @@ check_converge("Convergence Check using Depleting Pebble: Passwise BCC Model",
                    stepcolors)
 
 fnames2 = ['inf_lat_dep/iter0/depletion_results.h5', 
-          'inf_lat_dep/dep-center/core_avg/iter1/depletion_results.h5',
-          'inf_lat_dep/dep-center/core_avg/iter2/depletion_results.h5',
-          'inf_lat_dep/dep-center/core_avg/iter3/depletion_results.h5',
-          'inf_lat_dep/dep-center/core_avg/iter4/depletion_results.h5']
+          'inf_lat_dep/dep-center/corewise/iter1/depletion_results.h5',
+          'inf_lat_dep/dep-center/corewise/iter2/depletion_results.h5',
+          'inf_lat_dep/dep-center/corewise/iter3/depletion_results.h5',
+          'inf_lat_dep/dep-center/corewise/iter4/depletion_results.h5']
 mat_ids2 = ['1', '14', '14', '14', '14']
 
 check_converge("Convergence Check Using Depleting Pebble: Corewise BCC Corners",
-               'Concentration', 'Time', 'avg-converge', fnames2, mat_ids2,
+               'Concentration', 'Time', 'corewise-converge', fnames2, mat_ids2,
                    stepcolors)
 
+'''
+
+corewise_sp_fnames = ['bcc_phys/corewise/0days/statepoint.h5', 
+                      'bcc_phys/corewise/249days/statepoint.h5',
+                      'bcc_phys/corewise/499days/statepoint.h5', 
+                      'bcc_phys/corewise/749days/statepoint.h5',
+                      'bcc_phys/corewise/999days/statepoint.h5', 
+                      'bcc_phys/corewise/1249days/statepoint.h5',
+                      'bcc_phys/corewise/1549days/statepoint.h5']
+passwise_sp_fnames = ['bcc_phys/passwise/0days/statepoint.h5', 
+                      'bcc_phys/passwise/249days/statepoint.h5',
+                      'bcc_phys/passwise/499days/statepoint.h5', 
+                      'bcc_phys/passwise/749days/statepoint.h5',
+                      'bcc_phys/passwise/999days/statepoint.h5', 
+                      'bcc_phys/passwise/1249days/statepoint.h5',
+                      'bcc_phys/passwise/1549days/statepoint.h5']
+
+out_fnames = ['0days', '249days', '499days', 
+              '749days', '999days', '1249days', '1549days']
+
+for i, fname in enumerate(corewise_sp_fnames):
+    flux_fission(fname, (2, 2, 2), 'corewise-'+out_fnames[i])
+
+for i, fname in enumerate(passwise_sp_fnames):
+    flux_fission(fname, (2, 2, 2), 'passwise-'+out_fnames[i])
 

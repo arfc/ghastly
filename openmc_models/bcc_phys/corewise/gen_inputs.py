@@ -2,8 +2,8 @@ import openmc
 import openmc.deplete
 import numpy as np
 
-dep_file = 'i3-dep-res.h5'
-mat_file = 'i3-mats.xml'
+dep_file = 'i4-dep-res.h5'
+mat_file = 'i4-mats.xml'
 res = openmc.deplete.Results(dep_file)
 dep_t = res.get_times()
 step_comps = [res.export_to_materials(i, 
@@ -11,22 +11,8 @@ step_comps = [res.export_to_materials(i,
               for i in range(len(dep_t))]
 
 #materials
-#also doublecheck isotopic compostions conventions in mats
 #graphite based on a3-3, triso layers pulled from reported values in
-#Neutronics characteristics of a 165 MWth Xe-100 reactor, Mulder et al
-
-#from below, d_steps are as follows (in [days]), so the pass-wise
-#indices would be (remember open on end, each pass ~= 258 days
-#pass1 : 0, then everything from 1 to 10 days, inclusive, then the first 6
-#steps of [25] days : 
-#d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24
-
-
-#realized something - discuss most logical option with Luke??
-# if I have "fresh" as a pass, and weight it like the other passes, it will
-#skew the results towards fresh, bc fresh doesn't exist the whole time (just
-#like how the last step of pass 5 -> 6, the most burnt, doesn't always exist, 
-# "fresh" is just the first step of pass 0->1
+#Neutronics characteristics of a 165 MWth Xe-100 reactor, Mulder
 
 pass01 = {}
 tot_time01 = sum(dep_t[0:19])
@@ -122,17 +108,6 @@ ucoavg.add_s_alpha_beta('c_Graphite')
 ucoavg.depletable = False
 ucoavg.temperature = 1159.15 #K
 
-
-ucot = openmc.Material(name='UCO_TRACKED', material_id=14)
-ucot.set_density('g/cm3', 10.4)
-ucot.add_nuclide("U235", 0.1386, percent_type='wo')
-ucot.add_nuclide("U238",0.7559, percent_type='wo')
-ucot.add_element("O", 0.06025, percent_type='wo')
-ucot.add_element('C', 0.04523, percent_type='wo')
-ucot.add_s_alpha_beta('c_Graphite')
-ucot.depletable = True
-ucot.temperature = 1159.15 #K
-
 buffer = openmc.Material(name='buffer', material_id=15)
 buffer.set_density('g/cm3', 1.05)
 buffer.add_element('C', 1.0, percent_type='ao')
@@ -170,54 +145,37 @@ peb_ir = 2.5 # radius of the region that has trisos in it only
 triso_r = [0.02125, 0.03125, 0.03525, 0.03875, 0.04275]
 bcc_l = 100/(2697**(1/3)) #based on pf = 5394 pebs/m3
 
-materials = openmc.Materials([ucoavg, ucot, buffer, pyc, sic, graphite, he])
+materials = openmc.Materials([ucoavg, buffer, pyc, sic, graphite, he])
 openmc.Materials(materials).export_to_xml()
 
-geometry = openmc.Geometry.from_xml("geometry.xml", materials)
-
 settings = openmc.Settings()
-#settings.run_mode = 'eigenvalue'
-settings.verbosity = 6
-settings.particles = 5000
-settings.generations_per_batch = 5
-settings.batches = 60
-settings.inactive = 20
-settings.seed = 987654321
+settings.run_mode = 'eigenvalue'
+settings.verbosity = 7
+settings.particles = 10000
+settings.generations_per_batch = 10
+settings.batches = 75
+settings.inactive = 25
+settings.seed = 463913357
 settings.temperature = {'method' : 'interpolation', 'tolerance' : 10.0}
-settings.output = {'tallies': False}
-#settings.volume_calculations = [vol_calc]
 settings.export_to_xml()
 
-bcc_model = openmc.model.Model(geometry, materials, settings)
-
-#chain file set as environment variable
-uco_volume = 1.5209
-ucot.volume = uco_volume
-
-#Here is the coupled operator version
-operator = openmc.deplete.CoupledOperator(bcc_model)
-
-#but getting the micro xs and running with an independent operator might
-#be faster:
-
-#fluxes, micros = openmc.deplete.get_microxs_and_flux(bcc_model, materials)
-#operator = openmc.deplete.IndependentOperator(materials, fluxes, micros)
-
-# 1549 effective full power days over 6 passes = 6 258 day passes (~8.6 months)
-# dt steps based on table 1 in adaptive burnup..., Walter and Manera
-# 165/1549 gives that 1 EFPD is approximately 0.1 MWd/kgHM
-d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24
-#d_steps = [1] #test to get to a good pcm
-
-reactor_power = 165.0*(10**6) #165 MWth, converted to W
-#220K pebs, 19k triso per peb, vol_kernel, uco density, wt percent of u in uco
-uco_weight = (223000*19000*(4/3)*np.pi*triso_r[0]**3)*ucot.density*0.8945
-specific_power = reactor_power/uco_weight #this is in W/gHM
-
-celi = openmc.deplete.CELIIntegrator(
-
-    operator, d_steps, power_density=specific_power, timestep_units = 'd')
-
-celi.integrate()
-
-
+tallies = openmc.Tallies()
+mesh = openmc.RegularMesh()
+mesh.dimension = [3, 3, 3]
+mesh.lower_left = [-0.5*bcc_l, -0.5*bcc_l, -0.5*bcc_l]
+mesh.upper_right = [0.5*bcc_l, 0.5*bcc_l, 0.5*bcc_l]
+mesh_filter = openmc.MeshFilter(mesh)
+spatial = openmc.Tally(name='spatial')
+spatial.filters = [mesh_filter]
+spatial.scores = ['flux', 'fission']
+heating = openmc.Tally(name='heating')
+heating.scores = ['heating']
+spectrum = openmc.Tally(name='spectrum')
+ene = np.logspace(np.log10(1e-5), np.log10(20.0e6), 501)
+ene_filter = openmc.EnergyFilter(ene)
+spectrum.filters = [ene_filter]
+spectrum.scores = ['flux']
+tallies.append(spatial)
+tallies.append(heating)
+tallies.append(spectrum)
+tallies.export_to_xml()

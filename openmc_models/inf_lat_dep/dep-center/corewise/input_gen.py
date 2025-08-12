@@ -2,6 +2,7 @@ import openmc
 import openmc.deplete
 import numpy as np
 
+#This script generates .xml files that all model iterations will use.
 dep_file = 'i0-dep-res.h5'
 mat_file = 'input_mats.xml'
 res = openmc.deplete.Results(dep_file)
@@ -14,8 +15,8 @@ step_comps = [res.export_to_materials(i,
 #graphite based on a3-3, triso layers pulled from reported values in
 #Neutronics characteristics of a 165 MWth Xe-100 reactor, Mulder et al
 
-#from below, d_steps are as follows (in days)
-#d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24
+#d_steps are as follows (in days)
+# [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24
 
 pass01 = {}
 tot_time01 = sum(dep_t[0:19])
@@ -193,20 +194,20 @@ bg_triso_cells = [openmc.Cell(fill=ucoavg, region=-triso_reg[0]),
                openmc.Cell(fill=pyc, region=+triso_reg[3])]
 bg_triso_univ = openmc.Universe(cells=bg_triso_cells)
 
+seeds = [978397880, 987432789, 895490889, 
+         356657913, 353623684, 897578459, 
+         429875621, 489638795, 658469875]
 
 #center pebble
-
 body_peb_in = openmc.Sphere(r = peb_ir)
 body_wfuel_bound = -body_peb_in
 body_peb_out = openmc.Sphere(r=peb_or)
 body_nofuel_reg = -body_peb_out & +body_peb_in
 
 body_centers = openmc.model.pack_spheres(triso_r[-1], region=body_wfuel_bound,
-                                         num_spheres=19000, seed = 978397880)
+                                         num_spheres=19000, seed = seeds[0])
 body_trisos = [openmc.model.TRISO(triso_r[-1], tr_triso_univ, center) 
                for center in body_centers]
-
-#now define the no-fueled outer shell for the body peb
 
 body_wfuel = openmc.Cell(region=body_wfuel_bound)
 lower_left, upper_right = body_wfuel.region.bounding_box
@@ -234,7 +235,7 @@ c1_wfuel_reg = -c1_peb_in & c1_corner_bound
 c1_nofuel_reg = -c1_peb_out & +c1_peb_in & c1_corner_bound
 
 c1_centers = openmc.model.pack_spheres(triso_r[-1], region=-c1_peb_in, 
-                                       num_spheres=19000, seed = 987432789)
+                                       num_spheres=19000, seed = seeds[1])
 c1_trisos = [openmc.model.TRISO(triso_r[-1], bg_triso_univ, center) 
              for center in c1_centers]
 
@@ -260,7 +261,7 @@ c2_wfuel_reg = -c2_peb_in & c2_corner_bound
 c2_nofuel_reg = -c2_peb_out & +c2_peb_in & c2_corner_bound
 
 c2_centers = openmc.model.pack_spheres(triso_r[-1], region=-c2_peb_in, 
-                                       num_spheres=19000, seed = 895490889)
+                                       num_spheres=19000, seed = seeds[2])
 c2_trisos = [openmc.model.TRISO(triso_r[-1], bg_triso_univ, center) 
              for center in c2_centers]
 
@@ -292,7 +293,7 @@ c3_wfuel_reg = -c3_peb_in & c3_corner_bound
 c3_nofuel_reg = -c3_peb_out & +c3_peb_in & c3_corner_bound
 
 c3_centers = openmc.model.pack_spheres(triso_r[-1], region=-c3_peb_in, 
-                                       num_spheres=19000, seed = 356657913)
+                                       num_spheres=19000, seed = seeds[3])
 c3_trisos = [openmc.model.TRISO(triso_r[-1], bg_triso_univ, center) 
              for center in c3_centers]
 
@@ -325,7 +326,7 @@ c4_nofuel_reg = -c4_peb_out & +c4_peb_in & c4_corner_bound
 
 
 c4_centers = openmc.model.pack_spheres(triso_r[-1], region=-c4_peb_in, 
-                                       num_spheres=19000, seed = 353623684)
+                                       num_spheres=19000, seed = seeds[4])
 c4_trisos = [openmc.model.TRISO(triso_r[-1], bg_triso_univ, center) 
              for center in c4_centers]
 
@@ -357,7 +358,7 @@ c5_wfuel_reg = -c5_peb_in & c5_corner_bound
 c5_nofuel_reg = -c5_peb_out & +c5_peb_in & c5_corner_bound
 
 c5_centers = openmc.model.pack_spheres(triso_r[-1], region=-c5_peb_in, 
-                                       num_spheres=19000, seed = 897578459)
+                                       num_spheres=19000, seed = seeds[5])
 c5_trisos = [openmc.model.TRISO(triso_r[-1], bg_triso_univ, center) 
              for center in c5_centers]
 
@@ -389,7 +390,7 @@ c6_wfuel_reg = -c6_peb_in & c6_corner_bound
 c6_nofuel_reg = -c6_peb_out & +c6_peb_in & c6_corner_bound
 
 c6_centers = openmc.model.pack_spheres(triso_r[-1], region=-c6_peb_in, 
-                                       num_spheres=19000, seed = 429875621)
+                                       num_spheres=19000, seed = seeds[6])
 c6_trisos = [openmc.model.TRISO(triso_r[-1], bg_triso_univ, center) 
              for center in c6_centers]
 
@@ -419,7 +420,7 @@ c7_wfuel_reg = -c7_peb_in & c7_corner_bound
 c7_nofuel_reg = -c7_peb_out & +c7_peb_in & c7_corner_bound
 
 c7_centers = openmc.model.pack_spheres(triso_r[-1], region=-c7_peb_in, 
-                                       num_spheres=19000, seed = 489638795)
+                                       num_spheres=19000, seed = seeds[7])
 c7_trisos = [openmc.model.TRISO(triso_r[-1], bg_triso_univ, center) 
              for center in c7_centers]
 
@@ -449,7 +450,7 @@ c8_wfuel_reg = -c8_peb_in & c8_corner_bound
 c8_nofuel_reg = -c8_peb_out & +c8_peb_in & c8_corner_bound
 
 c8_centers = openmc.model.pack_spheres(triso_r[-1], region=-c8_peb_in, 
-                                       num_spheres=19000, seed = 658469875)
+                                       num_spheres=19000, seed = seeds[8])
 c8_trisos = [openmc.model.TRISO(triso_r[-1], bg_triso_univ, center) 
              for center in c8_centers]
 

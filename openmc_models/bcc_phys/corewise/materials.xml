@@ -515,6 +515,7 @@
     <nuclide ao="8.387299324546361e-22" name="Fm255"/>
     <sab name="c_Graphite"/>
   </material>
+<<<<<<< HEAD
   <material depletable="true" id="14" name="UCO_TRACKED" temperature="1159.15" volume="1.5209">
     <density units="g/cm3" value="10.4"/>
     <nuclide name="C12" wo="0.0446875496032256"/>
@@ -526,6 +527,8 @@
     <nuclide name="U238" wo="0.7559"/>
     <sab name="c_Graphite"/>
   </material>
+=======
+>>>>>>> 8fb1376 (commit current before move and cherrypick)
   <material id="15" name="buffer" temperature="1159.15">
     <density units="g/cm3" value="1.05"/>
     <nuclide ao="0.988922" name="C12"/>
