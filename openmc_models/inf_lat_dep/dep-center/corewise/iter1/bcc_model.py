@@ -11,25 +11,12 @@ step_comps = [res.export_to_materials(i,
               for i in range(len(dep_t))]
 
 #materials
-#also doublecheck isotopic compostions conventions in mats
 #graphite based on a3-3, triso layers pulled from reported values in
 #Neutronics characteristics of a 165 MWth Xe-100 reactor, Mulder et al
 
-#from below, d_steps are as follows (in [days]), so the pass-wise
-#indices would be (remember open on end, each pass ~= 258 days
-#pass1 : 0, then everything from 1 to 10 days, inclusive, then the first 6
-#steps of [25] days : 
+#from below, d_steps are as follows (in days)
 #d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24
 
-
-#realized something - discuss most logical option with Luke??
-# if I have "fresh" as a pass, and weight it like the other passes, it will
-#skew the results towards fresh, bc fresh doesn't exist the whole time (just
-#like how the last step of pass 5 -> 6, the most burnt, doesn't always exist, 
-# "fresh" is just the first step of pass 0->1
-
-#also, each step is not the same in terms of residence time, so for early
-#steps, the compositons need to be weighted by their dep_t
 pass01 = {}
 tot_time01 = sum(dep_t[0:19])
 for i, step in enumerate(step_comps[0:19]):
@@ -207,22 +194,12 @@ bg_triso_cells = [openmc.Cell(fill=ucoavg, region=-triso_reg[0]),
 bg_triso_univ = openmc.Universe(cells=bg_triso_cells)
 
 
-
-# define where the particles will be packed
-# BCC lattice has one sphere at the center, and a 1/4 sphere at each corner, 
-#tight enough they are all touching. that part should be handled with your 
-#calculation of the cube length (the body diameter = 2 peb diameters)
-
-#start with the easy part: the center pebble
+#center pebble
 
 body_peb_in = openmc.Sphere(r = peb_ir)
 body_wfuel_bound = -body_peb_in
 body_peb_out = openmc.Sphere(r=peb_or)
 body_nofuel_reg = -body_peb_out & +body_peb_in
-
-#remember, this is the fueled part only, so it uses peb_ir.  
-#Center the BCC at 0.
-#generate the triso centers in the body pebble:
 
 body_centers = openmc.model.pack_spheres(triso_r[-1], region=body_wfuel_bound,
                                          num_spheres=19000, seed = 978397880)
@@ -243,11 +220,7 @@ body_nofuel = openmc.Cell(fill=graphite, region=body_nofuel_reg)
 
 body_cells = [body_wfuel, body_nofuel]
 
-
-
-#this will follow the same basic steps as the center pebble.  initial triso 
-#definition shouldn't change.
-#this one is the -1,-1,-1 corner
+# -1,-1,-1 corner
 c1_peb_in = openmc.Sphere(x0 = -c_coord, 
                           y0 =-c_coord, 
                           z0 =-c_coord, 
@@ -513,14 +486,10 @@ universe = openmc.Universe(cells=cell_list)
 geometry = openmc.Geometry(universe)
 geometry.export_to_xml()
 
-#materials = list(geometry.get_all_materials().values())
-#openmc.Materials(materials).export_to_xml()
-
 materials = openmc.Materials([ucoavg, ucot, buffer, pyc, sic, graphite, he])
 openmc.Materials(materials).export_to_xml()
 
 settings = openmc.Settings()
-#settings.run_mode = 'eigenvalue'
 settings.verbosity = 6
 settings.particles = 5000
 settings.generations_per_batch = 5
@@ -529,38 +498,26 @@ settings.inactive = 20
 settings.seed = 987654321
 settings.temperature = {'method' : 'interpolation', 'tolerance' : 10.0}
 settings.output = {'tallies': False}
-#settings.volume_calculations = [vol_calc]
 settings.export_to_xml()
 
 bcc_model = openmc.model.Model(geometry, materials, settings)
-
-#chain file set as environment variable
 uco_volume = 1.5209
 ucot.volume = uco_volume
 
-#Here is the coupled operator version
 operator = openmc.deplete.CoupledOperator(bcc_model)
 
-#but getting the micro xs and running with an independent operator might
-#be faster:
-
-#fluxes, micros = openmc.deplete.get_microxs_and_flux(bcc_model, materials)
-#operator = openmc.deplete.IndependentOperator(materials, fluxes, micros)
-
 # 1549 effective full power days over 6 passes = 6 258 day passes (~8.6 months)
-# dt steps based on table 1 in adaptive burnup..., Walter and Manera
-# 165/1549 gives that 1 EFPD is approximately 0.1 MWd/kgHM
+# dt steps based on table 1 in Adaptive Burnup..., Walter and Manera
+# 165/1549 -> 1 EFPD ~= 0.1 MWd/kgHM
 d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24
-#d_steps = [1] #test to get to a good pcm
 
 reactor_power = 165.0*(10**6) #165 MWth, converted to W
 #220K pebs, 19k triso per peb, vol_kernel, uco density, wt percent of u in uco
 uco_weight = (223000*19000*(4/3)*np.pi*triso_r[0]**3)*ucot.density*0.8945
-specific_power = reactor_power/uco_weight #this is in W/gHM
+specific_power = reactor_power/uco_weight #W/gHM
 
 celi = openmc.deplete.CELIIntegrator(
-
-    operator, d_steps, power_density=specific_power, timestep_units = 'd')
+        operator, d_steps, power_density=specific_power, timestep_units = 'd')
 
 celi.integrate()
 

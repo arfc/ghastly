@@ -152,7 +152,7 @@ he.temperature = 778.15 #K
 
 
 
-#geometry parameters - remember LAMMPS coords are in meters, this is in cm
+#geometry parameters [cm]
 #remember, triso order: kernel, buffer, pyc, sic, pyc
 peb_or = 3.0 #outer radius of whole pebble
 peb_ir = 2.5 # radius of the region that has trisos in it only
