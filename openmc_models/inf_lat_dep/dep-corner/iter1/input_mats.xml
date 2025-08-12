@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<materials>
+  <material depletable="true" id="1" name="UCO" temperature="1159.15" volume="1.5209">
+    <density units="g/cm3" value="10.4"/>
+    <nuclide name="C12" wo="0.0446875496032256"/>
+    <nuclide name="C13" wo="0.0005424503967743985"/>
+    <nuclide name="O16" wo="0.06009014908676831"/>
+    <nuclide name="O17" wo="2.426173735489788e-05"/>
+    <nuclide name="O18" wo="0.00013558917587679352"/>
+    <nuclide name="U235" wo="0.1386"/>
+    <nuclide name="U238" wo="0.7559"/>
+    <sab name="c_Graphite"/>
+  </material>
+  <material id="2" name="buffer" temperature="1159.15">
+    <density units="g/cm3" value="1.05"/>
+    <nuclide ao="0.988922" name="C12"/>
+    <nuclide ao="0.011078" name="C13"/>
+    <sab name="c_Graphite"/>
+  </material>
+  <material id="3" name="PyC" temperature="1159.15">
+    <density units="g/cm3" value="1.9"/>
+    <nuclide ao="0.988922" name="C12"/>
+    <nuclide ao="0.011078" name="C13"/>
+    <sab name="c_Graphite"/>
+  </material>
+  <material id="4" name="SiC">
+    <density units="g/cm3" value="3.2"/>
+    <nuclide ao="0.494461" name="C12"/>
+    <nuclide ao="0.005539" name="C13"/>
+    <nuclide ao="0.4611484" name="Si28"/>
+    <nuclide ao="0.0234158" name="Si29"/>
+    <nuclide ao="0.0154358" name="Si30"/>
+    <sab name="c_Graphite"/>
+  </material>
+  <material id="5" name="graphite">
+    <density units="kg/m3" value="1700"/>
+    <nuclide ao="0.988922" name="C12"/>
+    <nuclide ao="0.011078" name="C13"/>
+    <sab name="c_Graphite"/>
+  </material>
+  <material id="6" name="He" temperature="778.15">
+    <density units="atom/b-cm" value="0.0006"/>
+    <nuclide ao="2e-06" name="He3"/>
+    <nuclide ao="0.999998" name="He4"/>
+  </material>
+</materials>
