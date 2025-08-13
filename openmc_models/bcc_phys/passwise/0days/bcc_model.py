@@ -2,7 +2,7 @@ import openmc
 import openmc.deplete
 import numpy as np
 
-ucot = openmc.Material(name='UCO_TRACKED', material_id=14)
+ucot = openmc.Material(name='UCO_TRACKED', material_id=13)
 ucot.set_density('g/cm3', 10.4)
 ucot.add_nuclide("U235", 0.1386, percent_type='wo')
 ucot.add_nuclide("U238",0.7559, percent_type='wo')
@@ -17,5 +17,8 @@ materials.append(ucot)
 geometry = openmc.Geometry.from_xml("../geometry.xml", materials)
 settings = openmc.Settings.from_xml('../settings.xml')
 tallies = openmc.Tallies.from_xml('../tallies.xml')
+
+model = openmc.model.Model(geometry, materials, settings, tallies)
+model.export_to_model_xml()
 
 openmc.run()

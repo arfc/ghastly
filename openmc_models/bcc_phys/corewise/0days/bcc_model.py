@@ -18,4 +18,7 @@ geometry = openmc.Geometry.from_xml("../geometry.xml", materials)
 settings = openmc.Settings.from_xml('../settings.xml')
 tallies = openmc.Tallies.from_xml('../tallies.xml')
 
+model = openmc.model.Model(geometry, materials, settings, tallies)
+model.export_to_model_xml()
+
 openmc.run()

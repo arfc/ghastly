@@ -15,7 +15,7 @@ for k, v in step_comps[30].items():
         comp749days[k] = {}
         comp749days[k] = v[1]
 
-ucot = openmc.Material(name='UCO_TRACKED', material_id=14)
+ucot = openmc.Material(name='UCO_TRACKED', material_id=13)
 ucot.set_density('g/cm3', 10.4)
 ucot.add_components(comp749days, percent_type = 'ao')
 ucot.add_s_alpha_beta('c_Graphite')
@@ -27,5 +27,8 @@ materials.append(ucot)
 geometry = openmc.Geometry.from_xml("../geometry.xml", materials)
 settings = openmc.Settings.from_xml('../settings.xml')
 tallies = openmc.Tallies.from_xml('../tallies.xml')
+
+model = openmc.model.Model(geometry, materials, settings, tallies)
+model.export_to_model_xml()
 
 openmc.run()
