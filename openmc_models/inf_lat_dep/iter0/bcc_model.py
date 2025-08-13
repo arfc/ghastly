@@ -5,7 +5,6 @@ import numpy as np
 
 
 #materials
-#also doublecheck isotopic compostions conventions in mats
 #graphite based on a3-3, triso layers pulled from reported values in
 #Neutronics characteristics of a 165 MWth Xe-100 reactor, Mulder et al
 uco = openmc.Material(name='UCO')
@@ -78,29 +77,17 @@ triso_cells = [openmc.Cell(fill=uco, region=-triso_bounds[0]),
 triso_univ = openmc.Universe(cells=triso_cells)
 
 
-
-# define where the particles will be packed
-# BCC lattice has one sphere at the center, and a 1/4 sphere at each corner, 
-#tight enough they are all touching. that part should be handled with your 
-#calculation of the cube length (the body diameter = 2 peb diameters)
-
-#start with the easy part: the center pebble
-
 body_peb_in = openmc.Sphere(r = peb_ir)
 body_wfuel_bound = -body_peb_in
 body_peb_out = openmc.Sphere(r=peb_or)
 body_nofuel_reg = -body_peb_out & +body_peb_in
 
-#remember, this is the fueled part only, so it uses peb_ir.  
-#Center the BCC at 0.
-#generate the triso centers in the body pebble:
 
 body_centers = openmc.model.pack_spheres(triso_r[-1], region=body_wfuel_bound,
                                          num_spheres=19000, seed = 978397880)
 body_trisos = [openmc.model.TRISO(triso_r[-1], triso_univ, center) 
                for center in body_centers]
 
-#now define the no-fueled outer shell for the body peb
 
 body_wfuel = openmc.Cell(region=body_wfuel_bound)
 lower_left, upper_right = body_wfuel.region.bounding_box
@@ -114,11 +101,7 @@ body_nofuel = openmc.Cell(fill=graphite, region=body_nofuel_reg)
 
 body_cells = [body_wfuel, body_nofuel]
 
-
-
-#this will follow the same basic steps as the center pebble.  initial triso 
-#definition shouldn't change.
-#this one is the -1,-1,-1 corner
+# -1,-1,-1 corner
 c1_peb_in = openmc.Sphere(x0 = -c_coord, 
                           y0 =-c_coord, 
                           z0 =-c_coord, 
@@ -384,22 +367,17 @@ universe = openmc.Universe(cells=cell_list)
 geometry = openmc.Geometry(universe)
 geometry.export_to_xml()
 
-#materials = list(geometry.get_all_materials().values())
-#openmc.Materials(materials).export_to_xml()
-
 materials = openmc.Materials([uco, buffer, pyc, sic, graphite, he])
 openmc.Materials(materials).export_to_xml()
 
 settings = openmc.Settings()
-#settings.run_mode = 'eigenvalue'
 settings.verbosity = 6
 settings.particles = 1000
 settings.generations_per_batch = 5
-settings.batches = 50
-settings.inactive = 10
+settings.batches = 60
+settings.inactive = 20
 settings.temperature = {'method' : 'interpolation', 'tolerance' : 10.0}
 settings.output = {'tallies': False}
-#settings.volume_calculations = [vol_calc]
 settings.export_to_xml()
 
 bcc_model = openmc.model.Model(geometry, materials, settings)
@@ -418,7 +396,7 @@ operator = openmc.deplete.CoupledOperator(bcc_model)
 #operator = openmc.deplete.IndependentOperator(materials, fluxes, micros)
 
 # 1549 effective full power days over 6 passes = 6 258 day passes (~8.6 months)
-d_steps = [258]*6
+d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24 
 
 reactor_power = 165.0*(10**6) #165 MWth, converted to W
 #220K pebs, 19k triso per peb, vol_kernel, uco density, wt percent of u in uco
