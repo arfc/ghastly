@@ -7,7 +7,19 @@ import numpy as np
 #materials
 #graphite based on a3-3, triso layers pulled from reported values in
 #Neutronics characteristics of a 165 MWth Xe-100 reactor, Mulder et al
-uco = openmc.Material(name='UCO')
+ucodep = openmc.Material(name='UCO_DEP', material_id=1)
+ucodep.set_density('g/cm3', 10.4)
+ucodep.add_nuclide("U235", 0.1386, percent_type='wo')
+ucodep.add_nuclide("U238",0.7559, percent_type='wo')
+ucodep.add_element("O", 0.06025, percent_type='wo')
+ucodep.add_element('C', 0.04523, percent_type='wo')
+ucodep.add_s_alpha_beta('c_Graphite')
+ucodep.depletable = True
+ucodep.temperature = 1159.15 #K
+ucodep.volume = 19000*(4/3)*np.pi*triso_r[0]**3
+
+
+uco = openmc.Material(name='UCO_NODEP', material_id=2)
 uco.set_density('g/cm3', 10.4)
 uco.add_nuclide("U235", 0.1386, percent_type='wo')
 uco.add_nuclide("U238",0.7559, percent_type='wo')
@@ -15,6 +27,7 @@ uco.add_element("O", 0.06025, percent_type='wo')
 uco.add_element('C', 0.04523, percent_type='wo')
 uco.add_s_alpha_beta('c_Graphite')
 uco.temperature = 1159.15 #K
+uco.depletable = False
 
 buffer = openmc.Material(name='buffer')
 buffer.set_density('g/cm3', 1.05)
@@ -66,6 +79,17 @@ bcc_max_z = openmc.ZPlane(z0=c_coord, boundary_type='reflective')
 
 #define the cells and universe for the triso particles
 triso_bounds = [openmc.Sphere(r=r) for r in triso_r[:-1]]
+
+dep_triso_cells = [openmc.Cell(fill=ucodep, region=-triso_bounds[0]),
+               openmc.Cell(fill=buffer,
+                           region=+triso_bounds[0] & -triso_bounds[1]),
+               openmc.Cell(fill=pyc, 
+                           region=+triso_bounds[1] & -triso_bounds[2]),
+               openmc.Cell(fill=sic, 
+                           region=+triso_bounds[2] & -triso_bounds[3]),
+               openmc.Cell(fill=pyc, region=+triso_bounds[3])]
+dep_triso_univ = openmc.Universe(cells=triso_cells)
+
 triso_cells = [openmc.Cell(fill=uco, region=-triso_bounds[0]),
                openmc.Cell(fill=buffer,
                            region=+triso_bounds[0] & -triso_bounds[1]),
@@ -85,7 +109,7 @@ body_nofuel_reg = -body_peb_out & +body_peb_in
 
 body_centers = openmc.model.pack_spheres(triso_r[-1], region=body_wfuel_bound,
                                          num_spheres=19000, seed = 978397880)
-body_trisos = [openmc.model.TRISO(triso_r[-1], triso_univ, center) 
+body_trisos = [openmc.model.TRISO(triso_r[-1], dep_triso_univ, center) 
                for center in body_centers]
 
 
@@ -382,23 +406,13 @@ settings.export_to_xml()
 
 bcc_model = openmc.model.Model(geometry, materials, settings)
 
-#chain file set as environment variable
-uco_volume = 1.5209
-uco.volume = uco_volume
-
-#Here is the coupled operator version
 operator = openmc.deplete.CoupledOperator(bcc_model)
-
-#but getting the micro xs and running with an independent operator might
-#be faster:
-
-#fluxes, micros = openmc.deplete.get_microxs_and_flux(bcc_model, materials)
-#operator = openmc.deplete.IndependentOperator(materials, fluxes, micros)
 
 # 1549 effective full power days over 6 passes = 6 258 day passes (~8.6 months)
 d_steps = [1] + [4] + [4] + [10]*9 + [25]*10 + [50]*24 
 
 reactor_power = 165.0*(10**6) #165 MWth, converted to W
+
 #220K pebs, 19k triso per peb, vol_kernel, uco density, wt percent of u in uco
 uco_weight = (223000*19000*(4/3)*np.pi*triso_r[0]**3)*uco.density*0.8945
 specific_power = reactor_power/uco_weight #this is in W/gHM
