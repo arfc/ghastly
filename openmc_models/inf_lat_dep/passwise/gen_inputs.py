@@ -38,28 +38,33 @@ buffer.set_density('g/cm3', 1.05)
 buffer.add_element('C', 1.0, percent_type='ao')
 buffer.add_s_alpha_beta('c_Graphite')
 buffer.temperature = 1159.15 #K
+buffer.depletable = False
 
 pyc = openmc.Material(name='PyC', material_id=4)
 pyc.set_density('g/cm3', 1.9)
 pyc.add_element('C', 1.0, percent_type='ao')
 pyc.add_s_alpha_beta('c_Graphite')
 pyc.temperature = 1159.15 #K
+pyc.depletable = False
 
 sic = openmc.Material(name='SiC', material_id=5)
 sic.set_density('g/cm3', 3.2)
 sic.add_element('C', 0.5, percent_type='ao')
 sic.add_element('Si', 0.5, percent_type='ao')
 sic.add_s_alpha_beta('c_Graphite')
+sic.depletable = False
 
 graphite = openmc.Material(name='graphite', material_id=6)
 graphite.set_density('kg/m3', 1700)
 graphite.add_element('C', 1.0, percent_type='ao')
 graphite.add_s_alpha_beta('c_Graphite')
+graphite.depletable = False
 
 he = openmc.Material(name='He', material_id=7)
 he.set_density('atom/b-cm', 0.0006)
 he.add_element('He', 1.0, percent_type='ao')
 he.temperature = 778.15 #K
+he.depletable = False
 
 
 seeds = [978397880, 987432789, 895490889, 
@@ -76,34 +81,43 @@ bcc_max_z = openmc.ZPlane(z0=c_coord, boundary_type='reflective')
 
 #define the cells and universe for the triso particles
 triso_reg = [openmc.Sphere(r=r) for r in triso_r[:-1]]
-triso_shell = [openmc.Cell(fill=buffer,
-                           region=+triso_reg[0] & -triso_reg[1]),
-               openmc.Cell(fill=pyc, 
-                           region=+triso_reg[1] & -triso_reg[2]),
-               openmc.Cell(fill=sic, 
-                           region=+triso_reg[2] & -triso_reg[3]),
-               openmc.Cell(fill=pyc, region=+triso_reg[3])]
+triso_shell = []
+for i in range(7):
+    triso_shell.append([openmc.Cell(fill=buffer,
+                                    region=+triso_reg[0] & -triso_reg[1]),
+                        openmc.Cell(fill=pyc, 
+                                    region=+triso_reg[1] & -triso_reg[2]),
+                        openmc.Cell(fill=sic, 
+                                    region=+triso_reg[2] & -triso_reg[3]),
+                        openmc.Cell(fill=pyc, region=+triso_reg[3])])
 
 
-tr_triso_cells = [openmc.Cell(fill=ucodep, region=-triso_reg[0])] + triso_shell
+tr_triso_cells = [openmc.Cell(fill=ucodep, 
+                              region=-triso_reg[0])] + triso_shell[0]
 tr_triso_univ = openmc.Universe(cells=tr_triso_cells)
 
-uco01_cells = [openmc.Cell(fill=uco01, region=-triso_reg[0])] + triso_shell
+uco01_cells = [openmc.Cell(fill=uco01, 
+                           region=-triso_reg[0])] + triso_shell[1]
 uco01_univ = openmc.Universe(cells=uco01_cells)
 
-uco12_cells = [openmc.Cell(fill=uco12, region=-triso_reg[0])] + triso_shell
+uco12_cells = [openmc.Cell(fill=uco12, 
+                           region=-triso_reg[0])] + triso_shell[2]
 uco12_univ = openmc.Universe(cells=uco12_cells)
 
-uco23_cells = [openmc.Cell(fill=uco23, region=-triso_reg[0])] + triso_shell
+uco23_cells = [openmc.Cell(fill=uco23,
+                           region=-triso_reg[0])] + triso_shell[3]
 uco23_univ = openmc.Universe(cells=uco23_cells)
 
-uco34_cells = [openmc.Cell(fill=uco34, region=-triso_reg[0])] + triso_shell
+uco34_cells = [openmc.Cell(fill=uco34, 
+                           region=-triso_reg[0])] + triso_shell[4]
 uco34_univ = openmc.Universe(cells=uco34_cells)
 
-uco45_cells = [openmc.Cell(fill=uco45, region=-triso_reg[0])] + triso_shell
+uco45_cells = [openmc.Cell(fill=uco45, 
+                           region=-triso_reg[0])] + triso_shell[5]
 uco45_univ = openmc.Universe(cells=uco45_cells)
 
-uco56_cells = [openmc.Cell(fill=uco56, region=-triso_reg[0])] + triso_shell
+uco56_cells = [openmc.Cell(fill=uco56, 
+                           region=-triso_reg[0])] + triso_shell[6]
 uco56_univ = openmc.Universe(cells=uco56_cells)
 
 
@@ -133,9 +147,6 @@ body_nofuel = openmc.Cell(fill=graphite, region=body_nofuel_reg)
 body_cells = [body_wfuel, body_nofuel]
 
 
-
-#this will follow the same basic steps as the center pebble.  initial triso 
-#definition shouldn't change.
 #this one is the -1,-1,-1 corner = uco56
 c1_peb_in = openmc.Sphere(x0 = -c_coord, 
                           y0 =-c_coord, 

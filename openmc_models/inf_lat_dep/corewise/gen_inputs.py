@@ -33,28 +33,33 @@ buffer.set_density('g/cm3', 1.05)
 buffer.add_element('C', 1.0, percent_type='ao')
 buffer.add_s_alpha_beta('c_Graphite')
 buffer.temperature = 1159.15 #K
+buffer.depleteable = False
 
 pyc = openmc.Material(name='PyC', material_id=4)
 pyc.set_density('g/cm3', 1.9)
 pyc.add_element('C', 1.0, percent_type='ao')
 pyc.add_s_alpha_beta('c_Graphite')
 pyc.temperature = 1159.15 #K
+pyc.depletable = False
 
 sic = openmc.Material(name='SiC', material_id=5)
 sic.set_density('g/cm3', 3.2)
 sic.add_element('C', 0.5, percent_type='ao')
 sic.add_element('Si', 0.5, percent_type='ao')
 sic.add_s_alpha_beta('c_Graphite')
+sic.depletable = False
 
 graphite = openmc.Material(name='graphite', material_id=6)
 graphite.set_density('kg/m3', 1700)
 graphite.add_element('C', 1.0, percent_type='ao')
 graphite.add_s_alpha_beta('c_Graphite')
+graphite.depletable = False
 
 he = openmc.Material(name='He', material_id=7)
 he.set_density('atom/b-cm', 0.0006)
 he.add_element('He', 1.0, percent_type='ao')
 he.temperature = 778.15 #K
+he.depletable = False
 
 
 #define the edges of the unit cell

@@ -23,8 +23,6 @@ nuc_in_res = list(res[0].index_nuc.keys())
 
 nuclides = list(set(nuc_w_data) & set(nuc_in_res))
 
-print(nuclides)
-
 p_bins = [(0,19),(19,26),(26,31),(31,36),(36,41),(41,None)]
 p_comps = {'p01':{},
            'p12':{},

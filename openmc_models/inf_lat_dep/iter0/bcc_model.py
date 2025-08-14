@@ -2,6 +2,13 @@ import openmc
 import openmc.deplete
 import numpy as np
 
+#geometry parameters - remember LAMMPS coords are in meters, this is in cm
+#remember, triso order: kernel, buffer, pyc, sic, pyc
+peb_or = 3.0 #outer radius of whole pebble
+peb_ir = 2.5 # radius of the region that has trisos in it only
+triso_r = [0.02125, 0.03125, 0.03525, 0.03875, 0.04275]
+bcc_l = (4*peb_or)/(3**(0.5))
+c_coord = 0.5*bcc_l
 
 
 #materials
@@ -34,38 +41,33 @@ buffer.set_density('g/cm3', 1.05)
 buffer.add_element('C', 1.0, percent_type='ao')
 buffer.add_s_alpha_beta('c_Graphite')
 buffer.temperature = 1159.15 #K
+buffer.depletable = False
 
 pyc = openmc.Material(name='PyC')
 pyc.set_density('g/cm3', 1.9)
 pyc.add_element('C', 1.0, percent_type='ao')
 pyc.add_s_alpha_beta('c_Graphite')
-pyc.temperature = 1159.15 #K
+pyc.temperature = 1159.15 #Ki
+pyc.depletable = False
 
 sic = openmc.Material(name='SiC')
 sic.set_density('g/cm3', 3.2)
 sic.add_element('C', 0.5, percent_type='ao')
 sic.add_element('Si', 0.5, percent_type='ao')
 sic.add_s_alpha_beta('c_Graphite')
+sic.depletable = False
 
 graphite = openmc.Material(name='graphite')
 graphite.set_density('kg/m3', 1700)
 graphite.add_element('C', 1.0, percent_type='ao')
 graphite.add_s_alpha_beta('c_Graphite')
+graphite.depletable = False
 
 he = openmc.Material(name='He')
 he.set_density('atom/b-cm', 0.0006)
 he.add_element('He', 1.0, percent_type='ao')
 he.temperature = 778.15 #K
-
-
-
-#geometry parameters - remember LAMMPS coords are in meters, this is in cm
-#remember, triso order: kernel, buffer, pyc, sic, pyc
-peb_or = 3.0 #outer radius of whole pebble
-peb_ir = 2.5 # radius of the region that has trisos in it only
-triso_r = [0.02125, 0.03125, 0.03525, 0.03875, 0.04275]
-bcc_l = (4*peb_or)/(3**(0.5))
-c_coord = 0.5*bcc_l
+he.depletable = False
 
 
 
@@ -88,7 +90,7 @@ dep_triso_cells = [openmc.Cell(fill=ucodep, region=-triso_bounds[0]),
                openmc.Cell(fill=sic, 
                            region=+triso_bounds[2] & -triso_bounds[3]),
                openmc.Cell(fill=pyc, region=+triso_bounds[3])]
-dep_triso_univ = openmc.Universe(cells=triso_cells)
+dep_triso_univ = openmc.Universe(cells=dep_triso_cells)
 
 triso_cells = [openmc.Cell(fill=uco, region=-triso_bounds[0]),
                openmc.Cell(fill=buffer,
@@ -391,7 +393,7 @@ universe = openmc.Universe(cells=cell_list)
 geometry = openmc.Geometry(universe)
 geometry.export_to_xml()
 
-materials = openmc.Materials([uco, buffer, pyc, sic, graphite, he])
+materials = openmc.Materials([ucodep, uco, buffer, pyc, sic, graphite, he])
 openmc.Materials(materials).export_to_xml()
 
 settings = openmc.Settings()
