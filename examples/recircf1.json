@@ -5,9 +5,6 @@
 		"pf" : 0.60,
 		"fidelity" : 1,
 		"recirc_hz" : 0.014,
-		"v_center" : 1,
-		"v_mid" : 1,
-		"v_wall" : 1,
 		"down_flow" : true,
 		"seed" : 4345343
 	},
