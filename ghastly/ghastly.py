@@ -522,7 +522,8 @@ def recirc_pebbles(input_file, init_bed_fname,
                             v_reg_fname, v_reg_name,
                             outlet_fname, outlet_name, 
                             init_bed_fname, sim_block, x_b, y_b, z_b)
-
+    return sim_block
+    
 def write_recircf2_regs(outlet_zone, outlet_fname):
     '''
     Writes file for the recirculation region used to select which pebbles
@@ -531,8 +532,9 @@ def write_recircf2_regs(outlet_zone, outlet_fname):
     Parameters
     ----------
     outlet_zone : dict
-        dict where the key: value pair is the 
-        name of the recirc outlet zone : Ghastly Core object that defines
+        dictionary where the key is the
+        name of the recirculation outlet zone and 
+        the value is the Ghastly Core object that defines
         this region.
     outlet_fname : str
         file name of the recirculation outlet zone region block.
@@ -552,6 +554,8 @@ def write_recircf2_regs(outlet_zone, outlet_fname):
                                          z_max=param.z_max)
     with open(outlet_fname, mode='w') as f:
         f.write(outlet_text)
+  return outlet_text
+
 
 def write_v_regs(main_cyl, r_chute, v_reg_fname, v_reg_name):
     '''
