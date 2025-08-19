@@ -397,13 +397,14 @@ materials = openmc.Materials([ucodep, uco, buffer, pyc, sic, graphite, he])
 openmc.Materials(materials).export_to_xml()
 
 settings = openmc.Settings()
-settings.verbosity = 6
-settings.particles = 1000
-settings.generations_per_batch = 5
-settings.batches = 60
-settings.inactive = 20
+settings.verbosity = 7
+settings.particles = 20000
+settings.generations_per_batch = 1
+settings.batches = 80
+settings.inactive = 40
 settings.temperature = {'method' : 'interpolation', 'tolerance' : 10.0}
-settings.output = {'tallies': False}
+settings.output = {'tallies': False,
+                   'summary' : False}
 settings.export_to_xml()
 
 bcc_model = openmc.model.Model(geometry, materials, settings)
