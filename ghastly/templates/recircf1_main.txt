@@ -88,13 +88,17 @@ dump		vcenterdump centergroup custom ${dump_freq} velocity/v-center/step_*.bin i
 dump_modify	vcenterdump pad 15
 
 
-dump		peb_coords all custom ${dump_freq} coords/step_*.bin id type x y z
+dump		peb_coords all custom ${dump_freq} coords/step_*.bin id type i_pass x y z
 dump_modify	peb_coords pad 15
 
-dump		recirc_frames all image ${frame_freq} img/step_*.jpg type diameter & 
-		view 90 0 box no 0.0 zoom 1.5 size ${pix_width} ${pix_height}
+dump		recirc_frames all image ${frame_freq} img/step_*.jpg i_pass diameter & 
+		view 90 0 zoom 1.5 box no 0.0 size ${pix_width} ${pix_height}
 
-dump_modify	recirc_frames acolor * lavender backcolor midnightblue pad 15
+dump_modify	recirc_frames color p1 1.0 1.0 1.0 color p2 1.0 0.9 1.0  &
+		color p3 0.9 0.8 0.9  color p4 0.9 0.7 0.9 &
+		color p5 0.8 0.6 0.8  color p6 0.8 0.5 0.8 &
+		amap 1 6 sa 1 6 p1 p2 p3 p4 p5 p6 &
+		backcolor black pad 15
 
 
 thermo_style	custom step cpu tpcpu spcpu cpuremain time atoms ke
@@ -106,7 +110,9 @@ thermo_modify	flush yes lost warn
 
 read_dump	{{starting_bed}} 0 x y z add keep timestep yes
 
-set		type 1 diameter ${d_pebble}
+fix		track_passes all property/atom i_pass
+set		type * diameter ${d_pebble}
+set		type * i_pass 1
 
 
 # it does not take the full time for the pebbles to fall
@@ -124,6 +130,7 @@ label		recirculate
 
 variable	z_recirc atom "z == bound(all, zmin)"
 group		recirc variable z_recirc
+set		group recirc i_pass ${i_pass}+1
 dump		recirc_ids recirc custom 1 recirc/step_*.bin id
 dump_modify	recirc_ids pad 15
 run		0
