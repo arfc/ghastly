@@ -167,32 +167,17 @@ class InputBlock:
             objects.
         '''
 
-        hz_case = self.sim_var.get("recirc_hz")
-        match hz_case:
-            case None:
-                recirc_hz = 1
-            case _:
-                recirc_hz = self.sim_var["recirc_hz"]
+        hz_case = self.sim_var.get("recirc_hz", 1)
         
-        target_case = self.sim_var.get("recirc_target")
-        if type(target_case) != int and target_case != None:
+        target_case = self.sim_var.get("recirc_target", 1)
+        if type(target_case) != int:
             raise TypeError('''The target number of pebbles to recirculate
                             should be an integer''')
-        match target_case:
-            case None:
-                recirc_target = 1
-            case _:
-                recirc_target = self.sim_var["recirc_target"]
 
-        fidelity_case = self.sim_var.get("fidelity")
-        if type(fidelity_case) != int and fidelity_case != None:
+        fidelity_case = self.sim_var.get("fidelity", 1)
+        if type(fidelity_case) != int:
             raise TypeError('''The fidelity level must be one of the following
                             integers: [1, 2]''')
-        match fidelity_case:
-            case None:
-                fidelity = 1
-            case _:
-                fidelity = self.sim_var["fidelity"]
 
 
         k_case = self.sim_var.get("k_rate")
