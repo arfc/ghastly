@@ -167,39 +167,28 @@ class InputBlock:
             objects.
         '''
 
-        hz_case = self.sim_var.get("recirc_hz", 1)
+        recirc_hz = self.sim_var.get("recirc_hz", 1)
         
-        target_case = self.sim_var.get("recirc_target", 1)
-        if type(target_case) != int:
+        recirc_target = self.sim_var.get("recirc_target", 1)
+        if type(recirc_target) != int:
             raise TypeError('''The target number of pebbles to recirculate
                             should be an integer''')
 
-        fidelity_case = self.sim_var.get("fidelity", 1)
-        if type(fidelity_case) != int:
+        fidelity = self.sim_var.get("fidelity", 1)
+        if type(fidelity) != int:
             raise TypeError('''The fidelity level must be one of the following
                             integers: [1, 2]''')
 
 
-        k_case = self.sim_var.get("k_rate")
-        if type(k_case) != float and k_case != None:
+        k_rate = self.sim_var.get("k_rate", 0.001)
+        if type(k_rate) != float and k_case != None:
             raise TypeError('''The contraction rate should be a value between 0
                             and 1, non-inclusive.''')
-        match k_case:
-            case None:
-                k_rate = 0.001
-            case _:
-                k_rate = self.sim_var["k_rate"]
 
-        flow_case = self.sim_var.get("down_flow")
-        if type(flow_case) != bool and flow_case != None:
+        down_flow = self.sim_var.get("down_flow", True)
+        if type(down_flow) != bool:
             raise TypeError('''down_flow should be True for downward flow
                             and False for upward flow.''')
-
-        match flow_case:
-            case None:
-                down_flow = True
-            case _:
-                down_flow = self.sim_var["down_flow"]
 
         seed_case = self.sim_var.get("seed")
         if type(seed_case) != int and seed_case != None:

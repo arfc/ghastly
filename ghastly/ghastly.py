@@ -446,9 +446,8 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
 
 
 def recirc_pebbles(input_file, init_bed_fname,
-                   recirc_fname="recircf2_input.txt", 
-                   recirc_temp="recircf2_main.txt", 
-                   var_fname="recircf2_var.txt"):
+                   recirc_fname, recirc_temp, 
+                   var_fname="recirc_var.txt"):
     '''
     Reads Ghastly input_file in order to generate a LAMMPS input file 
     that will recirculate pebbles at the desired level of fidelity
@@ -554,7 +553,7 @@ def write_recircf2_regs(outlet_zone, outlet_fname):
                                          z_max=param.z_max)
     with open(outlet_fname, mode='w') as f:
         f.write(outlet_text)
-  return outlet_text
+    return outlet_text
 
 
 def write_v_regs(main_cyl, r_chute, v_reg_fname, v_reg_name):
