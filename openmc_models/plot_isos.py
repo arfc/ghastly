@@ -3,6 +3,9 @@ import openmc.deplete
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+from matplotlib import colormaps
+from armi import configure
+from armi.nucDirectory import nuclideBases
 
 
 
@@ -201,6 +204,63 @@ def flux_fission(sp_fname, shape, out_fname):
 
 
 
+def plot_on_nucchart(dep_name = 
+                     'inf_lat_dep/passwise/iter4/depletion_results.h5',
+                     out_name='_chart.png'):
+    '''
+    '''
+    configure(permissive=True)
+    res = openmc.deplete.Results(dep_name)
+    time = res.get_times(time_units='d')
+
+    comp = {}
+    f = open('inf_lat_dep/passwise/nuc_list.txt', 'r')
+    nuc_w_data = []
+    for n in f.readlines():
+        nuc_w_data.append(n.strip())
+    nuc_in_res = list(res[0].index_nuc.keys())
+
+    nuc_list = list(set(nuc_w_data) & set(nuc_in_res)) 
+    for i, n in enumerate(nuc_list):
+        _, conc = res.get_mass(mat='1', nuc=n, 
+                                   mass_units='g', time_units='d')
+        comp[n] = {}
+        comp[n]['conc'] = conc
+        zam = openmc.data.zam(n)
+        comp[n]['N'] = zam[1] - zam[0]
+        comp[n]['Z'] = zam[0]
+    
+    isotopics_by_day = {}
+    for i, t in enumerate(time):
+        isotopics_by_day[str(int(t))] = []
+        for k, v in list(comp.items()):
+            isotopics_by_day[str(int(t))].append((v['N'],v['Z'],v['conc'][i]))
+    for day in list(isotopics_by_day.keys()):
+        N_raw, Z_raw, C_raw = zip(*isotopics_by_day[day])
+        mass = sum(C_raw)
+        C_adj = [v if v > 1.00e-25 else 0.0 for v in C_raw/mass]
+        N = []
+        Z = []
+        C = []
+        for i, c in enumerate(C_adj):
+            if c == 0.0:
+                pass
+            else:
+                N.append(N_raw[i])
+                Z.append(Z_raw[i])
+                C.append(c*100)
+        plt.figure(figsize=(12, 8))
+        plt.scatter(N, Z, c=C, norm='log', marker="s", vmin=1e-23, vmax=1.0)
+        plt.set_cmap('magma')
+        plt.colorbar()
+        plt.xlim(0, 170)
+        plt.ylim(0, 110)
+        plt.title("Passwise BCC, i4: Composition in wt% on day "+str(day))
+        plt.xlabel("Number of neutrons (N)")
+        plt.ylabel("Number of protons (Z)")
+        plt.savefig(((4-len(day))*'0')+day+out_name, dpi=600)
+        plt.close()
+
 '''
 # iteration 0 (other sims branch from here)
 plot_isos("Depleting Pebble Isotopics vs Time: Initial BCC Model (All Fresh), i0", 'Concentration', 
@@ -319,7 +379,7 @@ check_converge("Convergence Check Using Depleting Pebble: Corewise BCC Corners",
                'Concentration', 'Time', 'corewise-converge', fnames2, mat_ids2,
                    stepcolors)
 
-'''
+
 
 corewise_sp_fnames = ['bcc_phys/corewise/0days/statepoint.h5', 
                       'bcc_phys/corewise/249days/statepoint.h5',
@@ -344,4 +404,6 @@ for i, fname in enumerate(corewise_sp_fnames):
 
 for i, fname in enumerate(passwise_sp_fnames):
     flux_fission(fname, (2, 2, 2), 'passwise-'+out_fnames[i])
+'''
 
+plot_on_nucchart()
