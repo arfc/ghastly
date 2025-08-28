@@ -423,10 +423,9 @@ openmc.Materials(materials).export_to_xml()
 
 settings = openmc.Settings()
 settings.verbosity = 7
-settings.particles = 10000
-settings.generations_per_batch = 2
-settings.batches = 75
-settings.inactive = 25
+settings.particles = 20000
+settings.batches = 80
+settings.inactive = 40
 settings.seed = 987654321
 settings.temperature = {'method' : 'interpolation', 'tolerance' : 10.0}
 settings.output = {'tallies': False,
