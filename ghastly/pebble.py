@@ -7,7 +7,8 @@ class Pebble:
     and track its material composition and unique id number.
     '''
 
-    def __init__(self, coords, reg_id, pass_num, l_type, pebble_id):
+    def __init__(self, uid, coords, velocity, zone, layer, 
+                 pass_num, recirc, l_type, history = []):
         '''
         Initializes a single instance of a Pebble object.
 
@@ -31,8 +32,13 @@ class Pebble:
             Each pebble_id should be distinct.
 
         '''
+        self.uid = int(uid)
         self.coords = coords
-        self.reg_id = reg_id
-        self.pass_num = pass_num
-        self.l_type = l_type
-        self.pebble_id = pebble_id
+        self.velocity = velocity
+        self.zone = int(zone)
+        self.layer = int(layer)
+        self.pass_num = int(pass_num)
+        self.recirc = int(recirc)
+        self.l_type = int(l_type)
+        self.history = history
+
