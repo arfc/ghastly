@@ -2,6 +2,7 @@ import json
 import numpy as np
 from ghastly import core
 from ghastly import simulation
+from os import path
 import subprocess
 import glob
 
@@ -225,15 +226,17 @@ class InputBlock:
         return sim_block
 
 
-def read_lammps_bin(bin_fname, bin_dir, delimiter = ' ', skiprows = 9):
+def read_lammps_bin(bin_fname, bin_dir, 
+                    delimiter = ' ', skiprows = 9, max_rows=None):
     '''
     given lammps binary file, convert it, read it into a np array,
     delete the txt file
     '''
 
-    subprocess.run(['binary2txt', bin_fname)
+    subprocess.run(['binary2txt', bin_fname], stdout=subprocess.DEVNULL)
     txtfile = glob.glob(path.join(bin_dir, "*.txt"))[0]
-    data = (np.loadtxt(txtfile, delimiter=delimiter, skiprows=skiprows))
+    data = (np.loadtxt(txtfile, delimiter=delimiter, 
+                       skiprows=skiprows, max_rows=max_rows))
     subprocess.run(['rm', txtfile])
 
     return data

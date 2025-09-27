@@ -7,7 +7,7 @@ from os import path
 import subprocess
 import glob
 
-def plot_bed_xs(filepath, inputfile, color_crit):
+def plot_bed_xs(filepath, inputfile, color_crit, start = None, end = None):
     '''
     only prints a frame for every 10 data points - with 10 points per second,
     that's 1 frame per second
@@ -26,7 +26,7 @@ def plot_bed_xs(filepath, inputfile, color_crit):
     
     peb_mats = create_peb_mats(color_crit)
     all_peb_lists = []
-    for i, file in enumerate(filenames):
+    for i, file in enumerate(filenames[start:end]):
         if i%1 == 0:
             subprocess.run(['binary2txt', file])
             txtfile = glob.glob(path.join(fpath, "*.txt"))[0]
@@ -36,7 +36,7 @@ def plot_bed_xs(filepath, inputfile, color_crit):
                 pebbles.append(pebble.Pebble(uid=d[0],
                                             coords=100*d[-3:],
                                             velocity=0.0,
-                                            zone=d[2],
+                                            zone=max(d[2], 1),
                                             layer=d[3],
                                             pass_num=d[4],
                                             recirc=d[5],
