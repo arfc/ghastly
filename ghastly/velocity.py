@@ -302,36 +302,35 @@ def vel_pebbles(directory, velpath, coordpath, recircpath, inputfile,
                                                 sort_int)
 
     peb_d = 2*100*sim_block.r_pebble
-    #n_files = min([len(vel_fnames[velpath[n]]) for n in range(len(velpath))])
-    n_files = 100
-    r_width = r_bin_coeff*peb_d
-    z_width = z_bin_coeff*peb_d
+    n_files = min([len(vel_fnames[velpath[n]]) for n in range(len(velpath))])
+    #n_files = 100
     
     rpath = path.expanduser(recircpath)
     unsorted_r_fnames = glob.glob(path.join(rpath, "*.bin"))
     r_fnames = sorted(unsorted_r_fnames, key=lambda x:x[sort_int:])
     P = [float(read_input.read_lammps_bin(rfile, 
-                                    rpath, 
-                                    skiprows=3, 
-                                    max_rows=1)) for rfile in r_fnames]
+                                          rpath, 
+                                          skiprows=3, 
+                                          max_rows=1)) for rfile in r_fnames]
     vel_all_time = {}
-        for i in range(n_files):
-            i_r = int((i*(n_dump))//n_recirc)
-            t_scale = P[i_r]/(n_recirc*dt*recirc_hz)
-            if i%n_skip==0:
-                vel_map = {}
-                sort_data = []
-                raw_data = {}
-                for vpath in velpath:
-                    bin_dir = path.join(vel_dir, vpath)
-                    bin_fname = vel_fnames[vpath][i]
-                    data = read_input.read_lammps_bin(bin_fname,bin_dir)
+    for i in range(n_files):
+        i_r = int((i*(n_dump))//n_recirc)
+        t_scale = P[i_r]/(n_recirc*dt*recirc_hz)
+        if i%n_skip==0:
+            vel_map = {}
+            sort_data = []
+            raw_data = {}
+            for vpath in velpath:
+                bin_dir = path.join(vel_dir, vpath)
+                bin_fname = vel_fnames[vpath][i]
+                data = read_input.read_lammps_bin(bin_fname,bin_dir)
 
                 for d in data:
                     uid = int(d[0])
                     v_z = 100*d[-1]/t_scale
                     vel_map[uid] = v_z
-                vel_all_time[i] = vel_map
+            
+            vel_all_time[i] = vel_map
     
     return vel_all_time
 
