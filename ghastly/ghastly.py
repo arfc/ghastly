@@ -187,7 +187,7 @@ def find_box_bounds(sim_block, pour=False):
     y_b = {"low": (min(y_list) - f*sim_block.r_pebble),
            "up": (max(y_list) + f*sim_block.r_pebble)}
     z_b = {"low": (min(z_list) - f*sim_block.r_pebble),
-           "up": (max(z_list) - f_zup*sim_block.r_pebble)}
+           "up": (max(z_list) + f_zup*sim_block.r_pebble)}
 
     return x_b, y_b, z_b
 
