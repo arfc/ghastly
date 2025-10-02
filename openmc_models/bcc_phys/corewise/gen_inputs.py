@@ -13,96 +13,36 @@ step_comps = [res.export_to_materials(i,
 #materials
 #graphite based on a3-3, triso layers pulled from reported values in
 #Neutronics characteristics of a 165 MWth Xe-100 reactor, Mulder
+pass_ids = [01, 12, 23, 34, 45, 56]
+dep_i = [(0, 19),
+         (19, 26),
+         (26, 31),
+         (31, 36),
+         (36, 41)]
+passes = {}
+tot_times = [sum(dep_t[i[0]:i[1]]) for i in dep_i]
 
-pass01 = {}
-tot_time01 = sum(dep_t[0:19])
-for i, step in enumerate(step_comps[0:19]):
-    for k, v in step.items():
-        if k in pass01:
-            pass01[k] += v[1]*(dep_t[i]/tot_time01)
-        else:
-            pass01[k] = {}
-            pass01[k] = v[1]*(dep_t[i]/tot_time01)
+for i, interval in enumerate(dep_i):
+    comp = {}
+    for j, step in enumerate(step_comps[interval[0]:interval[1]]):
+        for k, v in step.items():
+            if k in comp:
+                comp[k] += v[1]*(dep_t[j]/tot_time[i])
+            else:
+                comp[k] = v[1]*(dep_t[j]/tot_time[i])
+    passes[pass_ids[i]] = comp
 
-pass12 = {}
-tot_time12 = sum(dep_t[19:26])
-for i, step in enumerate(step_comps[0:19]):
-    for k, v in step.items():
-        if k in pass12:
-            pass12[k] += v[1]*(dep_t[i+19]/tot_time12)
-        else:
-            pass12[k] = {}
-            pass12[k] = v[1]*(dep_t[i+19]/tot_time12)
+ucos = []
+for p_id in pass_ids:
+    mat_name = 'UCO_'+str(p_id)
+    uco= openmc.Material(name=mat_name)
+    uco.set_density('g/cm3', 10.4)
+    uco.add_components(passes[p_id], percent_type = 'ao')
+    ucos.append(uco)
 
-pass23 = {}
-tot_time23 = sum(dep_t[26:31])
-for i, step in enumerate(step_comps[26:31]):
-    for k, v in step.items():
-        if k in pass23:
-            pass23[k] += v[1]*(dep_t[i+26]/tot_time23)
-        else:
-            pass23[k] = {}
-            pass23[k] = v[1]*(dep_t[i+26]/tot_time23)
-
-pass34 = {}
-tot_time34 = sum(dep_t[31:36])
-for i, step in enumerate(step_comps[31:36]):
-    for k, v in step.items():
-        if k in pass34:
-            pass34[k] += v[1]*(dep_t[i+31]/tot_time34)
-        else:
-            pass34[k] = {}
-            pass34[k] = v[1]*(dep_t[i+31]/tot_time34)
-
-pass45 = {}
-tot_time45 = sum(dep_t[36:41])
-for i, step in enumerate(step_comps[36:41]):
-    for k, v in step.items():
-        if k in pass45:
-            pass45[k] += v[1]*(dep_t[i+36]/tot_time45)
-        else:
-            pass45[k] = {}
-            pass45[k] = v[1]*(dep_t[i+36]/tot_time45)
-
-pass56 = {}
-tot_time56 = sum(dep_t[41:])
-for i, step in enumerate(step_comps[41:]):
-    for k, v in step.items():
-        if k in pass56:
-            pass56[k] += v[1]*(dep_t[i+41]/tot_time56)
-        else:
-            pass56[k] = {}
-            pass56[k] = v[1]*(dep_t[i+41]/tot_time56)
-
-uco01= openmc.Material(name='UCO_01')
-uco01.set_density('g/cm3', 10.4)
-uco01.add_components(pass01, percent_type = 'ao')
-
-uco12= openmc.Material(name='UCO_12')
-uco12.set_density('g/cm3', 10.4)
-uco12.add_components(pass12, percent_type = 'ao')
-
-uco23= openmc.Material(name='UCO_23')
-uco23.set_density('g/cm3', 10.4)
-uco23.add_components(pass23, percent_type = 'ao')
-
-uco34= openmc.Material(name='UCO_34')
-uco34.set_density('g/cm3', 10.4)
-uco34.add_components(pass34, percent_type = 'ao')
-
-uco45= openmc.Material(name='UCO_45')
-uco45.set_density('g/cm3', 10.4)
-uco45.add_components(pass45, percent_type = 'ao')
-
-uco56= openmc.Material(name='UCO_56')
-uco56.set_density('g/cm3', 10.4)
-uco56.add_components(pass56, percent_type = 'ao')
-
-ucoavg = openmc.Material.mix_materials([uco01, uco12,
-                                        uco23, uco34,
-                                        uco45, uco56], [0.16, 0.17,
-                                                          0.17, 0.17,
-                                                          0.17, 0.16], 'vo',
+ucoavg = openmc.Material.mix_materials(ucos, [0.16, 0.17, 
+                                              0.17, 0.17, 
+                                              0.17, 0.16], 'vo', 
                                        material_id=13)
 ucoavg.add_s_alpha_beta('c_Graphite')
 ucoavg.depletable = False
