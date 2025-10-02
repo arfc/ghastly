@@ -54,9 +54,6 @@ def fill_core(input_file, rough_pf):
         else:
             pass
 
-    # because pebbles will settle into the outtake region, the target number
-    # of pebbles is calculated using an assumed 0.6 pf in the outtake region,
-    # and the target pf in the main region
     outtake_vol = sum([i.volume for i in sim_block.core_outtake.values()])
     main_vol = sum([i.volume for i in sim_block.core_main.values()])
     n_pebbles = int(np.floor((0.60*outtake_vol)/sim_block.pebble_volume) +
@@ -78,8 +75,6 @@ def fill_core(input_file, rough_pf):
     write_variable_block(variable_filename, input_block, sim_block)
 
     reg_files, reg_names = write_region_blocks(pack_zones)
-
-    # now the main file:
 
     pour_filename = "pour_main_input.txt"
     write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,

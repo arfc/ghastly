@@ -142,11 +142,11 @@ class InputBlock:
 
             elif val["type"].casefold() == "cone":
                 recirc_block[key] = core.ConeCore(x_c=val["x_c"],
-                                               y_c=val["y_c"],
-                                               z_max=val["z_max"],
-                                               z_min=val["z_min"],
-                                               r_upper=val["r_upper"],
-                                                 r_lower=val["r_lower"])
+                                                  y_c=val["y_c"],
+                                                  z_max=val["z_max"],
+                                                  z_min=val["z_min"],
+                                                  r_upper=val["r_upper"],
+                                                  r_lower=val["r_lower"])
             else:
                 raise NameError("Type must be cylinder or cone.")
 
