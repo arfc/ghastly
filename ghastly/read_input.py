@@ -135,10 +135,10 @@ class InputBlock:
         for key, val in recirc_zone.items():
             if val["type"].casefold() == "cylinder":
                 recirc_block[key] = core.CylCore(x_c=val["x_c"],
-                                               y_c=val["y_c"],
-                                               z_max=val["z_max"],
-                                               z_min=val["z_min"],
-                                               r=val["r"])
+                                                 y_c=val["y_c"],
+                                                 z_max=val["z_max"],
+                                                 z_min=val["z_min"],
+                                                 r=val["r"])
 
             elif val["type"].casefold() == "cone":
                 recirc_block[key] = core.ConeCore(x_c=val["x_c"],
@@ -151,7 +151,6 @@ class InputBlock:
                 raise NameError("Type must be cylinder or cone.")
 
         return recirc_block
-
 
     def create_sim_block(self, core_intake, core_main, core_outtake):
         '''
@@ -168,7 +167,7 @@ class InputBlock:
         '''
 
         hz_case = self.sim_var.get("recirc_hz", 1)
-        
+
         target_case = self.sim_var.get("recirc_target", 1)
         if type(target_case) != int:
             raise TypeError('''The target number of pebbles to recirculate
@@ -178,7 +177,6 @@ class InputBlock:
         if type(fidelity_case) != int:
             raise TypeError('''The fidelity level must be one of the following
                             integers: [1, 2]''')
-
 
         k_case = self.sim_var.get("k_rate")
         if type(k_case) != float and k_case != None:
