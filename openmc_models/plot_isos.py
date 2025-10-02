@@ -497,7 +497,6 @@ def compare_on_nucchart(core_dep =
         plt.close()
 
 
-'''
 
 #iteration 0 (other sims branch from here)
 plot_isos("Depleting Pebble Isotopics vs Time: Initial BCC Model (All Fresh), i0", 
@@ -564,8 +563,6 @@ check_converge("Convergence Check Using Depleting Pebble: Corewise BCC Corners",
                'Concentration', 'Time', 'corewise-converge', fnames2, mat_ids2,
                    stepcolors)
 
-
-'''
 
 corewise_sp_fnames = ['bcc_phys/corewise/0days/statepoint.80.h5', 
                       'bcc_phys/corewise/249days/statepoint.80.h5',
