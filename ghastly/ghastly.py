@@ -231,6 +231,7 @@ def write_lammps_dump_file(coords, dump_filename, bound_conds,
 
     with open(dump_filename, mode='w') as f:
         f.write(dump_text)
+    return dump_text
 
 
 def write_variable_block(variable_filename, input_block, sim_block):
@@ -264,6 +265,7 @@ def write_variable_block(variable_filename, input_block, sim_block):
     variable_text = variables_template.render(variables=variables)
     with open(variable_filename, mode='w') as f:
         f.write(variable_text)
+    return variable_text
 
 
 def write_region_blocks(core_zones):
@@ -362,6 +364,7 @@ def write_settle_block(settle_filename, sim_block, reg_files, reg_names):
 
     with open(settle_filename, mode='w') as f:
         f.write(settle_text)
+    return settle_text
 
 
 def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
@@ -437,6 +440,7 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
     pour_filename = "pour_main_input.txt"
     with open(pour_filename, mode='w') as f:
         f.write(main_text)
+    return main_text
 
 
 def recirc_pebbles(input_file, init_bed_fname,
@@ -484,8 +488,8 @@ def recirc_pebbles(input_file, init_bed_fname,
     write_variable_block(var_fname, input_block, sim_block)
 
     active_core = (sim_block.core_intake |
-                         sim_block.core_main |
-                         sim_block.core_outtake)
+                   sim_block.core_main |
+                   sim_block.core_outtake)
 
     act_reg_fnames, act_reg_names = write_region_blocks(active_core)
 
@@ -501,9 +505,9 @@ def recirc_pebbles(input_file, init_bed_fname,
 
     if sim_block.fidelity == 1:
         write_recircf1_main(recirc_fname, recirc_temp, var_fname,
-                        act_reg_fnames, act_reg_names,
-                        v_reg_fname, v_reg_name,
-                        init_bed_fname, sim_block, x_b, y_b, z_b)
+                            act_reg_fnames, act_reg_names,
+                            v_reg_fname, v_reg_name,
+                            init_bed_fname, sim_block, x_b, y_b, z_b)
     elif sim_block.fidelity == 2:
         outlet_zone = {key: value for key, value in
                        sim_block.recirc.items() if 'out' in key}
@@ -549,7 +553,7 @@ def write_recircf2_regs(outlet_zone, outlet_fname):
                                          z_max=param.z_max)
     with open(outlet_fname, mode='w') as f:
         f.write(outlet_text)
-  return outlet_text
+    return outlet_text
 
 
 def write_v_regs(main_cyl, r_chute, v_reg_fname, v_reg_name):
@@ -581,20 +585,22 @@ def write_v_regs(main_cyl, r_chute, v_reg_fname, v_reg_name):
     v_reg_template = env.get_template("velreg_template.txt")
     _, param = main_cyl.popitem()
     v_reg_text = v_reg_template.render(r_wall=param.r,
-                                         v_reg_name=v_reg_name,
-                                         x_c=param.x_c,
-                                         y_c=param.y_c,
-                                         r_chute=r_chute,
-                                         z_min=param.z_min,
-                                         z_max=param.z_max)
+                                       v_reg_name=v_reg_name,
+                                       x_c=param.x_c,
+                                       y_c=param.y_c,
+                                       r_chute=r_chute,
+                                       z_min=param.z_min,
+                                       z_max=param.z_max)
     with open(v_reg_fname, mode='w') as f:
         f.write(v_reg_text)
+    return v_reg_text
 
-def write_recircf2_main(recirc_fname, recirc_temp, var_fname, 
+
+def write_recircf2_main(recirc_fname, recirc_temp, var_fname,
                         act_reg_fnames, act_reg_names,
                         v_reg_fname, v_reg_name,
-                        outlet_fname, outlet_name, 
-                      init_bed_fname, sim_block, x_b, y_b, z_b):
+                        outlet_fname, outlet_name,
+                        init_bed_fname, sim_block, x_b, y_b, z_b):
     '''
     Uses the main F2 template and the files containing smaller blocks of the
     LAMMPS model to create the main F2 recirculation file.
@@ -637,23 +643,24 @@ def write_recircf2_main(recirc_fname, recirc_temp, var_fname,
 
     main_template = env.get_template(recirc_temp)
     main_text = main_template.render(variable_filename=var_fname,
-                                     x_b = x_b, y_b = y_b, z_b = z_b,
-                                     region_files = act_reg_fnames,
-                                     n_regions = len(act_reg_fnames),
-                                     region_names = act_reg_names,
-                                     v_reg_fname = v_reg_fname,
-                                     v_reg_name = v_reg_name,
-                                     starting_bed = init_bed_fname,
-                                     outlet_fname = outlet_fname,
-                                     outlet_name = outlet_name)
+                                     x_b=x_b, y_b=y_b, z_b=z_b,
+                                     region_files=act_reg_fnames,
+                                     n_regions=len(act_reg_fnames),
+                                     region_names=act_reg_names,
+                                     v_reg_fname=v_reg_fname,
+                                     v_reg_name=v_reg_name,
+                                     starting_bed=init_bed_fname,
+                                     outlet_fname=outlet_fname,
+                                     outlet_name=outlet_name)
 
     with open(recirc_fname, mode='w') as f:
         f.write(main_text)
+    return main_text
 
 
-def write_recircf1_main(recirc_fname, recirc_temp, var_fname, 
+def write_recircf1_main(recirc_fname, recirc_temp, var_fname,
                         act_reg_fnames, act_reg_names,
-                        v_reg_fname, v_reg_name, 
+                        v_reg_fname, v_reg_name,
                         init_bed_fname, sim_block, x_b, y_b, z_b):
     '''
     write recirc main file for LAMMPS
@@ -687,35 +694,19 @@ def write_recircf1_main(recirc_fname, recirc_temp, var_fname,
     Returns
     ----------
     This function has no returns, but does output a file named recirc_fname.
-   
+
     '''
 
     main_template = env.get_template(recirc_temp)
     main_text = main_template.render(variable_filename=var_fname,
-                                     x_b = x_b, y_b = y_b, z_b = z_b,
-                                     region_files = act_reg_fnames,
-                                     n_regions = len(act_reg_fnames),
-                                     region_names = act_reg_names,
-                                     v_reg_fname = v_reg_fname,
-                                     v_reg_name = v_reg_name,
-                                     starting_bed = init_bed_fname)
+                                     x_b=x_b, y_b=y_b, z_b=z_b,
+                                     region_files=act_reg_fnames,
+                                     n_regions=len(act_reg_fnames),
+                                     region_names=act_reg_names,
+                                     v_reg_fname=v_reg_fname,
+                                     v_reg_name=v_reg_name,
+                                     starting_bed=init_bed_fname)
 
     with open(recirc_fname, mode='w') as f:
         f.write(main_text)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
+    return main_text
