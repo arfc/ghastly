@@ -6,6 +6,7 @@ from ghastly import pebble
 from ghastly import velocity
 from jinja2 import Environment, PackageLoader
 from os import path
+from paraview.simple import *
 import subprocess
 import glob
 import string
@@ -14,11 +15,9 @@ import matplotlib as mpl
 rng = np.random.default_rng()
 
 def plot_bed_xs(filepath, velpath, coordpath, recircpath, inputfile, 
-                vel_plot=False, color_crit=[], start = None, end = None,
+                vel_plot=False, color_crit=[], start = 0, end = None,
                 ):
     '''
-    only prints a frame for every 10 data points - with 10 points per second,
-    that's 1 frame per second
     filepath : str
         file path leading to ghastly output /coords directory.  use ~.  
         example: '~/sims/model1/coords'
@@ -32,21 +31,6 @@ def plot_bed_xs(filepath, velpath, coordpath, recircpath, inputfile,
     unsorted_names = glob.glob(path.join(fpath, "*.bin"))
     filenames = sorted(unsorted_names, key=lambda x:x[-19:])
     
-    if vel_plot:
-        vel_all_time = velocity.vel_pebbles(directory, 
-                                            velpath, 
-                                            coordpath, 
-                                            recircpath, 
-                                            inputfile,
-                                            sort_int=-19, 
-                                            n_skip=1,
-                                            delimiter=' ', 
-                                            skiprows=9,
-                                            n_recirc=2500000, 
-                                            n_dump=372366, 
-                                            dt=2.6855e-07, 
-                                            recirc_hz=0.014)
-
     peb_mats = create_peb_mats(color_crit)
     all_peb_lists = []
     for i, file in enumerate(filenames[start:end]):
@@ -152,7 +136,7 @@ def create_plot_pebs(pebbles, peb_mats, sim_block, color_crit):
 def plot_vel_xs(directory, velpath, coordpath, recircpath, inputfile,
                 sort_int=-19, n_skip=1, delimiter=' ', skiprows=9,
                 n_recirc=2500000, n_dump=372366, dt=2.6855e-07,
-                recirc_hz=0.014, start = None, end = None, colormap='magma'):
+                recirc_hz=0.014, start = 0, end = None, colormap='managua'):
     '''
     only prints a frame for every 10 data points - with 10 points per second,
     that's 1 frame per second
@@ -209,7 +193,7 @@ def plot_vel_xs(directory, velpath, coordpath, recircpath, inputfile,
     mcyl_side = openmc.ZCylinder(r = mcyl_r)
     mcyl_top = openmc.ZPlane(z0 = (mcone_zl + mcone_h + mcyl_h))
     mcyl_bot = openmc.ZPlane(z0 = (mcone_zl + mcone_h))
-    mcone_H = -(mcone_rl*mcone_h)/(mcone_ru-mcone_rl)
+    mcone_H = -(mcone_ru*mcone_h)/(mcone_rl-mcone_ru)
     mcone_z0 = mcone_h - mcone_H
     mcone_r2 = (mcone_ru/mcone_H)**2
     mcone_side = openmc.ZCone(z0 = mcone_z0, r2 = mcone_r2)
@@ -249,44 +233,43 @@ def plot_vel_xs(directory, velpath, coordpath, recircpath, inputfile,
                                         n_dump=n_dump, 
                                         dt=dt,
                                         recirc_hz=recirc_hz)
-    
+    n_files = len(vel_all_time.keys())
     vmax = max([max(list(vel.values())) for vel in vel_all_time.values()])
     vmin = min([min(list(vel.values())) for vel in vel_all_time.values()])
 
     cpath = path.expanduser(coordpath)
     unsorted_c_fnames = glob.glob(path.join(cpath, "*.bin"))
     c_fnames = sorted(unsorted_c_fnames, key=lambda x:x[sort_int:])
-    n_files = len(c_fnames)
 
-    
-    all_pebs = {}
     for tstep in range(n_files):
         if tstep%n_skip==0:
             data = read_input.read_lammps_bin(c_fnames[tstep], cpath)
             pebbles = {}
             for d in data:
-                if abs(d[-2]) <= peb_r:
+                if int(d[0]) in vel_all_time[tstep] and abs(d[-2]) <= peb_r:
                     uid = int(d[0])
                     coord = 100*d[-3:]
                     v_z = vel_all_time[tstep][uid]
                     zone = max(d[2], 1)
                     layer = d[3]
-                    pass_num = d[4]
+                    pass_n = d[4]
                     recirc = d[5]
                     l_type = d[1]
-                    pebbles[uid] = {'peb': pebble.Pebble(uid=uid,
+                    pebbles[uid] = pebble.Pebble(uid=uid,
                                                  coords=coord,
                                                  velocity=v_z,
                                                  zone=zone,
                                                  layer=layer,
-                                                 pass_num=pass_num,
+                                                 pass_num=pass_n,
                                                  recirc=recirc,
-                                                 l_type=l_type)}
+                                                 l_type=l_type)
+            
             peb_mats, peb_list, peb_colors = create_vel_pebs(pebbles, 
                                                              peb_r,
                                                              colormap,
                                                              vmin,
-                                                             vmax)
+                                                             vmax,
+                                                             tstep)
 
             bbox_reg = icyl_reg | mcyl_reg | ocyl_reg
             bbox = openmc.Cell(region = bbox_reg)
@@ -328,26 +311,29 @@ def plot_vel_xs(directory, velpath, coordpath, recircpath, inputfile,
             plots = openmc.Plots([xz_mats])
             plots.export_to_xml()
             openmc.run()
-
+    
+    plt.scatter ([-1, 1], [-1, 1], c = [vmin, vmax], cmap = 'managua')
+    plt.savefig('vel_xs_colorbar.png')
+    plot.close()
     print(vmin, vmax)
 
 
 
-def create_vel_pebs(pebbles, peb_r, colormap, vmin, vmax):
+def create_vel_pebs(pebbles, peb_r, colormap, vmin, vmax, tstep):
     '''
     create vel plot pebbles mats and cells
     '''
     
-    id_counter = 10
-    peb_mats = []
+    id_counter = 10 + 1000*tstep
     abc = string.ascii_letters
     peb_out = openmc.Sphere(r=peb_r)
     peb_reg = -peb_out
     v_range = vmax - vmin
-    cmap = mpl.colormaps[colormap].resampled(len(pebbles)+1) 
+    cmap = mpl.colormaps[colormap].resampled(len(pebbles)*1000) 
     
     peb_mats = []
     peb_colors = {}
+    peb_univs = {}
     for uid, peb in pebbles.items():
         alpha = (abc[rng.integers(low=0, high=len(abc))]+
                  abc[rng.integers(low=0, high=len(abc))]+
@@ -361,7 +347,7 @@ def create_vel_pebs(pebbles, peb_r, colormap, vmin, vmax):
         peb_mat.add_element('C', 1.00)
         peb_mats.append(peb_mat)
 
-        f = peb['peb'].velocity/v_range
+        f = 1 - (vmax - peb.velocity)/v_range
         c1 = int(255*cmap(f)[0])
         c2 = int(255*cmap(f)[1])
         c3 = int(255*cmap(f)[2])
@@ -374,16 +360,75 @@ def create_vel_pebs(pebbles, peb_r, colormap, vmin, vmax):
         peb_cell = openmc.Cell(region = peb_reg, 
                                fill = peb_mat)
         peb_univ = openmc.Universe(cells=[peb_cell])
-        pebbles[uid]['univ'] = peb_univ
+        peb_univs[uid] = peb_univ
     
     peb_list = []
-    for uid, peb in pebbles.items():
+    for uid in pebbles.keys():
         peb_list += [openmc.model.TRISO(peb_r, 
-                                        peb['univ'], 
-                                        peb['peb'].coords)]
+                                        peb_univs[uid], 
+                                        pebbles[uid].coords)]
     
 
     return peb_mats, peb_list, peb_colors
+
+
+def create_coord_csv(directory, coordpath, inputfile,
+                     sort_int=-19, n_skip=1, delimiter=' ', skiprows=9,
+                     n_recirc=2500000, n_dump=372366, dt=2.6855e-07,
+                     recirc_hz=0.014, colormap='magma'):
+    '''
+    '''
+
+    inp_path = path.expanduser(inputfile)
+    inp_block = read_input.InputBlock(inp_path)
+    sim_block = inp_block.create_obj()
+    peb_r = 100*sim_block.r_pebble
+
+    cpath = path.expanduser(coordpath)
+    unsorted_c_fnames = glob.glob(path.join(cpath, "*.bin"))
+    c_fnames = sorted(unsorted_c_fnames, key=lambda x:x[sort_int:])
+    #n_files = len(c_fnames)
+    n_files = 3
+
+    for tstep in range(n_files):
+        if tstep%n_skip==0:
+            data = read_input.read_lammps_bin(c_fnames[tstep], cpath)
+            #pebbles = [['uid', 'coord', 'zone', 'layer', 'pass_n', 'recirc']]
+            pebbles = []
+            for d in data:
+                if abs(100*d[-2]) <= peb_r:
+                    uid = int(d[0])
+                    x = 100*d[-3]
+                    y = 100*d[-2]
+                    z = 100*d[-1]
+                    #zone = int(max(d[2], 1))
+                    #layer = int(d[3])
+                    #pass_n = int(d[4])
+                    #recirc = int(d[5])
+                    #l_type = int(d[1])
+                    pebbles.append([peb_r, x, y, z])
+            pad = 15 - len(str(tstep))
+            fname = pad*'0'+str(tstep)+'_bed.csv'
+            np.savetxt(fname, pebbles, delimiter = ',')
+
+def para_bed_plot(csvpath):
+    '''
+    '''
+
+    cpath = path.expanduser(csv_path)
+
+    unsorted_csvnames = glob.glob(path.join(cpath, '*.csv'))
+    csv_fnames = sorted(unsorted_csvnames, key=lambda x:x[sort_int:])
+
+    #csvreader = OpenDataFile(csv_fnames)
+
+    #points = tableToPoints()
+
+    #pebbles = Sphere(Input=points)
+
+    
+
+
 
 
 

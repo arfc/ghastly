@@ -303,7 +303,6 @@ def vel_pebbles(directory, velpath, coordpath, recircpath, inputfile,
 
     peb_d = 2*100*sim_block.r_pebble
     n_files = min([len(vel_fnames[velpath[n]]) for n in range(len(velpath))])
-    #n_files = 100
     
     rpath = path.expanduser(recircpath)
     unsorted_r_fnames = glob.glob(path.join(rpath, "*.bin"))
