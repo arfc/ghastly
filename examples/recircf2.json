@@ -94,7 +94,7 @@
 		"young_mod_E" : 1.0055e+10,
 		"poisson" : 0.12,
 		"co_fric" : 0.035,
-		"co_rest" : 0.02,
+		"co_rest" : 0.1,
 		"interval" : 10000
 	}
 }

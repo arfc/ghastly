@@ -1,6 +1,6 @@
 suffix		omp
 units		si
-package		omp 20
+package		omp 1
 
 ##############################################################################
 #variables
@@ -33,7 +33,12 @@ atom_style	sphere
 boundary	f f f
 region		bounds block &
 		{{x_b.low}} {{x_b.up}} {{y_b.low}} {{y_b.up}} {{z_b.low}} {{z_b.up}}
-create_box	1 bounds
+create_box	6 bounds
+
+fix		track_passes all property/atom i_pass
+fix		times_recirc all property/atom i_recirc
+fix		orig_zone all property/atom i_zone
+fix		orig_layer all property/atom i_layer
 
 pair_style	gran/hertz/history/omp &
 		${k_n} ${k_t} ${gamma_n} ${gamma_t} ${co_fric} 1
@@ -59,9 +64,9 @@ include		{{filename}}
 {% endfor -%}
 
 region		whole_core union {{n_regions}} &
-{% 		for name in region_names[0:-1] -%}
+{%+ for name in region_names[0:-1] %}
                 {{name}} &
-{% endfor -%}
+{% endfor %}
 		{{region_names[-1]}}
 
 fix		grav all gravity ${gravity} vector 0 0 -1
@@ -73,32 +78,33 @@ fix		wall_gran all wall/gran/region hertz/history &
 variable	pix_width equal round((abs({{x_b.low}})+abs({{x_b.up}}))*250)
 variable	pix_height equal round((abs({{z_b.low}})+abs({{z_b.up}}))*250)
 variable	frame_freq equal round(1/(30*${dt}))
-variable	dump_freq equal round(1/(10*${dt}))
+variable	dump_freq equal 200000
 
 include		{{v_reg_fname}}
-group		wallgroup dynamic all region {{v_reg_name}}_wall
-group		midgroup dynamic all region {{v_reg_name}}_mid
-group		centergroup dynamic all region {{v_reg_name}}_center
+group		2wallgroup dynamic all region 2wall
+group		5wallgroup dynamic all region 5wall
+group		8wallgroup dynamic all region 8wall
+group		12wallgroup dynamic all region 12wall
+group		16wallgroup dynamic all region 16wall
+group		20wallgroup dynamic all region 20wall
 
-dump		vwalldump wallgroup custom ${dump_freq} velocity/v-wall/step_*.bin id vx vy vz
-dump_modify	vwalldump pad 15
-dump		vmiddump midgroup custom ${dump_freq} velocity/v-mid/step_*.bin id vx vy vz
-dump_modify	vmiddump pad 15
-dump		vcenterdump centergroup custom ${dump_freq} velocity/v-center/step_*.bin id vx vy vz
-dump_modify	vcenterdump pad 15
+dump		2walldump 2wallgroup custom ${dump_freq} velocity/2wall/step_*.bin id z vx vy vz
+dump_modify	2walldump pad 15
+dump		5walldump 5wallgroup custom ${dump_freq} velocity/5wall/step_*.bin id z vx vy vz
+dump_modify	5walldump pad 15
+dump		8walldump 8wallgroup custom ${dump_freq} velocity/8wall/step_*.bin id z vx vy vz
+dump_modify	8walldump pad 15
+dump		12walldump 12wallgroup custom ${dump_freq} velocity/12wall/step_*.bin id z vx vy vz
+dump_modify	12walldump pad 15
+dump		16walldump 16wallgroup custom ${dump_freq} velocity/16wall/step_*.bin id z vx vy vz
+dump_modify	16walldump pad 15
+dump		20walldump 20wallgroup custom ${dump_freq} velocity/center/step_*.bin id z vx vy vz
+dump_modify	20walldump pad 15
 
 
-dump		peb_coords all custom ${dump_freq} coords/step_*.bin id type i_pass x y z
+dump		peb_coords all custom ${dump_freq} coords/step_*.bin  &
+		id type i_zone i_layer i_pass i_recirc x y z
 dump_modify	peb_coords pad 15
-
-dump		recirc_frames all image ${frame_freq} img/step_*.jpg i_pass diameter & 
-		view 90 0 zoom 1.5 box no 0.0 size ${pix_width} ${pix_height}
-
-dump_modify	recirc_frames color p1 1.0 1.0 1.0 color p2 1.0 0.9 1.0  &
-		color p3 0.9 0.8 0.9  color p4 0.9 0.7 0.9 &
-		color p5 0.8 0.6 0.8  color p6 0.8 0.5 0.8 &
-		amap 1 6 sa 1 6 p1 p2 p3 p4 p5 p6 &
-		backcolor black pad 15
 
 
 thermo_style	custom step cpu tpcpu spcpu cpuremain time atoms ke
@@ -108,11 +114,105 @@ thermo_modify	flush yes lost warn
 #filling core
 ##############################################################################
 
-read_dump	{{starting_bed}} 0 x y z add keep timestep yes
+read_dump	{{starting_bed}} 0 x y z add yes timestep yes
 
-fix		track_passes all property/atom i_pass
 set		type * diameter ${d_pebble}
 set		type * i_pass 1
+
+set		type 1 type/subset 2 37166 436651
+set		type 1 type/subset 3 37166 435345
+set		type 1 type/subset 4 37166 354354
+set		type 1 type/subset 5 37166 468545
+set		type 1 type/subset 6 37166 435346
+
+set		type 1 i_pass 0
+set		type 2 i_pass 1
+set		type 3 i_pass 2
+set		type 4 i_pass 3
+set		type 5 i_pass 4
+set		type 6 i_pass 5
+
+set		type * type 1
+
+group		2wallcolor region 2wall
+set		group 2wallcolor i_zone 6
+group		2wallcolor delete
+
+group		5wallcolor region 5wall
+set		group 5wallcolor i_zone 5
+group		5wallcolor delete
+
+group		8wallcolor region 8wall
+set		group 8wallcolor i_zone 4
+group		8wallcolor delete
+
+group		12wallcolor region 12wall
+set		group 12wallcolor i_zone 3
+group		12wallcolor delete
+
+group		16wallcolor region 16wall
+set		group 16wallcolor i_zone 2
+group		16wallcolor delete
+
+group		20wallcolor region center
+set		group 20wallcolor i_zone 1
+group		20wallcolor delete
+
+variable	layer_t equal ({{vessel_zmax}}-({{vessel_zmin}}))/10
+
+region		layer1reg cylinder z {{x_c}} {{y_c}} {{vessel_r}} &
+		{{vessel_zmax}}-v_layer_t {{vessel_zmax}} side in units box
+region		layer2reg cylinder z {{x_c}} {{y_c}} {{vessel_r}} &
+		{{vessel_zmax}}-2*v_layer_t {{vessel_zmax}}-v_layer_t  side in units box
+region		layer3reg cylinder z {{x_c}} {{y_c}} {{vessel_r}} &
+		{{vessel_zmax}}-3*v_layer_t {{vessel_zmax}}-2*v_layer_t side in units box
+region		layer4reg cylinder z {{x_c}} {{y_c}} {{vessel_r}} &
+		{{vessel_zmax}}-4*v_layer_t {{vessel_zmax}}-3*v_layer_t side in units box
+region		layer5reg cylinder z {{x_c}} {{y_c}} {{vessel_r}} &
+		{{vessel_zmax}}-5*v_layer_t {{vessel_zmax}}-4*v_layer_t side in units box
+region		layer6reg cylinder z {{x_c}} {{y_c}} {{vessel_r}} &
+		{{vessel_zmax}}-6*v_layer_t {{vessel_zmax}}-5*v_layer_t side in units box
+region		layer7reg cylinder z {{x_c}} {{y_c}} {{vessel_r}} &
+		{{vessel_zmax}}-7*v_layer_t {{vessel_zmax}}-6*v_layer_t side in units box
+region		layer8reg cylinder z {{x_c}} {{y_c}} {{vessel_r}} &
+		{{vessel_zmax}}-8*v_layer_t {{vessel_zmax}}-7*v_layer_t side in units box
+region		layer9reg cylinder z {{x_c}} {{y_c}} {{vessel_r}} &
+		{{vessel_zmax}}-9*v_layer_t {{vessel_zmax}}-8*v_layer_t side in units box
+region		layer10reg cylinder z {{x_c}} {{y_c}} {{vessel_r}} &
+		{{vessel_zmin}} {{vessel_zmax}}-9*v_layer_t side in units box
+
+group		layer1 region layer1reg
+group		layer2 region layer2reg
+group		layer3 region layer3reg
+group		layer4 region layer4reg
+group		layer5 region layer5reg
+group		layer6 region layer6reg
+group		layer7 region layer7reg
+group		layer8 region layer8reg
+group		layer9 region layer9reg
+group		layer10 region layer10reg
+
+set		group layer1 i_layer 1
+set		group layer2 i_layer 2
+set		group layer3 i_layer 3
+set		group layer4 i_layer 4
+set		group layer5 i_layer 5
+set		group layer6 i_layer 6
+set		group layer7 i_layer 7
+set		group layer8 i_layer 8
+set		group layer9 i_layer 9
+set		group layer10 i_layer 10
+
+group		layer1 delete
+group		layer2 delete
+group		layer3 delete
+group		layer4 delete
+group		layer5 delete
+group		layer6 delete
+group		layer7 delete
+group		layer8 delete
+group		layer9 delete
+group		layer10 delete
 
 
 # it does not take the full time for the pebbles to fall
@@ -128,14 +228,15 @@ variable	i loop ${index}
 ########## Start recirc loop ##########
 label		recirculate
 
-variable	z_recirc atom "z == bound(all, zmin)"
-group		recirc variable z_recirc
-set		group recirc i_pass ${i_pass}+1
+variable	next_pass atom (i_pass<5)*round(i_pass+1)
+set		group recirc i_pass v_next_pass
+variable	next_recirc atom round(i_recirc+1)
+set		group recirc i_recirc v_next_recirc
 dump		recirc_ids recirc custom 1 recirc/step_*.bin id
 dump_modify	recirc_ids pad 15
 run		0
 undump		recirc_ids
-variable	displace equal (({{z_b.up}}-0.12) - bound(all, zmin))
+variable	displace equal (({{z_b.up}}-3*${d_pebble}) - bound(all, zmin))
 displace_atoms	recirc move 0.0 0.0 ${displace}
 
 run		${recirc_steps_adj}

@@ -6,10 +6,15 @@ from ghastly import pebble
 from ghastly import velocity
 from jinja2 import Environment, PackageLoader
 from os import path
+import sys
 from paraview.simple import *
 import subprocess
+import itertools
 import glob
 import string
+import csv
+import ast
+import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
@@ -159,14 +164,9 @@ def create_coord_csv(directory, coordpath, recircpath, inputfile,
     cpath = path.expanduser(coordpath)
     unsorted_c_fnames = glob.glob(path.join(cpath, "*.bin"))
     c_fnames = sorted(unsorted_c_fnames, key=lambda x:x[sort_int:])
-    #n_files = len(c_fnames)
-    n_files = 10
+    n_files = len(c_fnames)
+    #n_files = 10
 
-    adj_scale = P[0]/(n_recirc*dt*recirc_hz)
-    adj_simtime = 1*n_dump*dt
-    adj_dt = (adj_simtime*adj_scale)//1
-    
-    stream = {}
     for tstep in range(n_files):
         i_r = int((tstep*(n_dump))//n_recirc)
         t_scale = P[i_r]/(n_recirc*dt*recirc_hz)
@@ -174,50 +174,28 @@ def create_coord_csv(directory, coordpath, recircpath, inputfile,
         reactor_time = sim_time*t_scale
         if tstep%n_skip==0:
             data = read_input.read_lammps_bin(c_fnames[tstep], cpath)
-            pebbles = np.empty(len(data), dtype=object)
+            pebbles = []
             for d in data:
-                if 100*d[-2] <= peb_r:
-                    uid = int(d[0])
-                    x = 100*d[-3]
-                    y = 100*d[-2]
-                    z = 100*d[-1]
-                    zone = int(max(d[2], 1))
-                    layer = int(d[3])
-                    pass_n = int(d[4])
-                    recirc = int(d[5])
-                    #pebble = [sim_time, reactor_time, x, y, z, peb_r,
-                    #          zone, layer, pass_n, recirc]
-                    pebbles[uid] = np.array([x, y, z])
-            stream[reactor_time] = pebbles
+                uid = int(d[0])
+                x = 100*d[-3]
+                y = 100*d[-2]
+                z = 100*d[-1]
+                zone = int(max(d[2], 1))
+                layer = int(d[3])
+                pass_n = int(d[4])
+                recirc = int(d[5])
+                pebbles.append([x, y, z, peb_r,
+                          zone, layer, pass_n, recirc])
 
-    r_tsteps = list(stream.keys())
-    print(stream[r_tsteps[1]])
-    
-    adj_stream = {}
-    adj_stream[0] = stream[r_tsteps[0]]
-    for i in range(len(r_tsteps)):
-        if i == 0:
-            pass
-        else:
-            adj_time = int(i*adj_dt)
-            for j, r_t in enumerate(r_tsteps):
-                if abs(r_t - adj_time) < adj_time:
-                    interp = ((adj_time - r_tsteps[j-1])
-                              /(r_t - r_tsteps[j-1]))
-                    adj_stream[adj_time] = (stream[r_tsteps[j-1]] + 
-                                            interp*stream[r_t])
-                    break
-    print(stream[r_tsteps[1]])
-    print()
-    print(adj_stream[500])
 
-            
-    #pad = 15 - len(str(tstep))
-    #fname = pad*'0'+str(tstep)+'_bed.csv'
-    #np.savetxt(fname, pebbles, delimiter = ',')
+        pad = 15 - len(str(tstep))
+        fname = pad*'0'+str(tstep)+'_bed.csv'
+        with open(fname, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerows(pebbles)
 
-def plot_streamlines(directory, coordpath, recircpath,
-                     sort_int=-19, n_skip=10, delimiter=' ', skiprows=9,
+def interp_coords(directory, coordpath, recircpath,
+                     sort_int=-19, delimiter=' ', skiprows=9,
                      n_recirc=2500000, n_dump=372366, 
                      dt=2.6855e-07, recirc_hz=0.014):
     '''
@@ -238,13 +216,11 @@ def plot_streamlines(directory, coordpath, recircpath,
                                                             skiprows=9) 
                    for rfile in r_fnames]]
 
-    #recirc_groups = {t: {'uids': recirc_uids[i]} for i, t in enumerate(recirc_rtime)}
-
     cpath = path.expanduser(coordpath)
     unsorted_c_fnames = glob.glob(path.join(cpath, "*.bin"))
     c_fnames = sorted(unsorted_c_fnames, key=lambda x:x[sort_int:])
     n_files = len(c_fnames)
-    #n_files = 3000
+    #n_files = 30
 
     adj_scale = P[0]/(n_recirc*dt*recirc_hz)
     adj_simtime = n_dump*dt
@@ -301,7 +277,7 @@ def plot_streamlines(directory, coordpath, recircpath,
             points[uid] = []
             for j, pt in enumerate(raw_pts):
                 if j == 0:
-                    points[uid] = [pt]
+                    points[uid] = [[float(pt[0]), float(pt[1])]]
                 else:
                     adj_t = raw_rts[0] + j*adj_dt
                     for t_index, rt in enumerate(raw_rts):
@@ -309,32 +285,223 @@ def plot_streamlines(directory, coordpath, recircpath,
                             rt0 = raw_rts[t_index-1]
                             rt1 = rt
                             break
-                    adj_pt = (points[uid][-1]*((rt1-adj_t)/(rt1-rt0)) + 
-                              pt*((adj_t-rt0)/(rt1-rt0)))
-                    points[uid].append(adj_pt)
 
-        streamlines = {}
-        for uid, pts in points.items():
-            for k, pt in enumerate(pts):
-                if k%n_skip==0:
-                    streamline_t = raw_rts[0]+k*adj_dt
-                    if streamline_t in streamlines:
-                        streamlines[streamline_t]['r'].append(pt[0])
-                        streamlines[streamline_t]['z'].append(pt[1])
-                    else:
-                        streamlines[streamline_t] = {'r' : [pt[0]],
-                                                    'z' : [pt[1]]}
-
-        for rzs in streamlines.values():
-            plt.plot(rzs['r'], rzs['z'], 'o')
-        #plt.legend(list(streamlines.keys()))
-        title = ('Recirculation Group #' + str(i) + 
-                 ' Streamlines')
-        plt.title(title)
-        plt.xlabel('R [cm]')
-        plt.ylabel('Z [cm]')
+                    adj_r = (points[uid][-1][0]*((rt1-adj_t)/(rt1-rt0)) + 
+                              pt[0]*((adj_t-rt0)/(rt1-rt0)))
+                    adj_z = (points[uid][-1][1]*((rt1-adj_t)/(rt1-rt0)) + 
+                              pt[1]*((adj_t-rt0)/(rt1-rt0)))
+                    points[uid].append([float(adj_r), float(adj_z)])
         pad = 7 - len(str(i))
-        fname = 'group-'+pad*'0'+str(i)+'-streamlines.png'
+        fname = pad*'0'+str(i)+'-transit.csv'
+        fields = [uidkey for uidkey in points.keys()]
+        with open(fname, "w", newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(points.keys())
+            writer.writerows(zip(*points.values()))
+                
+
+    print(adj_dt)
+    return adj_dt
+
+def plot_velocity(transitpath, peb_d, height_lim, adj_dt, 
+                  sort_int = -4 ):
+    '''
+    '''
+    tpath = path.expanduser(transitpath)
+    unsorted_t_fnames = glob.glob(path.join(tpath, "*transit.csv"))
+    transitfiles = sorted(unsorted_t_fnames, key=lambda x:x[:sort_int])
+    binsize = 4*peb_d
+    r_bins = [(0, 4*peb_d), 
+              (4*peb_d, 8*peb_d), 
+              (8*peb_d, 12*peb_d),
+              (12*peb_d, 15*peb_d),
+              (15*peb_d, 18*peb_d),
+              (18*peb_d, 20*peb_d)] # [lower, upper) r_bin bounds
+    r_labels = [bound[0]+0.5*(bound[1]-bound[0]) for bound in r_bins]
+    ax_layers = {}
+    for transitfile in transitfiles:
+        csvcols = pd.read_csv(transitfile, nrows=0).columns.tolist()
+        converter = {col:ast.literal_eval for col in csvcols}
+        df = pd.read_csv(transitfile, converters=converter)
+        strdict = df.to_dict()
+        transit = {}
+        for uidstr in strdict.keys():
+            transit[int(uidstr)] = list(strdict[uidstr].values())
+        for uid, points in transit.items():
+            for point in points:
+                if point[1] >= height_lim:
+                    continue
+                ax_bin = point[1]//binsize
+                r_criter = [(point[0]>=r_bin[0] and point[0]<r_bin[1])
+                                  for r_bin in r_bins]
+                r_binkey = r_labels[np.where(r_criter)[0][0]]
+                if ax_bin in ax_layers:
+                    if r_binkey in ax_layers[ax_bin]:
+                        if uid in ax_layers[ax_bin][r_binkey]:
+                            ax_layers[ax_bin][r_binkey][uid].append(point)
+                        else:
+                            ax_layers[ax_bin][r_binkey][uid] = [point]
+                    else:
+                        ax_layers[ax_bin][r_binkey] = {uid:[point]}
+                else:
+                    ax_layers[ax_bin] = {r_binkey:{uid:[point]}}
+    vel_z = {}
+    for ax_bin, bin_data in ax_layers.items():
+        vel_z[ax_bin] = {}
+        for r_binkey, pebbles in bin_data.items():
+            v_z = []
+            for uid, points in pebbles.items():
+                if len(points) == 1:
+                    continue
+                for i, point in list(enumerate(points))[1:]:
+                    z_disp = -abs(point[1] - points[i-1][1])
+                    v_z.append(z_disp/adj_dt)
+            if len(v_z) == 0:
+                continue
+            v_z_avg = sum(v_z)/len(v_z)
+            vel_z[ax_bin][r_binkey] = v_z_avg
+
+
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+    for ax_bin, bin_data in vel_z.items():
+        if ax_bin < 0:
+            continue
+        r_s = np.array(list(bin_data.keys()))
+        vz_s = np.array(list(bin_data.values()))
+        ax.plot(r_s, vz_s,  
+                zs=(ax_bin*binsize+(binsize/2)), zdir='y', c=(0,0,0))
+    ax.set_zlabel('Z-Velocity [cm/s]', labelpad=15)
+    ax.set_xlabel('Radius [cm]', labelpad=15)
+    ax.set_ylabel('Z [cm]', labelpad=15)
+    fig.savefig('vel_profile.png')
+    plt.close()
+
+def plot_velocityv2(transitpath, peb_d, height_lim, adj_dt, 
+                  sort_int = -4 ):
+    '''
+    '''
+    #this is a temp function to try another method for making this
+    #plot so I can compare - the change is too in-depth to just add a flag to
+    #the original version.  In the end, there should only be one velocity
+    #function that handles 
+    tpath = path.expanduser(transitpath)
+    unsorted_t_fnames = glob.glob(path.join(tpath, "*transit.csv"))
+    transitfiles = sorted(unsorted_t_fnames, key=lambda x:x[:sort_int])
+    binsize = 5*peb_d
+    r_bins = [(0, 4*peb_d), 
+              (4*peb_d, 8*peb_d), 
+              (8*peb_d, 12*peb_d),
+              (12*peb_d, 15*peb_d),
+              (15*peb_d, 18*peb_d),
+              (18*peb_d, 20*peb_d)] # [lower, upper) r_bin bounds
+    r_keys = [bound[0]+0.5*(bound[1]-bound[0]) for bound in r_bins]
+
+    #note to self - because you track by uid, when the pebbles recirculate,
+    #i think you are lumping those recircs together even if they aren't in the
+    #same r  r binning would help
+    vz_unavg = {}
+    for transitfile in transitfiles:
+        csvcols = pd.read_csv(transitfile, nrows=0).columns.tolist()
+        converter = {col:ast.literal_eval for col in csvcols}
+        df = pd.read_csv(transitfile, converters=converter)
+        strdict = df.to_dict()
+        transit = {}
+        for uidstr in strdict.keys():
+            transit[int(uidstr)] = list(strdict[uidstr].values())
+        for uid, points in transit.items():
+            bin_points = {}
+            for point in points:
+                if point[1] >= height_lim:
+                    continue
+                ax_bin = point[1]//binsize
+                r_criter = [(point[0]>=bound[0] and point[0]<bound[1])
+                                  for bound in r_bins]
+                r_binkey = r_keys[np.where(r_criter)[0][0]]
+                if ax_bin in bin_points:
+                    if r_binkey in bin_points[ax_bin]:
+                        bin_points[ax_bin][r_binkey].append(point)
+                    else:
+                        bin_points[ax_bin][r_binkey] = [point]
+                else:
+                    bin_points[ax_bin] = {r_binkey:[point]}
+
+            for ax_bin, r_points in bin_points.items():
+                if ax_bin not in vz_unavg:
+                    vz_unavg[ax_bin] = {}
+                for r_bin, pts in r_points.items():
+                    zs = [pt[1] for pt in pts]
+                    z_disp = min(zs)-max(zs)
+                    peb_vz = z_disp/adj_dt#this is wrong, need to consider
+                    #that it's not just one dt
+                    if r_bin in vz_unavg:
+                        vz_unavg[ax_bin][r_bin].append(peb_vz)
+                    else:
+                        vz_unavg[ax_bin][r_bin] = [peb_vz]
+    print(vz_unavg)
+    vel_z = {}
+    for ax_bin, bin_data in vz_unavg.items():
+        vel_z[ax_bin] = {'r':[], 'vz':[]}
+        for r_bin, vzs in bin_data.items():
+            if len(vzs) == 0:
+                continue
+            vel_z[ax_bin]['r'].append(r_bin)
+            vz = sum(vzs)/len(vzs)
+            vel_z[ax_bin]['vz'].append(vz)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+    for ax_bin, bin_data in vel_z.items():
+        ax.plot(bin_data['r'], bin_data['vz'],  
+                zs=(ax_bin*binsize+(binsize/2)), zdir='x', c=(0,0,0))
+    ax.set_zlabel('velocity')
+    ax.set_xlabel('ax_bin')
+    ax.set_ylabel('radius')
+    fig.savefig('vel_profilesv2_test.png')
+    plt.close()
+
+
+                
+
+def plot_streamlines(transitpath, peb_d, height_lim, adj_dt, sort_int = -4):
+    '''
+    '''
+
+    tpath = path.expanduser(transitpath)
+    unsorted_t_fnames = glob.glob(path.join(tpath, "*transit.csv"))
+    transitfiles = sorted(unsorted_t_fnames, key=lambda x:x[:sort_int])
+    r_bins = [(0, 4*peb_d), 
+              (4*peb_d, 8*peb_d), 
+              (8*peb_d, 12*peb_d),
+              (12*peb_d, 15*peb_d),
+              (15*peb_d, 18*peb_d),
+              (18*peb_d, 20*peb_d)] # [lower, upper) r_bin bounds
+    r_keys = [bound[0]+0.5*(bound[1]-bound[0]) for bound in r_bins]
+
+    r_streamlines = {r_key:[] for r_key in r_keys}
+    for transitfile in transitfiles:
+        csvcols = pd.read_csv(transitfile, nrows=0).columns.tolist()
+        converter = {col:ast.literal_eval for col in csvcols}
+        df = pd.read_csv(transitfile, converters=converter)
+        strdict = df.to_dict()
+        streamlines = {}
+        for uidstr in strdict.keys():
+            streamlines[int(uidstr)] = list(strdict[uidstr].values())
+        for uid, points in streamlines.items():
+            for point in points:
+                if point[1] < height_lim:
+                    r_criter = [(point[0]>=r_bin[0] and point[0]<r_bin[1])
+                                  for r_bin in r_bins]
+                    r_binkey = r_keys[np.where(r_criter)[0][0]]
+                    r_streamlines[r_binkey].append(points)
+                    break
+    
+    for r_bin, all_lines in r_streamlines.items():
+        for streamline in all_lines:
+            r = list(zip(*streamline))[0]
+            z = list(zip(*streamline))[1]
+            plt.plot(r, z, c=(0,0,0))
+        fname = 'streamlines_rbin_'+str(r_bin)+'.png'
         plt.savefig(fname)
         plt.close()
 
