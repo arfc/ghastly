@@ -8,10 +8,10 @@ class Sim:
     Class for containing simulation-wide parameters and methods.
     '''
 
-    def __init__(self, r_pebble, t_final, pf, fidelity = 1,
-                 recirc_target=1, recirc_hz = 1, 
-                 core_intake={},core_main={}, core_outtake={}, recirc = {},
-                 k_rate=0.001, down_flow=True, 
+    def __init__(self, r_pebble, t_final, pf, fidelity=1,
+                 recirc_target=1, recirc_hz=1,
+                 core_intake={}, core_main={}, core_outtake={}, recirc={},
+                 k_rate=0.001, down_flow=True,
                  seed=rng.integers(1000000, 9999999)):
         '''
         Initializes the Sim class.

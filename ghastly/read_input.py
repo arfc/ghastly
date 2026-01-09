@@ -138,23 +138,22 @@ class InputBlock:
         for key, val in recirc_zone.items():
             if val["type"].casefold() == "cylinder":
                 recirc_block[key] = core.CylCore(x_c=val["x_c"],
-                                               y_c=val["y_c"],
-                                               z_max=val["z_max"],
-                                               z_min=val["z_min"],
-                                               r=val["r"])
+                                                 y_c=val["y_c"],
+                                                 z_max=val["z_max"],
+                                                 z_min=val["z_min"],
+                                                 r=val["r"])
 
             elif val["type"].casefold() == "cone":
                 recirc_block[key] = core.ConeCore(x_c=val["x_c"],
-                                               y_c=val["y_c"],
-                                               z_max=val["z_max"],
-                                               z_min=val["z_min"],
-                                               r_upper=val["r_upper"],
-                                                 r_lower=val["r_lower"])
+                                                  y_c=val["y_c"],
+                                                  z_max=val["z_max"],
+                                                  z_min=val["z_min"],
+                                                  r_upper=val["r_upper"],
+                                                  r_lower=val["r_lower"])
             else:
                 raise NameError("Type must be cylinder or cone.")
 
         return recirc_block
-
 
     def create_sim_block(self, core_intake, core_main, core_outtake):
         '''
@@ -169,7 +168,6 @@ class InputBlock:
             Ghastly sim object containing simulation parameters and core
             objects.
         '''
-
         recirc_hz = self.sim_var.get("recirc_hz", 1)
         
         recirc_target = self.sim_var.get("recirc_target", 1)
@@ -181,7 +179,6 @@ class InputBlock:
         if type(fidelity) != int:
             raise TypeError('''The fidelity level must be one of the following
                             integers: [1, 2]''')
-
 
         k_rate = self.sim_var.get("k_rate", 0.001)
         if type(k_rate) != float and k_case != None:
