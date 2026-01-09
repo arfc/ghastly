@@ -1,17 +1,39 @@
-variable	subwall_r equal {{r_wall}}-(2*${d_pebble})
+variable	2wall_r equal {{r_vessel}}-(2*${d_pebble})
+variable 	5wall_r equal {{r_vessel}}-(5*${d_pebble})
+variable	8wall_r equal {{r_vessel}}-(8*${d_pebble})
+variable	12wall_r equal {{r_vessel}}-(12*${d_pebble})
+variable	16wall_r equal {{r_vessel}}-(16*${d_pebble})
 
-
-region		{{v_reg_name}}_center cylinder z {{x_c}} {{y_c}} {{r_chute}} &
+region		2wall_out cylinder z {{x_c}} {{y_c}} {{r_vessel}} &
 		{{z_min}} {{z_max}} side in units box
-
-region		submid_in cylinder z {{x_c}} {{y_c}} {{r_chute}} &
+region		2wall_in cylinder z {{x_c}} {{y_c}} ${2wall_r} &
 		{{z_min}} {{z_max}} side out units box
-region		submid_out cylinder z {{x_c}} {{y_c}} ${subwall_r} &
-		{{z_min}} {{z_max}} side in units box
-region		{{v_reg_name}}_mid intersect 2 submid_in submid_out
+region		2wall intersect 2 2wall_out 2wall_in
 
-region		subwall_in cylinder z {{x_c}} {{y_c}} ${subwall_r} &
-		{{z_min}} {{z_max}} side out units box
-region		subwall_out cylinder z {{x_c}} {{y_c}} {{r_wall}} &
+region		5wall_out cylinder z {{x_c}} {{y_c}} ${2wall_r} &
 		{{z_min}} {{z_max}} side in units box
-region		{{v_reg_name}}_wall intersect 2 subwall_in subwall_out
+region		5wall_in cylinder z {{x_c}} {{y_c}} ${5wall_r} &
+		{{z_min}} {{z_max}} side out units box
+region		5wall intersect 2 5wall_out 5wall_in
+
+region		8wall_out cylinder z {{x_c}} {{y_c}} ${5wall_r} &
+		{{z_min}} {{z_max}} side in units box
+region		8wall_in cylinder z {{x_c}} {{y_c}} ${8wall_r} &
+		{{z_min}} {{z_max}} side out units box
+region		8wall intersect 2 8wall_out 8wall_in
+
+region		12wall_out cylinder z {{x_c}} {{y_c}} ${8wall_r} &
+		{{z_min}} {{z_max}} side in units box
+region		12wall_in cylinder z {{x_c}} {{y_c}} ${12wall_r} &
+		{{z_min}} {{z_max}} side out units box
+region		12wall intersect 2 12wall_out 12wall_in
+
+region		16wall_out cylinder z {{x_c}} {{y_c}} ${12wall_r} &
+		{{z_min}} {{z_max}} side in units box
+region		16wall_in cylinder z {{x_c}} {{y_c}} ${16wall_r} &
+		{{z_min}} {{z_max}} side out units box
+region		16wall intersect 2 16wall_out 16wall_in
+
+region		20wall cylinder z {{x_c}} {{y_c}} ${16wall_r} &
+		{{z_min}} {{z_max}} side in units box
+

@@ -69,7 +69,7 @@ region		whole_core union {{n_regions}} &
 {% endfor %}
 		{{region_names[-1]}}
 
-fix		grav all gravity ${gravity} vector 0 0 -1
+fix		grav all gravity ${gravity} vector 0 0 1
 fix		nve_int all nve/sphere
 fix		wall_gran all wall/gran/region hertz/history &
 		${k_n} ${k_t} ${gamma_n} ${gamma_t} ${co_fric} 1 &
@@ -220,7 +220,7 @@ variable	recirc_run equal 2500000
 ########## Start Mainloop ##########
 label		recirculate
 
-variable	displace equal (({{z_b.up}}-3*${d_pebble}) - bound(all, zmin))
+variable	displace equal (({{z_b.low}}+3*${d_pebble}) - bound(all, zmax))
 group		outlet region recirc_outlet
 variable	next_pass atom (i_pass<5)*round(i_pass+1)
 set		group outlet i_pass v_next_pass

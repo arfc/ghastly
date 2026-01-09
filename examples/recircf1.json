@@ -75,14 +75,15 @@
 			"r_lower" : 0.03,
 			"open_bottom" : "",
 			"open_top" : "open 2"
-		},
+		}
+	},
 	"lammps_var" : {
 		"gravity" : 9.81,
 		"density_rho" : 1700,
 		"young_mod_E" : 1.0055e+10,
 		"poisson" : 0.12,
 		"co_fric" : 0.035,
-		"co_rest" : 0.02,
+		"co_rest" : 0.1,
 		"interval" : 10000
 	}
 }
