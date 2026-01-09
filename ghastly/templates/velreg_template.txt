@@ -1,0 +1,17 @@
+variable	subwall_r equal {{r_wall}}-(2*${d_pebble})
+
+
+region		{{v_reg_name}}_center cylinder z {{x_c}} {{y_c}} {{r_chute}} &
+		{{z_min}} {{z_max}} side in units box
+
+region		submid_in cylinder z {{x_c}} {{y_c}} {{r_chute}} &
+		{{z_min}} {{z_max}} side out units box
+region		submid_out cylinder z {{x_c}} {{y_c}} ${subwall_r} &
+		{{z_min}} {{z_max}} side in units box
+region		{{v_reg_name}}_mid intersect 2 submid_in submid_out
+
+region		subwall_in cylinder z {{x_c}} {{y_c}} ${subwall_r} &
+		{{z_min}} {{z_max}} side out units box
+region		subwall_out cylinder z {{x_c}} {{y_c}} {{r_wall}} &
+		{{z_min}} {{z_max}} side in units box
+region		{{v_reg_name}}_wall intersect 2 subwall_in subwall_out
