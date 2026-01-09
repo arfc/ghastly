@@ -75,9 +75,6 @@ fix		wall_gran all wall/gran/region hertz/history &
 		${k_n} ${k_t} ${gamma_n} ${gamma_t} ${co_fric} 1 &
 		region whole_core	
 
-variable	pix_width equal round((abs({{x_b.low}})+abs({{x_b.up}}))*250)
-variable	pix_height equal round((abs({{z_b.low}})+abs({{z_b.up}}))*250)
-variable	frame_freq equal round(1/(30*${dt}))
 variable	dump_freq equal 200000
 
 include		{{v_reg_fname}}
@@ -221,8 +218,7 @@ group		layer10 delete
 variable	recirc_steps equal round((1/${recirc_hz})/${dt})
 variable	recirc_steps_adj equal 2000000
 #+10 is just buffer to make sure i doesn't accidentally next past N and reset
-variable	index equal round(${t_final}*${recirc_hz})+10
-variable	i loop ${index}
+variable	idx equal 1
 
 
 ########## Start recirc loop ##########
@@ -241,10 +237,12 @@ displace_atoms	recirc move 0.0 0.0 ${displace}
 
 run		${recirc_steps_adj}
 
-variable	new_timestep equal ${i}*${recirc_steps}
+variable	new_timestep equal ${idx}*${recirc_steps}
 variable	new_time equal ${new_timestep}*${dt}
 reset_timestep	${new_timestep} time ${new_time}
-next		i
+variable	next_idx equal ${idx}+1
+variable	idx equal v_next_idx
+variable	next_idx delete
 
 if		"$(time) >= ${t_final}" then "jump SELF break"
 variable	z_recirc delete
