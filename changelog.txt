@@ -1,8 +1,0 @@
-[This is a changelog primarily for dev purposes - for a complete history,
-view the repository history on github]
-
-01-08-2026 : updated recirc main templates to remove LAMMPS img generation and
-		improve velocity region definitions.
-01-08-2026 : added *up_main.txt templates for upwards-flowing reactors.  No further
-		dev for FHRs is planned at the moment.
-01-08-2026 : changelog start
