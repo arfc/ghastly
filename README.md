@@ -16,6 +16,9 @@ should read the documentation carefully before making changes to templates.
 Currently, Ghastly supports coupling LAMMPS to OpenMC only, but developing 
 and submitting an update to add further code support via PR is welcome.
 
+Note that the paraview-plot.py file is meant to be loaded into your Paraview
+GUI python script editor.
+
 ## Ghastly can:
 - Fill both upwards and downwards flowing PBRs with an initial bed 
 configuration
@@ -33,7 +36,9 @@ tools of choice inside a conda environment.
 
 Activate the conda environment if you choose to use one before installing 
 any dependencies. (See the Notes section below for tips about using conda
-environments while installing from source with cmake)
+environments while installing from source with cmake)  The setup-example script
+is only meant to serve as an example, and was not written with the intention
+of running on an arbitrary system.
 
 ## Dependencies and Compatible Tool installation:
 
