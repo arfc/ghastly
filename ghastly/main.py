@@ -463,10 +463,10 @@ def recirc_pebbles(input_file, init_bed_fname,
         be used to generate an appropriately-formatted LAMMPS dump file from
         an numpy array of pebble centroid coordinates.
     recirc_fname : str
-        Optional.  File name for the recirculating LAMMPS input file that
+        File name for the recirculating LAMMPS input file that
         Ghastly generates.
     recirc_temp : str
-        Optional.  File name of the main recirculation template.  Note that
+        File name of the main recirculation template.  Note that
         custom templates should be located in the ghastly/templates/
         directory.
     var_fname : str
