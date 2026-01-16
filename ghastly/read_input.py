@@ -226,8 +226,30 @@ class InputBlock:
 def read_lammps_bin(bin_fname, bin_dir, 
                     delimiter = ' ', skiprows = 9, max_rows=None):
     '''
-    given lammps binary file, convert it, read it into a np array,
-    delete the txt file
+    Given a LAMMPS binary file, convert it to .txt and return a numpy array.
+    This function deletes the .txt version of the file afterward.  It also
+    assumes that a user that has a LAMMPS binary file to convert has installed
+    LAMMPS, and will have access to the binary2txt tool.
+
+    Parameters
+    ----------
+    bin_fname : str
+        String of the absolute path to a LAMMPS binary file.
+    bin_dir : str
+        String of the absolute path to the binary file directory
+    delimiter : str
+        Delimiter to pass to the numpy loadtxt function.
+    skiprows : int
+        Number of rows to skip per the argument of the same name from
+        numpy.loadtxt().
+    max_rows : None or int
+        Maximum number of rows to read, per the numpy.loadtxt() function.
+
+    Returns
+    -------
+    data : numpy ndarray
+        A numpy array where each element is an array corresponding to a row
+        of the binary file.
     '''
 
     subprocess.run(['binary2txt', bin_fname], stdout=subprocess.DEVNULL)
