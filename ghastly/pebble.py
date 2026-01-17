@@ -7,32 +7,42 @@ class Pebble:
     and track its material composition and unique id number.
     '''
 
-    def __init__(self, coords, reg_id, pass_num, l_type, pebble_id):
+    def __init__(self, uid, coords, velocity, zone, layer, 
+                 pass_num, recirc, history = []):
         '''
         Initializes a single instance of a Pebble object.
 
         Parameters
         ----------
+        uid : int
+            Unique integer ID of a pebble
         coords : array
             Array containing the x, y, and z coordinates of the pebble.
-        radius : float
-            Radius of the pebble, with the same units as core measurements.
-        reg_id : str
-            Region identifier corresponding to the region the pebble is located
-            in based upon its center coordinates.
+        velocity : array
+            Array containing the x, y, and z coordinates of the pebble.        
+        zone : int
+            Integer value corresponding to the label of the radial zone the
+            pebble began transit in
+        layer : int
+            Integer value corresponding to the label of the axial layer the
+            pebble began transit in
         pass_num : int
-            Number of passes the pebble has completed.  For example, a fresh
-            pebble's pass_num would be 0.
-        l_type : int
-            The 'type' number of the pebble, as defined by lammps.  Each
-            l_type corresponds to a specific material.
-        pebble_id : int
-            User-defined integer for identifying a specific pebble.
-            Each pebble_id should be distinct.
+            Number of passes the pebble has completed.  A fresh pebble's 
+            pass_num would be 0.
+        recirc : int
+            Number of times the pebble has recirculated since transit began.
+        history : list
+            A list containing the radial zone ID the pebble was located in for
+            the majority of previous passes.  The first element is the first
+            pass, the second is the second pass, and so on.
 
         '''
+        self.uid = int(uid)
         self.coords = coords
-        self.reg_id = reg_id
-        self.pass_num = pass_num
-        self.l_type = l_type
-        self.pebble_id = pebble_id
+        self.velocity = velocity
+        self.zone = int(zone)
+        self.layer = int(layer)
+        self.pass_num = int(pass_num)
+        self.recirc = int(recirc)
+        self.history = history
+

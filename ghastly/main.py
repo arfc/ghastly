@@ -444,9 +444,8 @@ def write_pour_main(pour_filename, sim_block, variable_filename, x_b, y_b, z_b,
 
 
 def recirc_pebbles(input_file, init_bed_fname,
-                   recirc_fname="recircf2_input.txt",
-                   recirc_temp="recircf2_main.txt",
-                   var_fname="recircf2_var.txt"):
+                   recirc_fname, recirc_temp, 
+                   var_fname="recirc_var.txt"):
     '''
     Reads Ghastly input_file in order to generate a LAMMPS input file
     that will recirculate pebbles at the desired level of fidelity
@@ -464,10 +463,10 @@ def recirc_pebbles(input_file, init_bed_fname,
         be used to generate an appropriately-formatted LAMMPS dump file from
         an numpy array of pebble centroid coordinates.
     recirc_fname : str
-        Optional.  File name for the recirculating LAMMPS input file that
+        File name for the recirculating LAMMPS input file that
         Ghastly generates.
     recirc_temp : str
-        Optional.  File name of the main recirculation template.  Note that
+        File name of the main recirculation template.  Note that
         custom templates should be located in the ghastly/templates/
         directory.
     var_fname : str

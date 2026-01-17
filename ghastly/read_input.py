@@ -2,6 +2,9 @@ import json
 import numpy as np
 from ghastly import core
 from ghastly import simulation
+from os import path
+import subprocess
+import glob
 
 rng = np.random.default_rng()
 
@@ -165,39 +168,27 @@ class InputBlock:
             Ghastly sim object containing simulation parameters and core
             objects.
         '''
-
-        hz_case = self.sim_var.get("recirc_hz", 1)
-
-        target_case = self.sim_var.get("recirc_target", 1)
-        if type(target_case) != int:
+        recirc_hz = self.sim_var.get("recirc_hz", 1)
+        
+        recirc_target = self.sim_var.get("recirc_target", 1)
+        if type(recirc_target) != int:
             raise TypeError('''The target number of pebbles to recirculate
                             should be an integer''')
 
-        fidelity_case = self.sim_var.get("fidelity", 1)
-        if type(fidelity_case) != int:
+        fidelity = self.sim_var.get("fidelity", 1)
+        if type(fidelity) != int:
             raise TypeError('''The fidelity level must be one of the following
                             integers: [1, 2]''')
 
-        k_case = self.sim_var.get("k_rate")
-        if type(k_case) != float and k_case != None:
+        k_rate = self.sim_var.get("k_rate", 0.001)
+        if type(k_rate) != float and k_case != None:
             raise TypeError('''The contraction rate should be a value between 0
                             and 1, non-inclusive.''')
-        match k_case:
-            case None:
-                k_rate = 0.001
-            case _:
-                k_rate = self.sim_var["k_rate"]
 
-        flow_case = self.sim_var.get("down_flow")
-        if type(flow_case) != bool and flow_case != None:
+        down_flow = self.sim_var.get("down_flow", True)
+        if type(down_flow) != bool:
             raise TypeError('''down_flow should be True for downward flow
                             and False for upward flow.''')
-
-        match flow_case:
-            case None:
-                down_flow = True
-            case _:
-                down_flow = self.sim_var["down_flow"]
 
         seed_case = self.sim_var.get("seed")
         if type(seed_case) != int and seed_case != None:
@@ -230,3 +221,42 @@ class InputBlock:
                                    down_flow=down_flow,
                                    seed=seed)
         return sim_block
+
+
+def read_lammps_bin(bin_fname, bin_dir, 
+                    delimiter = ' ', skiprows = 9, max_rows=None):
+    '''
+    Given a LAMMPS binary file, convert it to .txt and return a numpy array.
+    This function deletes the .txt version of the file afterward.  It also
+    assumes that a user that has a LAMMPS binary file to convert has installed
+    LAMMPS, and will have access to the binary2txt tool.
+
+    Parameters
+    ----------
+    bin_fname : str
+        String of the absolute path to a LAMMPS binary file.
+    bin_dir : str
+        String of the absolute path to the binary file directory
+    delimiter : str
+        Delimiter to pass to the numpy loadtxt function.
+    skiprows : int
+        Number of rows to skip per the argument of the same name from
+        numpy.loadtxt().
+    max_rows : None or int
+        Maximum number of rows to read, per the numpy.loadtxt() function.
+
+    Returns
+    -------
+    data : numpy ndarray
+        A numpy array where each element is an array corresponding to a row
+        of the binary file.
+    '''
+
+    subprocess.run(['binary2txt', bin_fname], stdout=subprocess.DEVNULL)
+    txtfile = glob.glob(path.join(bin_dir, "*.txt"))[0]
+    data = (np.loadtxt(txtfile, delimiter=delimiter, 
+                       skiprows=skiprows, max_rows=max_rows))
+    subprocess.run(['rm', txtfile])
+
+    return data
+
