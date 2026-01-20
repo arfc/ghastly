@@ -1,20 +1,19 @@
 # Ghastly
 
 Ghastly is a python package that externally couples Discrete Element Method
-(DEM) physics simulation tools to neutron transport and depletion tools in
-order to model flowing, pebble-bed High-Temperature Gas-Cooled Reactors (HTGRs).
+(DEM) physics simulation tools to neutron transport and depletion tools
+to model flowing pebbles in pebble-bed reactors (PBRs).
 
 Ghastly is compatible with [LAMMPS](https://www.lammps.org/) and 
 [OpenMC](https://openmc.org/). Ghastly automatically generates input files and
-can read output files from compatible codes.  The examples/ directory contains
+can read output files from compatible codes.  The `examples/` directory contains
 Ghastly input files for a generic HTGR design.
 
 Each template has some hard-coded settings, some of which are required to
 create output files needed by Ghastly.  Users unfamiliar with compatible tools
 should read the documentation carefully before making changes to templates.
 
-Currently, Ghastly supports coupling LAMMPS to OpenMC only, but developing 
-and submitting an update to add further code support via PR is welcome.
+Currently, Ghastly supports coupling LAMMPS to OpenMC only, but contributions via a Pull Request are welcome to expand capabilities.
 
 Note that the paraview-plot.py file is meant to be loaded into your Paraview
 GUI python script editor.
@@ -55,14 +54,14 @@ inside a conda environment, also set `-DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}`
 and call `HDF5_ROOT=${CONDA_PREFIX}` before calling cmake.
 
 ### LAMMPS:
-The documentation page for building LAMMPS begins [here](https://docs.lammps.org/Build.html) here.
+The documentation page for building LAMMPS begins [here](https://docs.lammps.org/Build.html).
 LAMMPS has many optional packages and build options which will not be discussed
 in depth here beyond what should be installed if working with Ghastly.  Users 
 should set `-D BUILD_SHARED_LIBS=yes`, `-D BUILD_MPI=yes`, `-D BUILD_OMP=yes`.  
 The setup script example also turns the JPEG, PNG, and FFMPEG options on.  
 These are not needed for Ghastly to work, though users may prefer to have the option.
 As always, setting `-D CMAKE_INSTALL_PREFIX` and `-D CMAKE_PREFIX_PATH` to
-`${CONDA_PREFIX}` is required if using conda environments.  In order to use
+`${CONDA_PREFIX}` is required if using conda environments.  To use
 LAMMPS to model pebble flow, users must install the GRANULAR package with 
 `PKG_GRANULAR=yes`.  Users should also include the OPENMP package with 
 `PKG_OPENMP=yes`.
@@ -88,7 +87,7 @@ if you would like to contribute to Ghastly).  Installing packages available
 with conda-forge is simple.  For installing software from source into a conda
 environment, remember:
 
-- when a conda environment is active, the environment variable ${CONDA_PREFIX}
+- When a conda environment is active, the environment variable ${CONDA_PREFIX}
 points to the directory in which the environment is installed.  This can be
 used to direct your system to the install directories of dependencies and point
 cmake to install into your conda environment.
