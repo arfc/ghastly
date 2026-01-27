@@ -31,40 +31,80 @@ configuration
 
 Ghastly is not packaged with any source code for compatible tools.  It is 
 recommended, but optional, that users install Ghastly and the DEM and Monte Carlo
-tools of choice inside a conda environment.
+tools of choice inside a conda environment.  The installation tutorial below
+assumes that you are using a conda environment.  If you are not, then you should
+follow whatever the source documentation recommends for installing their individual
+pieces of software.
 
-Activate the conda environment if you choose to use one before installing 
-any dependencies. (See the Notes section below for tips about using conda
-environments while installing from source with cmake)  The setup-example script
-is only meant to serve as an example, and was not written with the intention
-of running on an arbitrary system.
+Activate the conda environment before installing any dependencies.  The 
+setup-example script is only meant to serve as an example, and was not written 
+with the intention of running on an arbitrary system.
 
 ## Dependencies and Compatible Tool installation:
 
+For using OpenMC and LAMMPS, install the following with conda before moving on using conda.
+- python
+- numpy
+- scipy
+- matplotlib
+- cython
+- pytest
+- mpich, libmpich-dev, mpich-mpicc, mpich-mpicxx, mpich-mpifort
+- zlib
+- libpng (optional, see LAMMPS below)
+- libjpeg-turbo (optional, see LAMMPS below)
+- ffmpeg (optional, see LAMMPS below)
+- vtk
+- uncertainties
+- lxml
+
 ### OpenMC:
 The quick install guide for OpenMC is [here](https://docs.openmc.org/en/stable/quickinstall.html).
-Follow the instructions to build from source.  The first step is to install HDF5.
-The setup script included in this level of the repository is an example of how
-to install mpi4py, parallel h5py, and parallel HDF5 inside a conda environment.
+You will generally need to follow the instructions to build from source.  First,
+you will need to install OpenMC's dependencies.
+- Install hdf5 from source.  Download the hdf5 archive from the developer; extract it.
+```
+cd YOUR_HDF5_DIRECTORY/
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DHDF5_ENABLE_PARALLEL=ON -DHDF5_BUILD_CPP_LIB=OFF -DHDF5_ENABLE_Z_LIB_SUPPORT=ON -DZLIB_LIBRARY:FILEPATH=${CONDA_PREFIX}/lib/libz.so -DZLIB_INCLUDE_DIR:PATH=${CONDA_PREFIX}/include -DZLIB_USE_EXTERNAL=OFF -DHDF5_ENABLE_SZIP_SUPPORT=OFF ..
+cd ..
+cmake --build ./build --config Release -j 4
+cmake --install ./build --config Release
+conda deactivate
+conda activate YOUR-ENV
+h5dump --version
 
+```
 
-If you want to use OpenMC with OpenMP or MPI, set 
-`-DOpenMC_USE_OPENMP=on` and `-DOPENMC_USE_MPI=on`.  If you are installing 
-inside a conda environment, also set `-DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}` 
-and call `HDF5_ROOT=${CONDA_PREFIX}` before calling cmake.
+- Install mpi4py using `python -m pip install mpi4py`
+- Install h5py using `cc=${CONDA_PREFIX} HDF5_MPI=ON HDF5_DIR=${CONDA_PREFIX} python -m pip install --no-binary=h5py h5py`.  This will install with support for MPI, and the `${CONDA_PREFIX}` options will
+direct your system to the environment you've installed into so far.  Double 
+check the installation worked with `python -c "import h5py; print(h5py.version.hdf5_version)"`
+
+Now you are ready to install OpenMC. Follow the steps in the tutorial for 
+installing from source, but, when first calling cmake in `build/`, set
+`HDF5_ROOT=${CONDA_PREFIX}`, `-DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}`, 
+`-DOPENMC_USE_OPENMP=on`, and `-DOPENMC_USE_MPI=on`.  After `make install`,
+return to the top level of the OpenMC source directory, and use `python -m pip install .`
+to finish installing OpenMC.  Remember to use the `-e` flag if you want to install
+in dev mode.
 
 ### LAMMPS:
 The documentation page for building LAMMPS begins [here](https://docs.lammps.org/Build.html).
 LAMMPS has many optional packages and build options which will not be discussed
 in depth here beyond what should be installed if working with Ghastly.  Users 
 should set `-D BUILD_SHARED_LIBS=yes`, `-D BUILD_MPI=yes`, `-D BUILD_OMP=yes`.  
+
 The setup script example also turns the JPEG, PNG, and FFMPEG options on.  
 These are not needed for Ghastly to work, though users may prefer to have the option.
-As always, setting `-D CMAKE_INSTALL_PREFIX` and `-D CMAKE_PREFIX_PATH` to
-`${CONDA_PREFIX}` is required if using conda environments.  To use
-LAMMPS to model pebble flow, users must install the GRANULAR package with 
-`PKG_GRANULAR=yes`.  Users should also include the OPENMP package with 
-`PKG_OPENMP=yes`.
+If using JPEG, PNG, and FFMPEG, those should be installed before installing
+LAMMPS.  Even if you are installing without FFMPEG support, you may still find
+it a useful tool to have later when processing images.
+
+As always, set`-D CMAKE_INSTALL_PREFIX` and `-D CMAKE_PREFIX_PATH` to
+`${CONDA_PREFIX}`.  To use LAMMPS to model pebble flow, users must install the 
+GRANULAR package with `PKG_GRANULAR=yes`.  Users should also include the 
+OPENMP package with `PKG_OPENMP=yes`.
 
 ## Ghastly:
 
