@@ -1,0 +1,3 @@
+{% for var in var_list -%}
+variable	{{var[0]}} equal {{var[1]}}
+{% endfor -%}

@@ -64,12 +64,12 @@ include		{{file}}
 {% endfor -%}
 
 region		whole_core union {{n_regions}} &
-{%+ 		for name in region_names[0:-1] %}
+		{% for name in region_names[0:-1] -%}
                 {{name}} &
-{% endfor %}
+		{% endfor -%}
 		{{region_names[-1]}}
 
-fix		grav all gravity ${gravity} vector 0 0 -1
+fix		grav all gravity ${gravity} vector 0 0 1
 fix		nve_int all nve/sphere
 fix		wall_gran all wall/gran/region hertz/history &
 		${k_n} ${k_t} ${gamma_n} ${gamma_t} ${co_fric} 1 &
@@ -112,105 +112,9 @@ thermo_modify	flush yes lost warn
 
 read_dump	{{starting_bed}} 0 x y z add yes timestep no
 
-set		type * diameter ${d_pebble}
-set		type * i_recirc 0
+include		{{siminit_file}}
 
-set		type 1 type/subset 2 6666 436651
-set		type 1 type/subset 3 6666 435345
-set		type 1 type/subset 4 6666 354354
-set		type 1 type/subset 5 6666 468545
-set		type 1 type/subset 6 6666 435346
-
-set		type 1 i_pass 0
-set		type 2 i_pass 1
-set		type 3 i_pass 2
-set		type 4 i_pass 3
-set		type 5 i_pass 4
-set		type 6 i_pass 5
-
-set		type * type 1
-
-group		2wallcolor region 2wall
-set		group 2wallcolor i_zone 6
-group		2wallcolor delete
-
-group		5wallcolor region 5wall
-set		group 5wallcolor i_zone 5
-group		5wallcolor delete
-
-group		8wallcolor region 8wall
-set		group 8wallcolor i_zone 4
-group		8wallcolor delete
-
-group		12wallcolor region 12wall
-set		group 12wallcolor i_zone 3
-group		12wallcolor delete
-
-group		16wallcolor region 16wall
-set		group 16wallcolor i_zone 2
-group		16wallcolor delete
-
-group		20wallcolor region center
-set		group 20wallcolor i_zone 1
-group		20wallcolor delete
-
-variable	layer_t equal ({{vessel_zmax}}-({{vessel_zmin}}))/10
-
-region		layer1reg cylinder z {{x_c}} {{y_c}} {{r_vessel}} &
-		{{zmax_vessel}}-v_layer_t {{zmax_vessel}} side in units box
-region		layer2reg cylinder z {{x_c}} {{y_c}} {{r_vessel}} &
-		{{zmax_vessel}}-2*v_layer_t {{zmax_vessel}}-v_layer_t  side in units box
-region		layer3reg cylinder z {{x_c}} {{y_c}} {{r_vessel}} &
-		{{zmax_vessel}}-3*v_layer_t {{zmax_vessel}}-2*v_layer_t side in units box
-region		layer4reg cylinder z {{x_c}} {{y_c}} {{r_vessel}} &
-		{{zmax_vessel}}-4*v_layer_t {{zmax_vessel}}-3*v_layer_t side in units box
-region		layer5reg cylinder z {{x_c}} {{y_c}} {{r_vessel}} &
-		{{zmax_vessel}}-5*v_layer_t {{zmax_vessel}}-4*v_layer_t side in units box
-region		layer6reg cylinder z {{x_c}} {{y_c}} {{r_vessel}} &
-		{{zmax_vessel}}-6*v_layer_t {{zmax_vessel}}-5*v_layer_t side in units box
-region		layer7reg cylinder z {{x_c}} {{y_c}} {{r_vessel}} &
-		{{zmax_vessel}}-7*v_layer_t {{zmax_vessel}}-6*v_layer_t side in units box
-region		layer8reg cylinder z {{x_c}} {{y_c}} {{r_vessel}} &
-		{{zmax_vessel}}-8*v_layer_t {{zmax_vessel}}-7*v_layer_t side in units box
-region		layer9reg cylinder z {{x_c}} {{y_c}} {{r_vessel}} &
-		{{zmax_vessel}}-9*v_layer_t {{zmax_vessel}}-8*v_layer_t side in units box
-region		layer10reg cylinder z {{x_c}} {{y_c}} {{r_vessel}} &
-		{{zmin_vessel}} {{zmax_vessel}}-9*v_layer_t side in units box
-
-group		layer1 region layer1reg
-group		layer2 region layer2reg
-group		layer3 region layer3reg
-group		layer4 region layer4reg
-group		layer5 region layer5reg
-group		layer6 region layer6reg
-group		layer7 region layer7reg
-group		layer8 region layer8reg
-group		layer9 region layer9reg
-group		layer10 region layer10reg
-
-set		group layer1 i_layer 1
-set		group layer2 i_layer 2
-set		group layer3 i_layer 3
-set		group layer4 i_layer 4
-set		group layer5 i_layer 5
-set		group layer6 i_layer 6
-set		group layer7 i_layer 7
-set		group layer8 i_layer 8
-set		group layer9 i_layer 9
-set		group layer10 i_layer 10
-
-group		layer1 delete
-group		layer2 delete
-group		layer3 delete
-group		layer4 delete
-group		layer5 delete
-group		layer6 delete
-group		layer7 delete
-group		layer8 delete
-group		layer9 delete
-group		layer10 delete
-
-include		{{outlet_file}}
+include		{{f2outlet_file}}
 
 variable	recirculated equal 0
 variable	recirc_run equal 2500000
@@ -220,7 +124,7 @@ variable	recirc_run equal 2500000
 ########## Start Mainloop ##########
 label		recirculate
 
-variable	displace equal (({{z_b.max}}-3*${d_pebble}) - bound(all, zmin))
+variable	displace equal (({{z_b.min}}+3*${d_pebble}) - bound(all, zmax))
 group		outlet region recirc_outlet
 variable	next_pass atom (i_pass<5)*round(i_pass+1)
 set		group outlet i_pass v_next_pass
@@ -235,7 +139,10 @@ compute		n outlet count/type atom
 run		0
 variable	N equal c_n[1]
 
-run 		${recirc_run}	
+run 		${recirc_run}
+write_data      data.init nocoeff nolabelmap
+group           init_time empty
+write_dump      init_time custom init_time.txt id
 
 variable	recirculated equal ${recirculated}+${N}
 variable	displace delete

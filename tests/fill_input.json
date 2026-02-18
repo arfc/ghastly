@@ -1,8 +1,9 @@
 {
 	"simulation" : {
 		"r_pebble" : 0.03,
-		"t_final" : 3600,
-		"pf" : 0.35
+		"t_final" : 100,
+		"pf" : 0.35,
+		"seed" : 23487534
 	},
 	"core_inlet" : {
 		"inlet_cyl" : {

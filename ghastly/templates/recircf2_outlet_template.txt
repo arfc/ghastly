@@ -1,2 +1,0 @@
-region		{{outlet_name}} cylinder z {{x_c}} {{y_c}} {{r}} &
-		{{zmin}} {{zmax}} side in units box

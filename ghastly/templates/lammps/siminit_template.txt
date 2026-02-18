@@ -1,0 +1,111 @@
+set		type * diameter ${d_pebble}
+set		type * i_pass 1
+
+variable	pass_split equal round($(atoms)/6)
+
+set		type 1 type/subset 2 ${pass_split} ${seed}
+set		type 1 type/subset 3 ${pass_split} ${seed}
+set		type 1 type/subset 4 ${pass_split} ${seed}
+set		type 1 type/subset 5 ${pass_split} ${seed}
+set		type 1 type/subset 6 ${pass_split} ${seed}
+
+set		type 1 i_pass 0
+set		type 2 i_pass 1
+set		type 3 i_pass 2
+set		type 4 i_pass 3
+set		type 5 i_pass 4
+set		type 6 i_pass 5
+
+set		type * type 1
+
+group		2wallcolor region 2wall
+set		group 2wallcolor i_zone 6
+group		2wallcolor delete
+
+group		5wallcolor region 5wall
+set		group 5wallcolor i_zone 5
+group		5wallcolor delete
+
+group		8wallcolor region 8wall
+set		group 8wallcolor i_zone 4
+group		8wallcolor delete
+
+group		12wallcolor region 12wall
+set		group 12wallcolor i_zone 3
+group		12wallcolor delete
+
+group		16wallcolor region 16wall
+set		group 16wallcolor i_zone 2
+group		16wallcolor delete
+
+group		20wallcolor region 20wall
+set		group 20wallcolor i_zone 1
+group		20wallcolor delete
+
+variable	layer_t equal (${vessel_zmax}-(${vessel_zmin}))/10
+variable        bound1 equal ${vessel_zmax}-${layer_t}
+variable        bound2 equal ${vessel_zmax}-2*${layer_t}
+variable        bound3 equal ${vessel_zmax}-3*${layer_t}
+variable        bound4 equal ${vessel_zmax}-4*${layer_t}
+variable        bound5 equal ${vessel_zmax}-5*${layer_t}
+variable        bound6 equal ${vessel_zmax}-6*${layer_t}
+variable        bound7 equal ${vessel_zmax}-7*${layer_t}
+variable        bound8 equal ${vessel_zmax}-8*${layer_t}
+variable        bound9 equal ${vessel_zmax}-9*${layer_t}
+
+
+region          layer1reg cylinder z ${vessel_x_c} ${vessel_y_c} ${r_vessel} &
+                ${bound1} ${vessel_zmax} side in units box
+region          layer2reg cylinder z ${vessel_x_c} ${vessel_y_c} ${r_vessel} &
+                ${bound2} ${bound1}  side in units box
+region          layer3reg cylinder z ${vessel_x_c} ${vessel_y_c} ${r_vessel} &
+                ${bound3} ${bound2} side in units box
+region          layer4reg cylinder z ${vessel_x_c} ${vessel_y_c} ${r_vessel} &
+                ${bound4} ${bound3} side in units box
+region          layer5reg cylinder z ${vessel_x_c} ${vessel_y_c} ${r_vessel} &
+                ${bound5} ${bound4} side in units box
+region          layer6reg cylinder z ${vessel_x_c} ${vessel_y_c} ${r_vessel} &
+                ${bound6} ${bound5} side in units box
+region          layer7reg cylinder z ${vessel_x_c} ${vessel_y_c} ${r_vessel} &
+                ${bound7} ${bound6} side in units box
+region          layer8reg cylinder z ${vessel_x_c} ${vessel_y_c} ${r_vessel} &
+                ${bound8} ${bound7} side in units box
+region          layer9reg cylinder z ${vessel_x_c} ${vessel_y_c} ${r_vessel} &
+                ${bound9} ${bound8} side in units box
+region          layer10reg cylinder z ${vessel_x_c} ${vessel_y_c} ${r_vessel} &
+                ${vessel_zmin} ${bound9} side in units box
+
+
+group		layer1 region layer1reg
+group		layer2 region layer2reg
+group		layer3 region layer3reg
+group		layer4 region layer4reg
+group		layer5 region layer5reg
+group		layer6 region layer6reg
+group		layer7 region layer7reg
+group		layer8 region layer8reg
+group		layer9 region layer9reg
+group		layer10 region layer10reg
+
+set		group layer1 i_layer 1
+set		group layer2 i_layer 2
+set		group layer3 i_layer 3
+set		group layer4 i_layer 4
+set		group layer5 i_layer 5
+set		group layer6 i_layer 6
+set		group layer7 i_layer 7
+set		group layer8 i_layer 8
+set		group layer9 i_layer 9
+set		group layer10 i_layer 10
+
+group		layer1 delete
+group		layer2 delete
+group		layer3 delete
+group		layer4 delete
+group		layer5 delete
+group		layer6 delete
+group		layer7 delete
+group		layer8 delete
+group		layer9 delete
+group		layer10 delete
+

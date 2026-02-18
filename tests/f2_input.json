@@ -1,0 +1,78 @@
+{
+	"simulation" : {
+		"r_pebble" : 0.03,
+		"t_final" : 100,
+		"pf" : 0.35,
+		"fidelity" : 2,
+		"recirc_hz": 0.014,
+		"down_flow" : true,
+		"seed" : 4345343
+	},
+	"core_inlet" : {
+		"inlet_cyl" : {
+			"type" : "cylinder",
+			"x_c" : 0.05,
+			"y_c" : 0.0,
+			"zmax" : 1.2,
+			"zmin" : 1.1,
+			"r": 0.1,
+			"open_bottom" : "open 1",
+			"open_top" : "open 2"
+		},
+		"inlet_cone" : {
+			"type" : "cone",
+			"x_c" : 0.05,
+			"y_c" : 0.0,
+			"zmax" : 1.1,
+			"zmin" : 1.0,
+			"r_major" : 0.1,
+			"r_minor" : 0.5,
+			"open_bottom" : "open 1",
+			"open_top" : "open 2"
+		}
+	},
+	"core_main" : {
+		"main_cyl" : {
+			"type" : "cylinder",
+			"x_c" : 0.05,
+			"y_c" : 0.0,
+			"zmax" : 1.0,
+			"zmin" : 0.1,
+			"r" : 0.5,
+			"open_bottom" : "open 1",
+			"open_top" : "open 2"
+		},
+		"main_cone" : {
+			"type" : "cone",
+			"x_c" : 0.05,
+			"y_c" : 0.0,
+			"zmax" : 0.1,
+			"zmin" : 0.0,
+			"r_major" : 0.5,
+			"r_minor" : 0.1,
+			"open_bottom" : "open 1",
+			"open_top" : "open 2"
+		}
+	},
+	"core_outlet" : {
+		"outlet_cyl" : {
+			"type" : "cylinder",
+			"x_c" : 0.05,
+			"y_c" : 0.0,
+			"zmax" : 0.0,
+			"zmin" : -0.1,
+			"r" : 0.1,
+			"open_bottom" : "",
+			"open_top" : "open 2"
+		}
+	},
+	"lammps_var" : {
+		"gravity" : 9.81,
+		"density_rho" : 1700,
+		"young_mod_E" : 1.0055e+10,
+		"poisson" : 0.12,
+		"co_fric" : 0.035,
+		"co_rest" : 0.02,
+		"interval" : 1000
+	}
+}

@@ -1,3 +1,0 @@
-region		{{region_name}} cone z {{x_c}} {{y_c}} {{r_minor}} {{r_major}} &
-		{{zmin}} {{zmax}} side in units box &
-		{{open_bottom}} {{open_top}}

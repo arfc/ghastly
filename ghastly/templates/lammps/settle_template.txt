@@ -7,9 +7,9 @@ include		{{file}}
 
 region		whole_core delete
 region		whole_core union {{n_regions}} &
-{%		for name in region_names[0:-1] -%}
+		{% for name in region_names[0:-1] -%}
 		{{name}} &
-{% endfor -%}
+		{% endfor -%}
 		{{region_names[-1]}}
 
 fix		grav all gravity ${gravity} vector 0 0 1

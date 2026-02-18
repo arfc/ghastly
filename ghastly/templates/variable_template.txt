@@ -1,3 +1,0 @@
-{% for name, value in variables.items() -%}
-variable	{{name}} equal {{value}}
-{% endfor -%}

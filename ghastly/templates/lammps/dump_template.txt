@@ -1,0 +1,12 @@
+ITEM: TIMESTEP
+{{timestep}}
+ITEM: NUMBER OF ATOMS
+{{n_pebbles}}
+ITEM: BOX BOUNDS {{boundary}}
+{{xb_min}} {{xb_max}}
+{{yb_min}} {{yb_max}}
+{{zb_min}} {{zb_max}}
+ITEM: ATOMS id type x y z
+{% for peb in coords -%}
+{{peb.id}} 1 {{peb.x}} {{peb.y}} {{peb.z}}
+{% endfor -%}
