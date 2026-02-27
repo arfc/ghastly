@@ -74,7 +74,6 @@ def create_data_hdf5(inputfile, coordpath, recircpath,
         t_scale = P[i_r]/(n_recirc*dt*recirc_hz)
         sim_time = tstep*n_dump*dt
         reactor_time = sim_time*t_scale
-        print(tstep)
         data = read_input.read_lammps_bin(c_fnames[tstep], cpath)
         uid = []
         coord = []
@@ -141,11 +140,11 @@ def create_data_hdf5(inputfile, coordpath, recircpath,
             group.attrs['reactor_time'] = reactor_time
             group.attrs['time_scale'] = t_scale
 
-    _write_data_xdmf(data_file, xmf_file)
+    _write_data_xmf(data_file, xmf_file)
 
-def _write_data_xdmf(data_file, xmf_file):
+def _write_data_xmf(data_file, xmf_file):
     """
-    Write an XDMF file to accompany the HDF5 data file.
+    Write an XMF file to accompany the HDF5 data file.
     """
 
     with h5py.File(data_file, mode='r') as h5f:
