@@ -1,10 +1,14 @@
 import numpy as np
 from ghastly import read_input
 from ghastly import pebble
+from ghastly.main import _templater
+from jinja2 import Environment, PackageLoader
 import os
 import glob
 import string
 import h5py
+
+env = Environment(loader=PackageLoader('ghastly', 'templates'))
 
 rng = np.random.default_rng()
 
@@ -145,148 +149,27 @@ def create_data_hdf5(inputfile, coordpath, recircpath,
 def _write_data_xmf(data_file, xmf_file):
     """
     Write an XMF file to accompany the HDF5 data file.
+
+    Parameters
+    ----------
+    data_file : str
+        Input .h5 file absolute directory
+    xmf_file : str
+        Name of output xmf file.
+
+    Returns
+    ----------
     """
 
     with h5py.File(data_file, mode='r') as h5f:
         h5keys = list(h5f.keys())
         shape_n = len(h5f[h5keys[0]]['xyz'])
         n_dset = len(h5f)
+    
+    params = {
+        "data_file":data_file,
+        "shape_n":shape_n,
+        "h5keys":h5keys
+    }
 
-
-    with open(xmf_file, mode='w') as xmf:
-        xmf.write('<?xml version="1.0" ?>\n')
-        xmf.write('<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>\n')
-        xmf.write('<Xdmf Version="3.0">\n')
-        xmf.write('  <Domain>\n')
-        # CollectionType="Temporal" for paraview
-        xmf.write('    <Grid Name="Pebbles" '
-                  'GridType="Collection" CollectionType="Temporal">\n')
-        for i, h5k in enumerate(h5keys):
-            xmf.write('      <Grid Name="Pebbles" GridType="Uniform">\n')
-            xmf.write(f'        <Time Value="{h5k}" />\n')
-
-            xmf.write(f'        <Topology TopologyType="Polyvertex" '
-                      'NumberOfElements="{shape_n}" />\n')
-            xmf.write('        <Geometry GeometryType="XYZ">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="{shape_n} 3">\n')
-            xmf.write(f'            {data_file}:/{h5k}/xyz\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Geometry>\n')
-
-            xmf.write('        <Attribute Name="Vx" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="{shape_n}">\n')
-            xmf.write(f'            {data_file}:/{h5k}/vx\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-            xmf.write('        <Attribute Name="Vy" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="{shape_n}">\n')
-            xmf.write(f'            {data_file}:/{h5k}/vy\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-            xmf.write('        <Attribute Name="Vz" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="{shape_n}">\n')
-            xmf.write(f'            {data_file}:/{h5k}/vz\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-
-            xmf.write('        <Attribute Name="Vx Adjusted" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="{shape_n}">\n')
-            xmf.write(f'            {data_file}:/{h5k}/vx_adj\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-            xmf.write('        <Attribute Name="Vy Adjusted" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="{shape_n}">\n')
-            xmf.write(f'            {data_file}:/{h5k}/vy_adj\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-            xmf.write('        <Attribute Name="Vz Adjusted" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="{shape_n}">\n')
-            xmf.write(f'            {data_file}:/{h5k}/vz_adj\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-
-            xmf.write('        <Attribute Name="V Magnitude" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="{shape_n}">\n')
-            xmf.write(f'            {data_file}:/{h5k}/vmag\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-            xmf.write('        <Attribute Name="V Magnitude Adjusted" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="{shape_n}">\n')
-            xmf.write(f'            {data_file}:/{h5k}/vmag_adj\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-
-            xmf.write('        <Attribute Name="UID" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="{shape_n}">\n')
-            xmf.write(f'            {data_file}:/{h5k}/uid\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-
-            xmf.write('        <Attribute Name="Zone" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="{shape_n}">\n')
-            xmf.write(f'            {data_file}:/{h5k}/zone\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-
-            xmf.write('        <Attribute Name="Layer" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="{shape_n}">\n')
-            xmf.write(f'            {data_file}:/{h5k}/layer\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-
-            xmf.write('        <Attribute Name="Pass Number" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="{shape_n}">\n')
-            xmf.write(f'            {data_file}:/{h5k}/pass_n\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-
-            xmf.write('        <Attribute Name="Number of Recirculations" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="{shape_n}">\n')
-            xmf.write(f'            {data_file}:/{h5k}/recirc_n\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-
-            xmf.write('        <Attribute Name="Sim Step" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="1">\n')
-            xmf.write(f'            {data_file}:/{h5k}/sim_step\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-
-            xmf.write('        <Attribute Name="Reactor Time" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="1">\n')
-            xmf.write(f'            {data_file}:/{h5k}/reactor_time\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-
-            xmf.write('        <Attribute Name="Time Scaling Factor" AttributeType="Scalar" Center="Node">\n')
-            xmf.write(f'          <DataItem Format="HDF" Dimensions="1">\n')
-            xmf.write(f'            {data_file}:/{h5k}/time_scale\n')
-            xmf.write('          </DataItem>\n')
-            xmf.write('        </Attribute>\n')
-
-            xmf.write('      </Grid>\n')
-        
-        xmf.write('        <Attribute Name="Pebble Radius" AttributeType="Scalar" Center="Node">\n')
-        xmf.write(f'          <DataItem Format="HDF" Dimensions="1">\n')
-        xmf.write(f'            {data_file}:/peb_r\n')
-        xmf.write('          </DataItem>\n')
-        xmf.write('        </Attribute>\n')
-
-        xmf.write('        <Attribute Name="Sim dt" AttributeType="Scalar" Center="Node">\n')
-        xmf.write(f'          <DataItem Format="HDF" Dimensions="1">\n')
-        xmf.write(f'            {data_file}:/dt\n')
-        xmf.write('          </DataItem>\n')
-        xmf.write('        </Attribute>\n')
-
-        xmf.write('        <Attribute Name="Recirculation Frequency" AttributeType="Scalar" Center="Node">\n')
-        xmf.write(f'          <DataItem Format="HDF" Dimensions="1">\n')
-        xmf.write(f'            {data_file}:/recirc_hz\n')
-        xmf.write('          </DataItem>\n')
-        xmf.write('        </Attribute>\n')
-        
-        xmf.write('    </Grid>\n')
-        xmf.write('  </Domain>\n')
-        xmf.write('</Xdmf>\n')
-
-
-
+    _templater(params, xmf_file, "data/xmf_template.txt")
