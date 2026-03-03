@@ -1,0 +1,114 @@
+<?xml version="1.0" ?>
+<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>
+<Xdmf Version="3.0">
+  <Domain>
+    <Grid Name="Pebbles" GridType="Collection" CollectionType="Temporal">
+      {% for h5k in h5keys -%}
+      <Grid Name="Pebbles" GridType="Uniform">
+	<Time Value="{{h5k}}" />
+        <Topology TopologyType="Polyvertex" NumberOfElements="{{shape_n}}" />
+        <Geometry GeometryType="XYZ">
+          <DataItem Format="HDF" Dimensions="{{shape_n}} 3">
+            {{data_file}}:/{{h5k}}/xyz
+          </DataItem>
+        </Geometry>
+        <Attribute Name="Vx" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="{{shape_n}}">
+            {{data_file}}:/{{h5k}}/vx
+          </DataItem>
+        </Attribute>
+        <Attribute Name="Vy" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="{{shape_n}}">
+            {{data_file}}:/{{h5k}}/vy
+          </DataItem>
+        </Attribute>
+        <Attribute Name="Vz" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="{{shape_n}}">
+            {{data_file}}:/{{h5k}}/vz
+          </DataItem>
+        </Attribute>
+        <Attribute Name="Vx Adjusted" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="{{shape_n}}">
+            {{data_file}}:/{{h5k}}/vx_adj
+          </DataItem>
+        </Attribute>
+        <Attribute Name="Vy Adjusted" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="{{shape_n}}">
+            {{data_file}}:/{{h5k}}/vy_adj
+          </DataItem>
+        </Attribute>
+        <Attribute Name="Vz Adjusted" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="{{shape_n}}">
+            {{data_file}}:/{{h5k}}/vz_adj
+          </DataItem>
+        </Attribute>
+        <Attribute Name="V Magnitude" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="{{shape_n}}">
+            {{data_file}}:/{{h5k}}/vmag
+          </DataItem>
+        </Attribute>
+        <Attribute Name="V Magnitude Adjusted" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="{{shape_n}}">
+            {{data_file}}:/{{h5k}}/vmag_adj
+          </DataItem>
+        </Attribute>
+        <Attribute Name="UID" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="{{shape_n}}">
+            {{data_file}}:/{{h5k}}/uid
+          </DataItem>
+        </Attribute>
+        <Attribute Name="Zone" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="{{shape_n}}">
+            {{data_file}}:/{{h5k}}/zone
+          </DataItem>
+        </Attribute>
+        <Attribute Name="Layer" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="{{shape_n}}">
+            {{data_file}}:/{{h5k}}/layer
+          </DataItem>
+        </Attribute>
+        <Attribute Name="Pass Number" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="{{shape_n}}">
+            {{data_file}}:/{{h5k}}/pass_n
+          </DataItem>
+        </Attribute>
+        <Attribute Name="Number of Recirculations" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="{{shape_n}}">
+            {{data_file}}:/{{h5k}}/recirc_n
+          </DataItem>
+        </Attribute>
+        <Attribute Name="Sim Step" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="1">
+            {{data_file}}:/{{h5k}}/sim_step
+          </DataItem>
+        </Attribute>
+        <Attribute Name="Reactor Time" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="1">
+            {{data_file}}:/{{h5k}}/reactor_time
+          </DataItem>
+        </Attribute>
+        <Attribute Name="Time Scaling Factor" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="1">
+            {{data_file}}:/{{h5k}}/time_scale
+          </DataItem>
+        </Attribute>
+      </Grid>
+        {% endfor -%}
+        <Attribute Name="Pebble Radius" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="1">
+            {{data_file}}:/peb_r
+          </DataItem>
+        </Attribute>
+        <Attribute Name="Sim dt" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="1">
+            {{data_file}}:/dt
+          </DataItem>
+        </Attribute>
+        <Attribute Name="Recirculation Frequency" AttributeType="Scalar" Center="Node">
+          <DataItem Format="HDF" Dimensions="1">
+            {{data_file}}:/recirc_hz
+          </DataItem>
+        </Attribute>
+    </Grid>
+  </Domain>
+</Xdmf>
